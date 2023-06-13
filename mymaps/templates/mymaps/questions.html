@@ -1,0 +1,149 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Questions</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            margin: 0;
+            padding: 0;
+            
+            background-color:black;
+            
+        }
+        
+        h1 {
+            text-align: center;
+            margin-top: 30px;
+            color:yellow;
+            text-decoration:underline;
+        }
+        
+        form {
+            max-width: 600px;
+            margin: 0 auto;
+            padding: 20px;
+            border: 1px solid white;
+            border-radius: 10px;
+        }
+        
+        
+        p {
+            font-weight: bold;
+            margin-bottom: 10px;
+            color:white;
+        }
+        
+        input[type="radio"] {
+            margin-bottom: 10px;
+            color:#FFFFF0;
+        }
+        
+        button[type="submit"] {
+            border-radius: 20px;
+            padding: 10px 20px;
+            font-weight: bold;
+            background-color: yellow;
+            color: black;
+            margin-top: 20px;
+            cursor: pointer;
+        }
+        
+        .input-options{
+            color:#FFFFF0;
+        }
+        @media only screen and (max-width: 768px) {
+            form {
+                max-width: 400px;
+            }
+        }
+    </style>
+</head>
+
+<body>
+
+    <h1>Questions</h1>
+
+    <form id="questions-form" action="/submit_questionnaire/" method="post">
+        {% csrf_token %}
+
+        <div id='q1'>
+            <p>Question 1: What is your favorite color?</p>
+            <div class='input-options'>
+                <input type="radio" name="question1" value="option1"> Option 1<br>
+                <input type="radio" name="question1" value="option2"> Option 2<br>
+                <input type="radio" name="question1" value="option3"> Option 3<br>
+            </div>
+        </div>
+        <div id='q2'>
+            <p>Question 2: What is your favorite animal?</p>
+            <div class='input-options'>
+                <input type="radio" name="question2" value="option1"> Option 1<br>
+                <input type="radio" name="question2" value="option2"> Option 2<br>
+                <input type="radio" name="question2" value="option3"> Option 3<br>
+            </div>
+        </div>
+        <div>
+            <p>Question 3: What is your favorite food?</p>
+            <div class='input-options'>
+                <input type="radio" name="question3" value="option1"> Option 1<br>
+                <input type="radio" name="question3" value="option2"> Option 2<br>
+                <input type="radio" name="question3" value="option3"> Option 3<br>
+            </div>
+        </div>
+        <div>
+            <p>Question 4: What is your favorite movie?</p>
+            <div class='input-options'>
+                <input type="radio" name="question4" value="option1"> Option 1<br>
+                <input type="radio" name="question4" value="option2"> Option 2<br>
+                <input type="radio" name="question4" value="option3"> Option 3<br>
+            </div>
+        </div>
+        <div>
+            <p>Question 5: What is your favorite hobby?</p>
+            <div class='input-options'>
+                <input type="radio" name="question5" value="option1"> Option 1<br>
+                <input type="radio" name="question5" value="option2"> Option 2<br>
+                <input type="radio" name="question5" value="option3"> Option 3<br>
+            </div>
+        </div>
+
+        <button type="submit">Submit</button>
+    </form>
+    <script>
+        // Retrieve query value from sessionStorage
+        var formm = document.getElementById('questions-form');
+        var submitButton = document.getElementById('submit-btn');
+
+        // Add event listener to form submission
+        formm.addEventListener('submit', function(event) {
+            // Get all radio button groups
+            var radioGroups = form.querySelectorAll('input[type="radio"]');
+            var isValid = true;
+
+            // Check if any group is not selected
+            radioGroups.forEach(function(group) {
+                var groupName = group.name;
+                var checkedOptions = formm.querySelectorAll('input[name="' + groupName + '"]:checked');
+
+                if (checkedOptions.length === 0) {
+                    isValid = false;
+                }
+            });
+
+            if (!isValid) {
+                // Prevent form submission if any group is not selected
+                event.preventDefault();
+                alert('Please select an option for each question.');
+            }
+        });
+        var query = sessionStorage.getItem('query');
+
+        // Get the form element
+        var form = document.getElementById('questions-form');
+
+        // Update the form action URL with the query value
+        form.action = '/submit_questionnaire/?query=' + encodeURIComponent(query);
+    </script>
+</body>
+</html>

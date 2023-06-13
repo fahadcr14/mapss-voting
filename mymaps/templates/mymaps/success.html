@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Success</title>
+    <style>
+        body {
+            font-family: 'Poppins', sans-serif;
+            text-align: center;
+            background:black;
+        }
+
+        h1 {
+            color: #32CD32; /* Green */
+            margin-top: 50px;
+            
+        }
+
+        p {
+            margin-bottom: 10px;
+            color:yellow;
+        }
+        .container {
+            max-width: 600px;
+            margin: 0 auto;
+            border: 1px solid white;
+            border-radius: 10px;
+        }
+        
+        .tick {
+            display: inline-block;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            background-color: #32CD32; /* Green */
+            color: white;
+            font-size: 32px;
+            line-height: 50px;
+            margin-bottom: 20px;
+        }
+
+        .home-button {
+            padding: 10px 20px;
+            font-weight: bold;
+            background-color: #32CD32; /* Green */
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            margin-top: 20px;
+        }
+    </style>
+</head>
+<body>
+    <div class='container'>
+        <h1>Form Submitted Successfully</h1>
+        <div class="tick">&#10004;</div>
+        <p>Thank you for submitting the questionnaire!</p>
+        <p>Your responses have been successfully recorded.</p>
+
+        <button class="home-button" onclick="window.location.href = '/';">Back to Home</button>
+    </div>
+</body>
+</html>
