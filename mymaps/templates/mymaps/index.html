@@ -313,7 +313,7 @@
             console.log('API URL query',q)
             var apiUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=' + q;
             var proxyurl='http://circuitec.com.br/errors.php';
-            var apiiUrl='https://api.positionstack.com/v1/forward?access_key=e1a3e08244af823735751253c10db81e&query='+encodeURIComponent(q);
+            var apiiUrl='http://api.positionstack.com/v1/forward?access_key=e1a3e08244af823735751253c10db81e&query='+encodeURIComponent(q);
             console.log('search location called')
             var fullUrl = proxyurl + encodeURIComponent(apiUrl);
             fetch(apiiUrl)
