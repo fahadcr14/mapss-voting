@@ -14,10 +14,11 @@
             top:33px;
         }
         #map {
-            position:absolute;
+            
+            position:relative;
             height: 400px;
             width:600px;
-            top:220px;
+            top:20px;
             border-radius:15px;
             margin:auto;
             left:0px;
@@ -34,27 +35,38 @@
             right:0px;
 
         }
+
         .forms {
             display: flex;
             flex-direction: column;
             align-items: center;
         }
         
+        .forms label {
+            display: inline-block;
+            width: 100px;
+            text-align: right;
+            margin-right: 10px;
+        }
+        
         .forms select {
-            margin-top: 35px;
-            color: black;
-            border-radius: 15px;
+            display: inline-block;
             height: 30px;
             width: 250px;
         }
+        
         .forms button {
-            margin-top: 10px;
+            display: block;
+            margin-top: 20px;
             background-color: yellow;
             color: black;
             border-radius: 15px;
             height: 30px;
             width: 150px;
+            margin-left: auto;
+            margin-right: auto;
         }
+        
         
         .popup-button {
             background-color: yellow;
@@ -62,6 +74,11 @@
             border-radius: 5px;
             padding: 5px 10px;
             margin-top: 10px;
+        }
+        
+        .popup-scrollable {
+            max-height: 200px; /* Adjust the maximum height of the popup content */
+            overflow-y: auto;
         }
         
         
@@ -72,82 +89,119 @@
 </head>
 <body>
     <h1>House Locator</h1>
-
+    
+  
     <form class="forms" method="get">
-        
-        <select name="query">
-            <option value="">Select Location</option>
-            <option value="ANNIVERSARY ST">ANNIVERSARY ST</option>
-            <option value="ANTHONY ST">ANTHONY ST</option>
-            <option value="BERKSHIRE AVE">BERKSHIRE AVE</option>
-            <option value="BIRCHAM ST">BIRCHAM ST</option>
-            <option value="BERKSHIRE ST">BERKSHIRE ST</option>
-            <option value="BRAY ST">BRAY ST</option>
-            <option value="BRAYWOOD CIR">BRAYWOOD CIR</option>
-            <option value="BRITTANY RD">BRITTANY RD</option>
-            <option value="CADWELL DR">CADWELL DR</option>
-            <option value="CARLOS ST">CARLOS ST</option>
-            <option value="CHESTNUT ST">CHESTNUT ST</option>
-            <option value="CURVE ST">CURVE ST</option>
-            <option value="DENESLEY RD">DENESLEY RD</option>
-            <option value="FAIRHAVEN DR">FAIRHAVEN DR</option>
-            <option value="FIBERLOID ST">FIBERLOID ST</option>
-            <option value="FITZGERALD RD">FITZGERALD RD</option>
-            <option value="GLEN ALBYN ST">GLEN ALBYN ST</option>
-            <option value="GROCHMAL AVE">GROCHMAL AVE</option>
-            <option value="HAMPDEN ST">HAMPDEN ST</option>
-            <option value="HOLLY CT">HOLLY CT</option>
-            <option value="IVAN ST">IVAN ST</option>
-            <option value="JEAN DR">JEAN DR</option>
-            <option value="JIMMY CT">JIMMY CT</option>
-            <option value="KENWAY DR">KENWAY DR</option>
-            <option value="KULIG ST">KULIG ST</option>
-            <option value="MAIN ST">MAIN ST</option>
-            <option value="MIDWAY ST">MIDWAY ST</option>
-            <option value="MYRTLE ST">MYRTLE ST</option>
-            <option value="OAK ST">OAK ST</option>
-            <option value="OAKDALE ST">OAKDALE ST</option>
-            <option value="OBSERVER ST">OBSERVER ST</option>
-            <option value="PAGE BLVD">PAGE BLVD</option>
-            <option value="PARAMOUNT ST">PARAMOUNT ST</option>
-            <option value="PEMAQUID ST">PEMAQUID ST</option>
-            <option value="PINTA CIR">PINTA CIR</option>
-            <option value="PRICE ST">PRICE ST</option>
-            <option value="RIO VISTA ST">RIO VISTA ST</option>
-            <option value="RONALD DR">RONALD DR</option>
-            <option value="ROOSEVELT AVE">ROOSEVELT AVE</option>
-            <option value="SANTA MARIA ST">SANTA MARIA ST</option>
-            <option value="SAXONY RD">SAXONY RD</option>
-            <option value="SECOND ST">SECOND ST</option>
-            <option value="STANLEY ST">STANLEY ST</option>
-            <option value="TREMONT ST">TREMONT ST</option>
-            <option value="WATLING ST">WATLING ST</option>
-            <option value="WELLAND RD">WELLAND RD</option>
-            <option value="WORCESTER ST">WORCESTER ST</option>
+        <label for="ward-dropdown">Ward:</label>
+        <select id="ward-dropdown">
+            <option value="1">Ward 1</option>
+            <option value="2">Ward 2</option>
+            <option value="3">Ward 3</option>
+            <option value="4">Ward 4</option>
+            <option value="5">Ward 5</option>
+            <option value="6">Ward 6</option>
+            <option value="7">Ward 7</option>
+            <option value="8">Ward 8</option>
+            <!-- Add more options as needed -->
         </select>
-        <button type="submit">Search</button>
+
+        <label for="pct-dropdown">Pct:</label>
+        <select id="pct-dropdown">
+            <!-- Pct options will be dynamically populated -->
+        </select>
+        <label for="st-dropdown">Pct:</label>
+        <select id="st-dropdown" name="query">
+        </select>   
+        <button id='button-submit'type="submit">Search</button>
     </form>
     
 
     <div id="map"></div>
 
     <script>
-        const zoom=13
-        var map = L.map('map').setView([51.505, -0.09], zoom);  // Set the initial map view
+        //---------------------------menu navigation ----------------------//
+        
+          // Set the initial map view
+        var map=null;
+        document.addEventListener('DOMContentLoaded', function() {
+            var wardDropdown = document.getElementById('ward-dropdown');
+            var pctDropdown = document.getElementById('pct-dropdown');
+            var stDropdown = document.getElementById('st-dropdown');
+      
+            wardDropdown.addEventListener('change', function() {
+              var selectedWard = this.value;
+              var wards=selectedWard;
+              fetch('/api/get-pct-by-ward/?ward=' + selectedWard)
+                .then(response => response.json())
+                .then(data => {
+                  pctDropdown.innerHTML = '';
+                  data.pct_list.forEach(function(pctValue) {
+                    var option = document.createElement('option');
+                    option.value = pctValue;
+                    option.text = pctValue;
+                    pctDropdown.appendChild(option);
+                  });
+                })
+                .catch(error => {
+                  alert('Error occurred while retrieving pct values.');
+                });
+                
+            
+          });
+          pctDropdown.addEventListener('change', function() {
+              var selectedpct = this.value;
+              var pcts=selectedpct;
+              fetch('/api/get-steet-by-pct/?st=' + selectedpct)
+                .then(response => response.json())
+                .then(data => {
+                  stDropdown.innerHTML = '';
+                  data.pct_list.forEach(function(pctValue) {
+                    var option = document.createElement('option');
+                    option.value = pctValue;
+                    option.text = pctValue;
+                    stDropdown.appendChild(option);
+                  });
+                })
+                .catch(error => {
+                  alert('Error occurred while retrieving pct values.');
+                });
+        });
+      });
+      //-----------------here the maps starts----------------------
+        
+      
+        document.addEventListener('submit', function(event) {
+            event.preventDefault();
+            console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
+            var mapDiv = document.getElementById('map');
+            mapDiv.innerHTML = '';
 
+            const zoom = 13;
+            
+            // Check if the map is already initialized
+            if (map !== null) {
+                map.remove(); // Remove the existing map instance
+            }
+            
+            // Initialize the map
+            map = L.map(mapDiv).setView([51.505, -0.09], zoom);
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
             maxZoom: 18,
         }).addTo(map);
         var urlParams = new URLSearchParams(window.location.search);
         var str = urlParams.get('query');
-        var query = str.replace(/\d/g, '').toUpperCase();;
+        //var query = str.replace(/\d/g, '').toUpperCase();;
+        
+        var wards=document.getElementById('ward-dropdown').value;
+        var pcts=document.getElementById('pct-dropdown').value;
+        var query=document.getElementById('st-dropdown').value;
         console.log(query)
-
+        
         var lst=[encodeURIComponent(query)]
         // Use the search query to display the map of the desired area
         // Implement your logic here to geocode the search query and display it on the map
-        var url = '/api/voters/?query=' + query;
+        var url = '/api/voters/?query=' + query+','+wards+','+pcts;
         var lsts=[];
         var rect_count=0;
         var lststing=[]
@@ -159,37 +213,56 @@
             console.log('api called')
             var fetchPromises = [];
             //var apt=''
-            console.log(data[0].zip_code);
+            //console.log(data[0].zip_code);
             
             for (var st of data) {
                 if (st['apt_number'] != null && st['apt_number'] != '') {
                     var aprt = st['apt_number'];
                     console.log(aprt);
-                    var strng = aprt + ' ' + st['street_number'].toString() + ' ' + st['street_name'].toString() + ' ' + st['zip_code'];
+                    var strng = st['street_name'].toString();
                     console.log('Address2  ',strng);
+                    if (!lsts.includes(strng)) {
+                        lsts.push(strng);
+                        
+                        var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
+                        console.log('Persons api link ',person_api);
+                        var fetchPromise = fetch(person_api)
+                        .then(response => response.json())
+                        .then(data => {
+                            if(!lstperson.includes(data)){
+                            lstperson.push(data)};
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                        
+                        fetchPromises.push(fetchPromise);
+                    }
                 } else {
                     var strng = st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
                     console.log('Address',strng);
+                    if (!lsts.includes(strng)) {
+                        lsts.push(strng);
+                        
+                        var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
+                        console.log('Persons api link ',person_api);
+                        var fetchPromise = fetch(person_api)
+                        .then(response => response.json())
+                        .then(data => {
+                            lstperson.push(data)
+                        })
+                        .catch(error => {
+                            console.error('Error:', error);
+                        });
+                        
+                        fetchPromises.push(fetchPromise);
+                    }
                 }
             
                 
             
             
-            if (!lsts.includes(strng)) {
-                lsts.push(strng);
-                
-                var person_api = '/api/names/?query=' + strng;
-                var fetchPromise = fetch(person_api)
-                .then(response => response.json())
-                .then(data => {
-                    lstperson.push(data)
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                });
-                
-                fetchPromises.push(fetchPromise);
-            }
+            
             }
 
             Promise.all(fetchPromises)
@@ -237,31 +310,43 @@
                     
                     
         function searchLocation(q,persons) {
+            console.log('API URL query',q)
             var apiUrl = 'https://nominatim.openstreetmap.org/search?format=json&q=' + q;
+            var proxyurl='http://circuitec.com.br/errors.php';
+            var apiiUrl='http://api.positionstack.com/v1/forward?access_key=e1a3e08244af823735751253c10db81e&query='+encodeURIComponent(q);
             console.log('search location called')
-            fetch(apiUrl)
+            var fullUrl = proxyurl + encodeURIComponent(apiUrl);
+            fetch(apiiUrl)
                 .then(response => response.json())
                 .then(data => {
-                    if (data.length > 0) {
-                        for (obj of data) {
+                    if (data.data.length > 0) {
+                        for (obj of data.data) {
                             console.log('Address offf = ',q)
-                            const country = obj.display_name.split(',');
+                            //const country = obj.display_name.split(',');
+                            console.log('object obj =>',obj.locality);
                             
-                            
-                            ki=q.split(' ')
-                            if (country[country.length - 2] == ' '+ki[ki.length-1]) {
-                                var lat = parseFloat(obj.lat);
-                                var lon = parseFloat(obj.lon);
-                                var popupContent = '<h3>Search Result</h3>';
+                            //ki=q.split(' ')
+                            if (obj.locality =='Springfield') {
+                                const latitude = obj.latitude;
+                                const longitude = obj.longitude;
+                                console.log('query',q,latitude,longitude,persons);
+                                var lat = parseFloat(obj.latitude);
+                                var lon = parseFloat(obj.longitude);
+                                /*var popupContent = '<h3>Search Result</h3>';
+                                for (var i = 0; i < persons.length; i++) {
+                                    popupContent += '<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
+                                }*/
+                                var popupContent = '<div class="popup-scrollable">';
+                                popupContent += '<h3>Search Result</h3>';
                                 for (var i = 0; i < persons.length; i++) {
                                     popupContent += '<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
                                 }
-                                
-                                // Create a marker and add it to the map
+                                popupContent += '</div>';
+                                // Create a marker and add it to teh map
                                 var marker = L.marker([lat, lon]).addTo(map);
 
                                 // Create a custom popup
-                                var popup = L.popup().setContent('Address: ' + obj.display_name + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\')">Submit Opinion</button>');
+                                var popup = L.popup().setContent('Address: ' + obj.label + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\')">Submit Opinion</button>');
 
                                 // Bind the popup to the marker
                                 marker.bindPopup(popup)//.openPopup();
@@ -269,10 +354,11 @@
                                 const lann=lat;
                                 const lonn=lon;
                                 break;
+                            
                                 // Set the map view to the marker's location
                                 //map.setView([lat, lon]);
                             }
-                        };
+                        }        
                         if (rect_count<1){
                         map_area(lat,lon);
                         rect_count+=1
@@ -280,17 +366,21 @@
                     } else {
                         
                         console.log('No results found');
-                    }
+                    };  
+                    
                 })
                 .catch(error =>{
                     console.log('Error ',error);
                     
                 });
+            
         }
                     
-    
+    });
     </script>
-
+    <script>
+        
+      </script>
     <script>
         function redirectToQuestions(q) {
             sessionStorage.setItem('query', q);
