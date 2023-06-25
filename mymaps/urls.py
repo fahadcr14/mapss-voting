@@ -9,6 +9,7 @@ urlpatterns = [
     path('api/names/',views.get_persons, name='names_api'),
     path('api/get-pct-by-ward/', views.get_pct_by_ward, name='get_pct_by_ward'),
     path('api/get-steet-by-pct/', views.get_street_by_pct, name='get_street_by_pct'),
+    #path('inject', views.inject_voters_from_csv, name='inject'),
 
 
 

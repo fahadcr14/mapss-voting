@@ -11,15 +11,15 @@ from django.test import TestCase
 # Create your tests here.
 import csv
 from datetime import datetime
-from .models import Voter,Voters_list
-ward=''
+from .models import Voter,Voterslatlon,Voters_list,Votelatlon
 
-def inject_voters_from_csv():
+def inject_voters_from_csv(request):
+    print(f'starting to inject')
     i=0
-    with open(r'C:\Users\cr7\Downloads\voterlist.csv', 'r') as file:
+    with open(r'C:\Users\cr7\3D Objects\conv\New folder\full\lastcsv.csv', 'r') as file:
         reader = csv.DictReader(file)
         for row in reader:
-            voter = Voters_list(
+            voter = Votelatlon(
                 ward=row['Ward'],
                 pct=row['Pct'],
                 voter_id=row['Voter ID'],
@@ -31,23 +31,28 @@ def inject_voters_from_csv():
                 street_name=row['Street Name'],
                 apt_number=row['Apt #'],
                 city=row['City'],
-                state=['State'],
+                state=row['State'],
                 zip_code=row['Zip Code'],
                 party_affiliation=row['Party Affiliation '],
-                date_of_birth=datetime.strptime(row['Date of Birth '], '%m/%d/%Y').date(),
-                voter_status=row['Voter Status']
+                #date_of_birth=datetime.strptime(row['Date of Birth '], '%m/%d/%Y').date(),
+                voter_status=row['Voter Status'],
+                longitude=row['Longitude'],
+                latitude=row['Latitude'],
+                full_address=row['Full address']
+
+
             )
             voter.save()
             print(i)
             i+=1
+        print(f'success')
 def get_voter_data(request):
     strig=request.GET.get('query','').split(',')
     query=strig[0]
     ward=strig[1]
     pcts=strig[2]
     print('Voters data query ',strig)
-    #voters = Voters_list.objects.all()
-    voters=Voters_list.objects.filter(ward=ward,pct=pcts,street_name=query.upper()).values_list()
+    voters=Votelatlon.objects.filter(ward=ward,pct=pcts,street_name=query.upper()).values_list()
     data = list(voters.values())
     print('get voters data',data)
     lst=list()
@@ -55,50 +60,36 @@ def get_voter_data(request):
     
     for q in data:
         if query.upper()==q['street_name'] :
-            #print(q)
             lst.append(q)
     return JsonResponse(lst, safe=False)
-    #print(data[0])
 import re
 def get_persons(request):
-    #query=request.GET.get('query','')
-    #print(query)
-    #voters = Voters_list.objects.all()
+    
     strig=request.GET.get('query','').split(',')
     print('Get person ',strig)
     query=strig[0]
     ward=strig[1]
     pcts=strig[2]
-    voters=Voters_list.objects.filter(ward=ward,pct=pcts).values_list()
+    voters=Votelatlon.objects.filter(ward=ward,pct=pcts).values_list()
     data = list(voters.values())
     names=[]
     i=0
     digit= re.findall(r'\d+', query)
     strng=re.split(r'\d+', query)
-    #print(digit[0])
     correct_strng=strng[-1].lstrip()
     query_without_spaces=''.join(query.split())
     for q in data:
-        #if int(digit[0])==q['street_number'] and correct_strng.upper()==q['street_name'] :
-            #print(query)
-            '''var2=query
-            
-            print(f'Len of query {var2} ,Len of Local {var1}')
-            if len(var2)==len(var1):
-                print(f'Here is matched{var1}={var2}')'''
+        
             if q['apt_number']=='':
                 var1=str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
             else:
                 var1=str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
             var_no_space=''.join(var1.split())
-            #print(query_without_spaces,'\n',var_no_space)
             if query_without_spaces==var_no_space:
                 print(f'-----------Q in data-----------')
                 print(q)
                 print(f'-------------------------------')
-                #print(f'matched')
-                #print(q)
-                #names.append({str(q['street_number'])+' '+q['street_name']:q['first_name']+' '+q['last_name']})
+                
                 names.append(q['first_name']+' '+q['last_name'])
             i+=1
             
@@ -118,14 +109,12 @@ def submit_questionnaire(request):
         else:
             apt=''
             street_number=query_list[0]
-        #street_number = request.GET.get('query')
         street_name = request.GET.get('query')
         q1 = request.POST.get('question1')
         q2 = request.POST.get('question2')
         q3 = request.POST.get('question3')
         q4 = request.POST.get('question4')
         q5 = request.POST.get('question5')
-        #print(f'QUESTION 1 IS {q1}')
 
         # Retrieve other question values in the same way
 
@@ -158,10 +147,14 @@ def get_street_by_pct(request):
         return JsonResponse({'pct_list': pct_list})
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
+
+
+'''    
 def main():
-    '''print("trying to inject")
-    inject_voters_from_csv()
-    print(f'sucess added')'''
-    print('starting to delete')
     
-main()
+    print("trying to inject")
+    inject_voters_from_csv()
+    print(f'sucess added')
+    #print('starting to delete')
+    
+main()'''
