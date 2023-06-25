@@ -80,20 +80,77 @@
             max-height: 200px; /* Adjust the maximum height of the popup content */
             overflow-y: auto;
         }
-        
-        
+        .full-container{
+            
+            top:20px;
+            display:grid;
+            position:relative;
+        }
+        @media screen and (max-width: 980px) {\
+            .full-container{
+                top:90px;
+                display:grid;
+                position:relative;
+            }
+            h1 {
+                font-size: 60px;
+                top: 20px;
+            }
+    
+            #map {
+                height: 950px;
+                width: 110%;
+                top: 25px;
+            }
+    
+            .forms input {
+                width: 90%;
+                top: 70px;
+                
+            }
+    
+            .forms label {
+                display: block;
+                text-align: left;
+                margin-right: 0;
+                margin-bottom: 5px;
+                
+            }
+    
+            .forms select {
+                height:80px;
+                width: 90%;
+                
+                font-size:40px;
+                
+            }
+            .forms option{
+                font-size:20px;
+            }
+            .forms button {
+                width: 60%;
+                height:80px;
+                
+                font-size:40px;
+                font-family:Poppins;
+                
+                
+            }
+        }
         
     </style>
     <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
-    <h1>House Locator</h1>
+    <div class ="full-container"> 
+    <h1>Voting</h1>
     
   
     <form class="forms" method="get">
         <label for="ward-dropdown">Ward:</label>
         <select id="ward-dropdown">
+            
             <option value="1">Ward 1</option>
             <option value="2">Ward 2</option>
             <option value="3">Ward 3</option>
@@ -107,17 +164,19 @@
 
         <label for="pct-dropdown">Pct:</label>
         <select id="pct-dropdown">
+            
             <!-- Pct options will be dynamically populated -->
         </select>
         <label for="st-dropdown">Pct:</label>
         <select id="st-dropdown" name="query">
+            
         </select>   
         <button id='button-submit'type="submit">Search</button>
     </form>
     
 
     <div id="map"></div>
-
+</div>
     <script>
         //---------------------------menu navigation ----------------------//
         
@@ -317,9 +376,13 @@
 
                     // create an orange rectangle
                     L.rectangle(bounds, {color: "black", weight: 1}).addTo(map);
-
+                    var maxZoom = 18;
                     // zoom the map to the rectangle bounds
-                    map.fitBounds(bounds);}
+                    map.fitBounds(bounds, {
+                        maxZoom: maxZoom
+                      });
+                    
+                    }
                     
                     
         function searchLocation(q,persons,latii,longii,adres) {
