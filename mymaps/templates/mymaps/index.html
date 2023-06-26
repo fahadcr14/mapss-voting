@@ -251,7 +251,7 @@
                 
             
           });
-          pctDropdown.addEventListener('click', function() {
+          pctDropdown.addEventListener('change', function() {
               var selectedpct = this.value;
               var pcts=selectedpct;
               fetch('/api/get-steet-by-pct/?st=' + selectedpct)
