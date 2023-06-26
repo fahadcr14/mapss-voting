@@ -6,19 +6,19 @@
         body {
             font-family: 'Poppins', sans-serif;
             text-align: center;
-            background:black;
+            background: black;
         }
-
+        
         h1 {
             color: #32CD32; /* Green */
             margin-top: 50px;
-            
         }
-
+        
         p {
             margin-bottom: 10px;
-            color:yellow;
+            color: yellow;
         }
+        
         .container {
             max-width: 600px;
             margin: 0 auto;
@@ -37,7 +37,7 @@
             line-height: 50px;
             margin-bottom: 20px;
         }
-
+        
         .home-button {
             padding: 10px 20px;
             font-weight: bold;
@@ -48,16 +48,39 @@
             cursor: pointer;
             margin-top: 20px;
         }
+        
+        /* Media query for screens with a width of 768px or less */
+        @media screen and (max-width: 992px) {
+            body {
+                font-size: 36px; /* Adjust the font size for mobile screens */
+            }
+        
+            .container {
+                max-width: 500px; /* Adjust the container width for mobile screens */
+                height:400px;
+                margin: 20px auto; /* Adjust the container margin for mobile screens */
+            }
+        
+            .home-button {
+                margin-top: 10px; /* Adjust the margin top for mobile screens */
+            }
+        }
+        
     </style>
 </head>
 <body>
     <div class='container'>
         <h1>Form Submitted Successfully</h1>
         <div class="tick">&#10004;</div>
-        <p>Thank you for submitting the questionnaire!</p>
+        <p>Thank you for submitting the questions</p>
         <p>Your responses have been successfully recorded.</p>
 
         <button class="home-button" onclick="window.location.href = '/';">Back to Home</button>
     </div>
+    <script>
+        var user=sessionStorage.getItem('user')
+        console.log(user);
+        sessionStorage.setItem('redirection','yes');
+    </script>
 </body>
 </html>

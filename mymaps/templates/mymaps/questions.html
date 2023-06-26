@@ -140,12 +140,14 @@
             }
         });
         var query = sessionStorage.getItem('query');
-
+        var user=sessionStorage.getItem('user')
         // Get the form element
+        
         var form = document.getElementById('questions-form');
 
         // Update the form action URL with the query value
-        form.action = '/submit_questionnaire/?query=' + encodeURIComponent(query);
+        form.action = '/submit_questionnaire/?query=' + encodeURIComponent(query) +','+user;
+        console.log(user);
     </script>
 </body>
 </html>

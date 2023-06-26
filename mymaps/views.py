@@ -45,16 +45,16 @@ def inject_voters_from_csv(request):
             voter.save()
             print(i)
             i+=1
-        print(f'success')
+        #print(f'success')
 def get_voter_data(request):
     strig=request.GET.get('query','').split(',')
     query=strig[0]
     ward=strig[1]
     pcts=strig[2]
-    print('Voters data query ',strig)
+    #print('Voters data query ',strig)
     voters=Votelatlon.objects.filter(ward=ward,pct=pcts,street_name=query.upper()).values_list()
     data = list(voters.values())
-    print('get voters data',data)
+    #print('get voters data',data)
     lst=list()
     i=0
     
@@ -66,7 +66,7 @@ import re
 def get_persons(request):
     
     strig=request.GET.get('query','').split(',')
-    print('Get person ',strig)
+    #print('Get person ',strig)
     query=strig[0]
     ward=strig[1]
     pcts=strig[2]
@@ -86,14 +86,11 @@ def get_persons(request):
                 var1=str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
             var_no_space=''.join(var1.split())
             if query_without_spaces==var_no_space:
-                print(f'-----------Q in data-----------')
-                print(q)
-                print(f'-------------------------------')
+                
                 
                 names.append(q['first_name']+' '+q['last_name'])
             i+=1
             
-    print(correct_strng,names)
     return JsonResponse(names,  safe=False)   
 
 from .models import Questionnaire
@@ -101,15 +98,15 @@ from .models import Questionnaire
 def submit_questionnaire(request):
     if request.method == 'POST':
         apart = request.GET.get('query')
+        user=apart.split(',')[-1]
         query_list=re.findall(r'\d+', apart)
-        print('Here is query list',query_list)
         if len(query_list)>2:
             apt=query_list[0]
             street_number=query_list[1]
         else:
             apt=''
             street_number=query_list[0]
-        street_name = request.GET.get('query')
+        street_name = apart.split(',')[0]
         q1 = request.POST.get('question1')
         q2 = request.POST.get('question2')
         q3 = request.POST.get('question3')
@@ -119,7 +116,7 @@ def submit_questionnaire(request):
         # Retrieve other question values in the same way
 
         questionnaire = Questionnaire(apt=apt, street_number=street_number, street_name=street_name,
-                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5)
+                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,user=user)
         questionnaire.save()
 
         return render(request, 'mymaps/success.html')  # Redirect to a success page or render a response
@@ -131,7 +128,7 @@ def get_pct_by_ward(request):
     
     if ward is not None:
         pct_values = Voters_list.objects.filter(ward=ward).values_list('pct', flat=True).distinct()
-        print('Pct values',pct_values)
+        #print('Pct values',pct_values)
         pct_list = list(pct_values)
         return JsonResponse({'pct_list': pct_list})
     else:
@@ -142,7 +139,7 @@ def get_street_by_pct(request):
     if pct is not None:
         print('Ward in pct function',ward)
         pct_values = Voters_list.objects.filter(ward=ward,pct=pct).values_list('street_name', flat=True).distinct()
-        print('St values',pct_values)
+        #print('St values',pct_values)
         pct_list = list(pct_values)
         return JsonResponse({'pct_list': pct_list})
     else:

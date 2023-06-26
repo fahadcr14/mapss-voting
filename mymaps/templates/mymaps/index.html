@@ -26,7 +26,7 @@
         }
         .forms input{
             border-radius:5px;
-            position:absolute;
+            //position:absolute;
             height:30px;
             width:300px;
             top:110px;
@@ -35,7 +35,11 @@
             right:0px;
 
         }
-
+        #input-field{
+            top:30px;
+            width:250px;
+            height:30px;
+        }
         .forms {
             display: flex;
             flex-direction: column;
@@ -102,7 +106,12 @@
                 width: 110%;
                 top: 25px;
             }
-    
+            .full-container{
+                align-items:center;
+            }
+            .forms{
+                margin:15px 55px 21px 130px
+            }
             .forms input {
                 width: 90%;
                 top: 70px;
@@ -136,6 +145,25 @@
                 
                 
             }
+            .leaflet-popup-content-wrapper{
+                width:300px;
+                font-size:24px;
+            }
+            .popup-button {
+                background-color: yellow;
+                color: black;
+                width:90px;
+                font-size:18px;
+                border-radius: 5px;
+                padding: 5px 10px;
+                margin-top: 10px;
+            }
+            
+            .popup-scrollable {
+                max-height: 200px; /* Adjust the maximum height of the popup content */
+                overflow-y: auto;
+                
+            }
         }
         
     </style>
@@ -144,13 +172,16 @@
 </head>
 <body>
     <div class ="full-container"> 
-    <h1>Voting</h1>
+    <h1 style="text-align:center; margin:15px 55px 21px 130px;">Voting</h1>
     
   
     <form class="forms" method="get">
+        <label for="input-field">Input:</label>
+        <input type="text" id="input-field" name="input" placeholder="Enter Username" required>
+    
         <label for="ward-dropdown">Ward:</label>
         <select id="ward-dropdown">
-            
+            <option disabled selected >Select Ward</option>
             <option value="1">Ward 1</option>
             <option value="2">Ward 2</option>
             <option value="3">Ward 3</option>
@@ -165,6 +196,7 @@
         <label for="pct-dropdown">Pct:</label>
         <select id="pct-dropdown">
             
+
             <!-- Pct options will be dynamically populated -->
         </select>
         <label for="st-dropdown">Pct:</label>
@@ -194,6 +226,11 @@
                 .then(response => response.json())
                 .then(data => {
                   pctDropdown.innerHTML = '';
+                  var option = document.createElement('option');
+                    
+                    option.value = 'disabled selected';
+                    option.text = 'Select Pct';
+                    pctDropdown.appendChild(option);
                   data.pct_list.forEach(function(pctValue) {
                     var option = document.createElement('option');
                     option.value = pctValue;
@@ -207,15 +244,17 @@
                 
             
           });
-          pctDropdown.addEventListener('change', function() {
+          pctDropdown.addEventListener('click', function() {
               var selectedpct = this.value;
               var pcts=selectedpct;
               fetch('/api/get-steet-by-pct/?st=' + selectedpct)
                 .then(response => response.json())
                 .then(data => {
                   stDropdown.innerHTML = '';
+                    
                   data.pct_list.forEach(function(pctValue) {
                     var option = document.createElement('option');
+                    
                     option.value = pctValue;
                     option.text = pctValue;
                     stDropdown.appendChild(option);
@@ -230,11 +269,15 @@
         
       
         document.addEventListener('submit', function(event) {
+
             event.preventDefault();
             console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
             var mapDiv = document.getElementById('map');
             mapDiv.innerHTML = '';
-
+            var inputField = document.getElementById('input-field');
+    
+    // Delete the input field
+            inputField.style.display = 'none';
             const zoom = 13;
             
             // Check if the map is already initialized
@@ -388,6 +431,7 @@
         function searchLocation(q,persons,latii,longii,adres) {
             console.log('API URL query',q)
             console.log('Latitude',latii);
+            username=document.getElementById('input-field').value
             var lat = parseFloat(latii);
             var lon = parseFloat(longii);
             /*var popupContent = '<h3>Search Result</h3>';
@@ -404,7 +448,7 @@
             var marker = L.marker([lat, lon]).addTo(map);
 
             // Create a custom popup
-            var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\')">Submit Opinion</button>');
+            var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\', \'' + username + '\')">Submit Opinion</button>');
 
             // Bind the popup to the marker
             marker.bindPopup(popup)//.openPopup();
@@ -421,12 +465,18 @@
     });
     </script>
     <script>
-        
+        if(sessionStorage.getItem('redirection')){
+            var inputField = parent.document.getElementById('input-field');
+            console.log('Username',sessionStorage.getItem('user'));
+            inputField.value=sessionStorage.getItem('user');
+            inputField.style.display = 'none';
+        }
       </script>
     <script>
-        function redirectToQuestions(q) {
+        function redirectToQuestions(q,user) {
+            console.log(q)
             sessionStorage.setItem('query', q);
-
+            sessionStorage.setItem('user',user);
             window.location.href = "questions.html";
         }
     </script>
