@@ -446,7 +446,9 @@
             var popupContent = '<div class="popup-scrollable">';
             popupContent += '<h3>Search Result</h3>';
             for (var i = 0; i < persons.length; i++) {
-                popupContent += '<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
+                popupContent += '<input type="radio" name="person" value="' + persons[i] + '"<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
+                
+
             }
             popupContent += '</div>';
             // Create a marker and add it to teh map
@@ -482,6 +484,8 @@
             console.log(q)
             sessionStorage.setItem('query', q);
             sessionStorage.setItem('user',user);
+            var selectedPerson = document.querySelector('input[name="person"]:checked').value;
+            sessionStorage.setItem('personname',selectedPerson);
             window.location.href = "questions.html";
         }
     </script>

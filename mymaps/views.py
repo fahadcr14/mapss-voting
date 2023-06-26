@@ -98,7 +98,8 @@ from .models import Questionnaire
 def submit_questionnaire(request):
     if request.method == 'POST':
         apart = request.GET.get('query')
-        user=apart.split(',')[-1]
+        user=apart.split(',')[-2]
+        person=apart.split(',')[-1]
         query_list=re.findall(r'\d+', apart)
         if len(query_list)>2:
             apt=query_list[0]
@@ -116,7 +117,7 @@ def submit_questionnaire(request):
         # Retrieve other question values in the same way
 
         questionnaire = Questionnaire(apt=apt, street_number=street_number, street_name=street_name,
-                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,user=user)
+                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,user=user,voter_name=person)
         questionnaire.save()
 
         return render(request, 'mymaps/success.html')  # Redirect to a success page or render a response

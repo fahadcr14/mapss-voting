@@ -29,6 +29,7 @@ class Questionnaire(models.Model):
     q4 = models.CharField(max_length=100, null=True, blank=True)
     q5 = models.CharField(max_length=100, null=True, blank=True)
     user = models.CharField(max_length=100, null=True, blank=True)
+    voter_name=models.CharField(max_length=255, null=True, blank=True)
 
 class Voters_list(models.Model):
     ward = models.IntegerField()
