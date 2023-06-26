@@ -232,9 +232,11 @@
                 .then(data => {
                   pctDropdown.innerHTML = '';
                   var option = document.createElement('option');
-                    
-                    option.value = 'disabled selected';
-                    option.text = 'Select Pct';
+                    option.value = '';
+                    option.disabled = true;
+                    option.selected = true;
+                    option.textContent = 'Select Pct';
+
                     pctDropdown.appendChild(option);
                   data.pct_list.forEach(function(pctValue) {
                     var option = document.createElement('option');
