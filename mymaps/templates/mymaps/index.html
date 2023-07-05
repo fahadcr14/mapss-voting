@@ -281,7 +281,7 @@
         document.addEventListener('submit', function(event) {
 
             event.preventDefault();
-            console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
+            //console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
             var mapDiv = document.getElementById('map');
             mapDiv.innerHTML = '';
             var inputField = document.getElementById('input-field');
@@ -486,7 +486,11 @@
       </script>
     <script>
         function redirectToQuestions(q,user) {
-            console.log(q)
+            //console.log(q)
+            ward_no =document.getElementById('ward-dropdown').value
+            pct_no =document.getElementById('pct-dropdown').value
+            sessionStorage.setItem('pct',pct_no);
+            sessionStorage.setItem('ward',ward_no);
             sessionStorage.setItem('query', q);
             sessionStorage.setItem('user',user);
             var selectedPerson = document.querySelector('input[name="person"]:checked').value;

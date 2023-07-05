@@ -1,0 +1,513 @@
+<html>
+<head>
+    <title>Dashboard</title>
+    {% load static %}
+
+    <style>
+        body {
+            font-family: Poppins, regular;
+            
+            margin: 0;
+            padding: 20px;
+            
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+          }
+          .h1 {
+            box-shadow:   10px 10px 20px 20px white; 
+
+          }
+          .h1-image-text {
+            
+            font-size:60px;
+            text-align: center;
+            background-image: url('{% static 'images/textbg.png' %}');
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+          }
+          
+          
+          #chart-container {
+            
+            display: flex;
+            justify-content: center;
+            width: 100%;
+            margin-top: 20px;
+          }
+          
+          #chart-container div {
+            margin: 0 10px;
+            border-radius:5px;
+            box-shadow:  inset 0px 0px 20px 2px white; 
+            
+          }
+          
+          #chart {
+            border: 1px solid black;
+            border-radius:5px;
+          }
+          
+          #chart2 {
+            border: 1px solid black;
+            border-radius:5px;
+          }
+          
+          #chart3 {
+            border: 1px solid black;
+            border-radius:5px;
+          }
+          
+          table {
+            position:relative;
+            border-radius:45px;
+            top:20px;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+         td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius:256px;
+            color:white;
+        }
+
+        th {
+            background-image: url("{% static 'images/ds.jpg' %}");
+            
+            padding: 10px;
+            border: 1px solid black;
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color:black;
+        }
+
+        #next-button {
+            display: block;
+            margin: 0 auto;
+            padding: 10px 20px;
+            background-color: #4CAF50;
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }
+        forms,#button-container{
+            display:flex;
+            justify-content:center;
+            
+
+        }
+        .dhour{
+            display: block;
+            margin: 20 20 10 20;
+            padding: 10px 20px;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            font-family:Poppins;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+            color: yellow;
+            
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }              
+          
+          
+          
+          
+    </style>
+</head>
+
+<body>
+    <h1 class="h1-image-text">Dashboard</h1>
+
+
+    <!-- Table to display the data -->
+    <div id="chart-container">
+        <div>
+            <canvas id="chart"></canvas>
+        </div>
+        <div >
+            <canvas id="chart2"></canvas>
+        </div>
+        <div >
+            <canvas id="chart3"></canvas>
+        </div>
+    </div>
+    <h1 class="h1-image-text" style="font-size:32px;">Realtime Report</h1>
+    <div id="button-container">
+        <button class="dhour" id='dhour-12'>12 Hours</button>
+        <button class="dhour" id='dhour-24'>24 Hours</button>
+        <button class="dhour" id='dhour-48'>48 Hours</button>
+    </div>
+    <!-- Dropdown for ward selection -->
+    <h1 class="h1-image-text" style="font-size:32px;">Filter By Ward and Pct </h1>
+    <form id="forms" method="post">
+        <div id="button-container">
+            {% csrf_token %}
+            
+            <!-- Dropdown for ward selection -->
+            <select class="dhour" id="wardDropdown" name="wardd" id="wardd"  >
+                <option value="">Select Ward</option>
+                {% for ward in distinct_wards %}
+                    <option value="{{ ward }}" style="color:black" >{{ ward }}</option>
+                {% endfor %}
+            </select>
+        
+            <!-- Dropdown for pct selection -->
+            <select  class="dhour" id="pctDropdown" name="pctt">
+                <option value="" style="color:black">Select PCT</option>
+            </select>
+        
+            <button  class="dhour" id="submit" type="submit">Submit</button>
+        </div>
+    </form>
+    
+    
+        
+    
+
+    <table>
+        <thead>
+            <tr>
+                <th>No</th>
+                <th>Ward</th>
+                <th>PCT</th>
+                <th>User</th>
+                <th>Voter Name</th>
+                <th>Full Address</th>
+                <th>Question 1</th>
+                <th>Question 2</th>
+                <th>Question 3</th>
+                <th>Question 4</th>
+                <th>Question 5</th>
+                <th> Record Time</th>
+                
+                <!-- Add more question headers as needed -->
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- The data rows will be dynamically added here -->
+        </tbody>
+    </table>
+
+    <!-- "Next" button to load the next set of entries -->
+    <button id="next-button">Next</button>
+
+    <!-- Add any JavaScript code here -->
+    <script>
+        
+        var offset = 0;
+        var limit = 30;
+        var questionn= JSON.parse('{{ questionnaires_json|safe }}');
+        function renderTable(questionaire) {
+            var questionnaires=questionaire;
+            
+            var tbody = document.getElementById('table-body');
+            tbody.innerHTML = '';
+
+            var end = offset + limit;
+            for (var i = offset; i < end && i < questionnaires.length; i++) {
+                var questionnaire = questionnaires[i];
+                var row = document.createElement('tr');
+                
+                var num = document.createElement('td');
+                num.textContent =i;
+                row.appendChild(num);   
+
+                var wardCell = document.createElement('td');
+                wardCell.textContent = questionnaire.ward;
+                row.appendChild(wardCell);
+
+                var pctCell = document.createElement('td');
+                pctCell.textContent = questionnaire.pct;
+                row.appendChild(pctCell);
+
+                
+
+                var userCell = document.createElement('td');
+                userCell.textContent = questionnaire.user;
+                row.appendChild(userCell);
+
+                var voterNameCell = document.createElement('td');
+                voterNameCell.textContent = questionnaire.voter_name;
+                row.appendChild(voterNameCell);
+                var fulladdressCell = document.createElement('td');
+                fulladdressCell.textContent = questionnaire.street_name;
+                row.appendChild(fulladdressCell);
+
+                var q1Cell = document.createElement('td');
+                q1Cell.textContent = questionnaire.q1;
+                row.appendChild(q1Cell);
+
+                var q2Cell = document.createElement('td');
+                q2Cell.textContent = questionnaire.q2;
+                row.appendChild(q2Cell);
+
+                var q3Cell = document.createElement('td');
+                q3Cell.textContent = questionnaire.q3;
+                row.appendChild(q3Cell);
+
+                var q4Cell = document.createElement('td');
+                q4Cell.textContent = questionnaire.q4;
+                row.appendChild(q4Cell);
+
+                var q5Cell = document.createElement('td');
+                q5Cell.textContent = questionnaire.q5;
+                row.appendChild(q5Cell);
+                var createdatCell = document.createElement('td');
+                var dateString = questionnaire.created_at;
+                var dateParts = dateString.split("T");
+                var date = dateParts[1].split("+")[0].split(".")[0] +' '+dateParts[0];
+                createdatCell.textContent = date;
+                row.appendChild(createdatCell);
+
+                
+
+                // Add more question data cells as needed
+
+                tbody.appendChild(row);
+            }
+
+            if (end < questionnaires.length) {
+                var nextButton = document.getElementById('next-button');
+                nextButton.style.display = 'block';
+            } else {
+                var nextButton = document.getElementById('next-button');
+                nextButton.style.display = 'none';
+            }
+        }
+
+        document.getElementById('next-button').addEventListener('click', function() {
+            offset += limit;
+            renderTable();
+        });
+        renderTable(questionn)
+       
+    </script>
+    <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+
+    <script>
+        Chart.defaults.font.size = 15;
+        Chart.defaults.font.family = 'Poppins';
+        Chart.defaults.color = 'yellow';
+        
+
+        var questionnaires = JSON.parse('{{ questionnaires_json|safe }}');
+        
+        // Calculate the length of questionnaires
+        var questionnaireLength = questionnaires.length;
+        var numofward=JSON.parse('{{ ward_counts_json|safe }}');
+        var numofpct=JSON.parse('{{ pct_counts_json|safe }}');
+        var no_of_users=JSON.parse('{{ user_counts_json|safe }}');
+        var no_of_voters=JSON.parse('{{ voter_counts_json|safe }}');
+
+
+        // Get the chart canvas element
+        var chartCanvas = document.getElementById('chart');
+
+        // Create the pie chart
+        var chart = new Chart(chartCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Querys '+questionnaireLength],
+                datasets: [{
+                    data: [questionnaireLength],
+                    backgroundColor: [
+                        'rgba(255, 99, 132, 0.5)', // Color for Questionnaires
+                          // Color for Remaining
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        });
+        var chartCanvas = document.getElementById('chart2');
+        var chart = new Chart(chartCanvas, {
+            type: 'pie',
+            data: {
+                labels: ['Total Wards '+numofward.length,'Total Pcts '+numofpct.length],
+                datasets: [{
+                    
+                    data: [numofward.length,numofpct.length],
+                    backgroundColor: [
+                        'rgba(0, 0, 255, 0.8)',
+                        'rgba(255, 0, 255, 0.8)' // Color for Questionnaires
+                          // Color for Remaining
+                    ]
+                }]
+            },
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    position: 'bottom'
+                }
+            }
+        });
+        var chartCanvas = document.getElementById('chart3');
+        
+        var chart = new Chart(chartCanvas, {
+            type: 'bar',
+            data: {
+                labels: ['Total Users'],
+                datasets: [{
+                  label: 'Users '+ no_of_users.length,
+                  data: [no_of_users.length],
+                  borderColor: '#36A2EB',
+                  backgroundColor: ['rgba(0, 0, 255, 0.8)'],
+                  
+                },]
+              },    
+            options: {
+                responsive: true,
+                maintainAspectRatio: false,
+                legend: {
+                    display: true,
+                    
+                    position: 'bottom'
+                }
+            }
+        });
+    </script>
+<script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
+<script>
+    $(document).ready(function() {
+        console.log('document started');
+        // Attach click event handlers to the buttons
+        $("#dhour-12").click(function() {
+            getQuestionnaires(12);
+        });
+        $("#dhour-24").click(function() {
+            getQuestionnaires(24);
+        });
+        $("#dhour-48").click(function() {
+            console.log('clcicked');
+            getQuestionnaires(48);
+        });
+
+        // AJAX function to retrieve Questionnaire objects
+        function getQuestionnaires(hours) {
+            // Calculate start and end times based on the selected hours
+            var endTime = new Date(); // Current time
+            var startTime = new Date();
+            startTime.setHours(endTime.getHours() - hours);
+
+            // Convert start and end times to ISO 8601 format
+            var startTimeISO = startTime.toISOString();
+            var endTimeISO = endTime.toISOString();
+
+            // Make the AJAX request to your Django view
+            $.ajax({
+                url: "dashboardview",
+                type: "GET",
+                data: {
+                    hour:hours
+                },
+                success: function(response) {
+                    // Handle the response here (e.g., update the UI with the retrieved data)
+                    renderTable(response);
+                    console.log(response);
+                },
+                error: function(xhr, status, error) {
+                    // Handle any error that occurred during the AJAX request
+                    alert('Not Found');
+                }
+            });
+        }
+    });
+</script>
+<script>
+    function filterbyward_pct() {
+        var form = document.getElementById('forms');
+      
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+      
+          var ward = form.elements['wardd'].value;
+          var pct = form.elements['pctt'].value;
+          console.log(ward)
+          var csrfToken = form.elements['csrfmiddlewaretoken'].value;
+          fetch('/api/filterby', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken // Include the CSRF token in the request headers
+            },
+            body: JSON.stringify({ wardd: ward, pctt: pct })
+          })
+            .then(function(response) {
+              if (response.ok) {
+                console.log(response)
+                return response.json();
+              } else {
+                throw new Error('Error: ' + response.status);
+              }
+            })
+            .then(function(data) {
+                console.log(data);
+                renderTable(data);
+              // Process the response data here
+            })
+            .catch(function(error) {
+              console.error(error);
+            });
+        });
+      }
+      
+      filterbyward_pct();
+
+      
+      var ward = document.getElementById('wardDropdown');
+      ward.addEventListener('change', function() {
+          var pctDropdown = document.getElementById('pctDropdown');
+      
+          // Clear previous options
+          pctDropdown.innerHTML = '<option value="">Select PCT</option>';
+          var csrfToken = forms.elements['csrfmiddlewaretoken'].value;
+
+          if (ward.value) {
+              // Send AJAX request to fetch PCT values for the selected Ward
+              fetch('/api/get_pcts/', {
+                  method: 'POST',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrfToken
+                  },
+                  body: JSON.stringify({ ward: ward.value })
+              })
+              .then(function(response) {
+                  if (response.ok) {
+                      return response.json();
+                  } else {
+                      throw new Error('Error: ' + response.status);
+                  }
+              })
+              .then(function(data) {
+                  // Populate PCT dropdown with retrieved values
+                  data.forEach(function(pct) {
+                      var option = document.createElement('option');
+                      option.value = pct;
+                      option.text = pct;
+                      option.style.color='black';
+                      pctDropdown.appendChild(option);
+                  });
+              })
+              .catch(function(error) {
+                  console.error(error);
+              });
+          }
+      });
+      
+</script>
+</body>
+</html>

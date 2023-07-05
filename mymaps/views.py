@@ -11,7 +11,7 @@ from django.test import TestCase
 # Create your tests here.
 import csv
 from datetime import datetime
-from .models import Voter,Voterslatlon,Voters_list,Votelatlon
+from .models import Voters_list,Votelatlon
 
 def inject_voters_from_csv(request):
     print(f'starting to inject')
@@ -98,8 +98,10 @@ from .models import Questionnaire
 def submit_questionnaire(request):
     if request.method == 'POST':
         apart = request.GET.get('query')
-        user=apart.split(',')[-2]
-        person=apart.split(',')[-1]
+        user=apart.split(',')[-4]
+        person=apart.split(',')[-3]
+        ward=apart.split(',')[-2]
+        pct=apart.split(',')[-1]
         query_list=re.findall(r'\d+', apart)
         if len(query_list)>2:
             apt=query_list[0]
@@ -117,7 +119,7 @@ def submit_questionnaire(request):
         # Retrieve other question values in the same way
 
         questionnaire = Questionnaire(apt=apt, street_number=street_number, street_name=street_name,
-                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,user=user,voter_name=person)
+                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,user=user,voter_name=person,ward=ward,pct=pct)
         questionnaire.save()
 
         return render(request, 'mymaps/success.html')  # Redirect to a success page or render a response
@@ -145,8 +147,110 @@ def get_street_by_pct(request):
         return JsonResponse({'pct_list': pct_list})
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
+#-----------------------------------dashboard=============================
+import json
+from django.db.models import Count
+from datetime import datetime, timedelta
+from django.db.models import Q
+
+# Get the start and end time range
 
 
+from django.core.serializers.json import DjangoJSONEncoder
+
+class CustomJSONEncoder(DjangoJSONEncoder):
+    def default(self, obj):
+        if isinstance(obj, datetime):
+            return obj.isoformat()
+        return super().default(obj)
+
+
+def dashboard_view(request):
+    # Retrieve data from the Questionnaire model
+    end_time = datetime.now()  # Current time
+    start_time = end_time - timedelta(minutes=4000)  # Subtract 24 hours from the current time
+    print(start_time)
+    print(end_time)
+
+    # Filter the Questionnaire objects based on the time range
+    questionnaire = Questionnaire.objects.filter(Q(created_at__range=(start_time, end_time)))
+
+    questionnaires = Questionnaire.objects.all()
+    ward_counts = questionnaires.values_list('ward', flat=True).distinct()
+    pct_counts = questionnaires.values_list('pct', flat=True).distinct()
+    user_counts = questionnaires.values_list('user', flat=True).distinct()
+    voter_counts = questionnaires.values_list('voter_name', flat=True).distinct()
+    record_time=questionnaires.values_list('created_at', flat=True)
+    #dump in json
+    distinct_wards = Questionnaire.objects.values_list('ward', flat=True).distinct()
+    distinct_pcts = Questionnaire.objects.values_list('pct', flat=True).distinct()
+
+    ward_counts_json=json.dumps(list(ward_counts))
+    pct_counts_json=json.dumps(list(pct_counts))
+    user_counts_json=json.dumps(list(user_counts))
+    voter_counts_json=json.dumps(list(voter_counts))
+    record_time_json=json.dumps(list(record_time),cls=CustomJSONEncoder)
+    questionnaires_json = json.dumps(list(questionnaire.values()), cls=CustomJSONEncoder)
+
+    context = {
+        'questionnaires_json': questionnaires_json,
+         'ward_counts_json': ward_counts_json,
+         'pct_counts_json':pct_counts_json,
+         'user_counts_json':user_counts_json,
+         'voter_counts_json':voter_counts_json,
+         'record_json':record_time_json,
+          'distinct_wards': distinct_wards,
+          'distinct_pcts': distinct_pcts,
+    }
+    return render(request, 'mymaps/dashboard.html', context)
+
+from django.utils import timezone
+
+def dashboardview(request):
+    if request.method == "GET" and request.is_ajax():
+        # Retrieve the start and end times from the AJAX request parameters
+        timehour=request.GET.get('hour')
+        print(timehour)
+        end_time = datetime.now()  # Current time
+        start_time = end_time - timedelta(hours=int(timehour)) 
+        # Retrieve the Questionnaire objects based on the time range
+        questionnaire = Questionnaire.objects.filter(Q(created_at__range=(start_time, end_time)))
+
+        # Convert the Questionnaire objects to JSON
+        questionnaires_json = list(questionnaire.values())
+
+        # Return the JSON response
+        return JsonResponse(questionnaires_json, safe=False)
+#filtering by ward and pct
+def filterbywardpct(request):
+        if request.method == 'POST':
+            data = json.loads(request.body.decode('utf-8'))
+            ward = data.get('wardd')
+            pct = data.get('pctt')
+            print(f'Ward: {ward}')
+            print(f'PCT: {pct}')
+            questionair=Questionnaire.objects.filter(ward=ward,pct=pct).values_list()
+            # Perform further processing with the ward and pct values
+            questionnaires_json = list(questionair.values())
+            
+            # Return a JSON response if needed
+            
+            return JsonResponse(questionnaires_json,safe=False)
+def get_pcts(request):
+    if request.method == 'POST':
+        data = json.loads(request.body)
+        ward = data.get('ward')
+        print(f'GET PCTS WARD {ward}')
+
+        # Perform filtering based on the selected ward to retrieve the corresponding PCT values
+        filtered_pcts = Questionnaire.objects.filter(ward=ward).values_list('pct', flat=True).distinct()
+
+        # Convert the queryset to a list
+        pcts_list = list(filtered_pcts)
+
+        return JsonResponse(pcts_list, safe=False)
+
+    return JsonResponse({'message': 'Invalid request method'}, status=400)
 '''    
 def main():
     

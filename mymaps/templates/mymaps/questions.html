@@ -68,42 +68,43 @@
         {% csrf_token %}
 
         <div id='q1'>
-            <p>Question 1: Are you registered to vote?</p>
+            <p>Question 1: Will you vote for (Norman Roldan) on September 12 ?</p>
             <div class='input-options'>
                 <input type="radio" name="question1" value="yes"> Yes<br>
                 <input type="radio" name="question1" value="no"> No<br>
             </div>
         </div>
         <div id='q2'>
-            <p>Question 2: Would you like to register to vote?</p>
-            <div class='input-options'>
-                <input type="radio" name="question2" value="yes"> Yes<br>
-                <input type="radio" name="question2" value="no"> No<br>
+            <p>Question 2: Is everyone in the house register to vote? If not, would you like to register?</p>
+            <div class='input-options'id="q2-options">
+                <input type="radio" name="question2" value="yes" onclick="showOptions('q2', 'q2-options', 'question2')"> Yes<br>
+                <input type="radio" name="question2" value="no" onclick="hideOptions()"> No<br>
+            </div>
+        </div>
+        
+        <div id='q3' >
+            <p>Question 3: Would you need an Absentee Form?</p>
+            <div class='input-options'id="q3-options">
+                <input type="radio" name="question3" value="yes" onclick="showOptions('q3', 'q3-options', 'question3')"> Yes<br>
+                <input type="radio" name="question3" value="no" onclick="hideOptions()"> No<br>
             </div>
         </div>
         <div>
-            <p>Question 3: Would you be okay if install Lawn Sign?</p>
-            <div class='input-options'>
-                <input type="radio" name="question3" value="yes"> Yes<br>
-                <input type="radio" name="question3" value="no"> No<br>
-            </div>
-        </div>
-        <div>
-            <p>Question 4: Would you need a ride to the voting Pole?</p>
+            <p>Question 4: Are you going to Vote by mail?</p>
             <div class='input-options'>
                 <input type="radio" name="question4" value="yes"> Yes<br>
                 <input type="radio" name="question4" value="no"> No<br>
             </div>
         </div>
         <div>
-            <p>Question 5: Would you need an absentee form?</p>
+            <p>Question 5: Could we install a lawn sign?/p>
             <div class='input-options'>
                 <input type="radio" name="question5" value="yes"> Yes<br>
                 <input type="radio" name="question5" value="no"> No<br>
             </div>
         </div>
         <div>
-            <p>Question 6: Would you vote for Norman Roldan?</p>
+            <p>Question 6: Would you need a ride to the voting precinct?</p>
             <div class='input-options'>
                 <input type="radio" name="question6" value="yes"> Yes<br>
                 <input type="radio" name="question6" value="no"> No<br>
@@ -143,12 +144,45 @@
         var user=sessionStorage.getItem('user')
         var person_name=sessionStorage.getItem('personname');
         // Get the form element
-        
+        var wardno=sessionStorage.getItem('ward');
+        var pctno=sessionStorage.getItem('pct');
         var form = document.getElementById('questions-form');
 
         // Update the form action URL with the query value
-        form.action = '/submit_questionnaire/?query=' + encodeURIComponent(query) +','+user+','+person_name;
+        form.action = '/submit_questionnaire/?query=' + encodeURIComponent(query) +','+user+','+person_name+','+wardno+','+pctno;
         
+    </script>
+    <script>
+        function showOptions(q_no,q_id,q_name) {
+            
+            var qDiv = document.getElementById(q_no);
+            qDiv.style.display = "block";
+    
+            var qOptionsDiv = document.getElementById(q_id);
+            qOptionsDiv.innerHTML = ""; // Clear previous options
+    
+            for (var i = 1; i <= 9; i++) {
+                var radioBtn = document.createElement("input");
+                radioBtn.type = "radio";
+                radioBtn.name = q_name;
+                radioBtn.value = i;
+                
+                var label = document.createElement("label");
+                label.appendChild(document.createTextNode(i));
+    
+                qOptionsDiv.appendChild(radioBtn);
+                qOptionsDiv.appendChild(label);
+                qOptionsDiv.appendChild(document.createElement("br"));
+            }
+        }
+    
+        function hideOptions(q_no,q_id) {
+            var qDiv = document.getElementById(q_no);
+            qDiv.style.display = "none";
+    
+            var qOptionsDiv = document.getElementById(q_id);
+            qOptionsDiv.innerHTML = ""; // Clear options
+        }
     </script>
 </body>
 </html>
