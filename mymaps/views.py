@@ -208,20 +208,25 @@ def dashboard_view(request):
 from django.utils import timezone
 
 def dashboardview(request):
-    if request.method == "GET" and request.is_ajax():
-        # Retrieve the start and end times from the AJAX request parameters
-        timehour=request.GET.get('hour')
-        print(timehour)
+    if request.method == "GET":
+        # Retrieve the start and end times from the request parameters
+        timehour = request.GET.get('hour')
         end_time = datetime.now()  # Current time
         start_time = end_time - timedelta(hours=int(timehour)) 
+
         # Retrieve the Questionnaire objects based on the time range
-        questionnaire = Questionnaire.objects.filter(Q(created_at__range=(start_time, end_time)))
+        questionnaire = Questionnaire.objects.filter(created_at__range=(start_time, end_time))
 
         # Convert the Questionnaire objects to JSON
         questionnaires_json = list(questionnaire.values())
 
-        # Return the JSON response
-        return JsonResponse(questionnaires_json, safe=False)
+        # Return the JSON response with CORS headers
+        response = JsonResponse(questionnaires_json, safe=False)
+        response["Access-Control-Allow-Origin"] = "*"  # Set the allowed origins
+        response["Access-Control-Allow-Methods"] = "GET"  # Specify the allowed HTTP methods
+        response["Access-Control-Allow-Headers"] = "Content-Type"  # Specify the allowed request headers
+
+        return response
 #filtering by ward and pct
 def filterbywardpct(request):
         if request.method == 'POST':
@@ -261,3 +266,5 @@ def main():
     #print('starting to delete')
     
 main()'''
+
+

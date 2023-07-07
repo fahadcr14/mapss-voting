@@ -381,50 +381,52 @@
     </script>
 <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.5.1/jquery.min.js"></script>
 <script>
-    $(document).ready(function() {
+    document.addEventListener('DOMContentLoaded', function() {
         console.log('document started');
+      
         // Attach click event handlers to the buttons
-        $("#dhour-12").click(function() {
-            getQuestionnaires(12);
+        document.getElementById('dhour-12').addEventListener('click', function() {
+          getQuestionnaires(12);
         });
-        $("#dhour-24").click(function() {
-            getQuestionnaires(24);
+        document.getElementById('dhour-24').addEventListener('click', function() {
+          getQuestionnaires(24);
         });
-        $("#dhour-48").click(function() {
-            console.log('clcicked');
-            getQuestionnaires(48);
+        document.getElementById('dhour-48').addEventListener('click', function() {
+          getQuestionnaires(48);
         });
-
-        // AJAX function to retrieve Questionnaire objects
+      
+        // Fetch function to retrieve Questionnaire objects
         function getQuestionnaires(hours) {
-            // Calculate start and end times based on the selected hours
-            var endTime = new Date(); // Current time
-            var startTime = new Date();
-            startTime.setHours(endTime.getHours() - hours);
-
-            // Convert start and end times to ISO 8601 format
-            var startTimeISO = startTime.toISOString();
-            var endTimeISO = endTime.toISOString();
-
-            // Make the AJAX request to your Django view
-            $.ajax({
-                url: "dashboardview",
-                type: "GET",
-                data: {
-                    hour:hours
-                },
-                success: function(response) {
-                    // Handle the response here (e.g., update the UI with the retrieved data)
-                    renderTable(response);
-                    console.log(response);
-                },
-                error: function(xhr, status, error) {
-                    // Handle any error that occurred during the AJAX request
-                    alert('Not Found');
-                }
+          // Calculate start and end times based on the selected hours
+          var endTime = new Date(); // Current time
+          var startTime = new Date();
+          startTime.setHours(endTime.getHours() - hours);
+      
+          // Convert start and end times to ISO 8601 format
+          var startTimeISO = startTime.toISOString();
+          var endTimeISO = endTime.toISOString();
+      
+          // Make the Fetch request to your Django view
+          fetch("dashboardview?hour=" + hours)
+            .then(function(response) {
+              if (response.ok) {
+                return response.json();
+              } else {
+                throw new Error('Error: ' + response.status);
+              }
+            })
+            .then(function(data) {
+              // Handle the response here (e.g., update the UI with the retrieved data)
+              renderTable(data);
+              console.log(data);
+            })
+            .catch(function(error) {
+              // Handle any error that occurred during the Fetch request
+              alert('Not Found');
             });
         }
-    });
+      });
+      
 </script>
 <script>
     function filterbyward_pct() {
@@ -479,9 +481,11 @@
               // Send AJAX request to fetch PCT values for the selected Ward
               fetch('/api/get_pcts/', {
                   method: 'POST',
+                  mode: 'cors',
                   headers: {
                       'Content-Type': 'application/json',
-                      'X-CSRFToken': csrfToken
+                      'X-CSRFToken': csrfToken,
+                      'Access-Control-Allow-Origin': '*',
                   },
                   body: JSON.stringify({ ward: ward.value })
               })
