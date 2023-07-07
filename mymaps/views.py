@@ -208,12 +208,13 @@ def dashboard_view(request):
 from django.utils import timezone
 
 def dashboardview(request):
-    if request.method == "GET" and request.is_ajax():
-        # Retrieve the start and end times from the AJAX request parameters
-        timehour=request.GET.get('hour')
+    if request.method == "GET":
+        # Retrieve the start and end times from the request parameters
+        timehour = request.GET.get('hour')
         print(timehour)
         end_time = datetime.now()  # Current time
-        start_time = end_time - timedelta(hours=int(timehour)) 
+        start_time = end_time - timedelta(hours=int(timehour))
+
         # Retrieve the Questionnaire objects based on the time range
         questionnaire = Questionnaire.objects.filter(Q(created_at__range=(start_time, end_time)))
 
