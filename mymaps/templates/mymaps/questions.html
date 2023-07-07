@@ -57,6 +57,24 @@
                 max-width: 400px;
             }
         }
+        #phoneInput {
+            text-align: center;
+            margin-top: 0px;
+        }
+    
+        #phoneInput label {
+            display: block;
+            margin-bottom: 5px;
+        }
+    
+        #phoneInput input[type="text"] {
+            width: 400px;
+            height:20px;
+            padding: 5px;
+            border: 1px solid #ccc;
+            border-radius: 3px;
+            font-size: 14px;
+        }
     </style>
 </head>
 
@@ -77,16 +95,16 @@
         <div id='q2'>
             <p>Question 2: Is everyone in the house register to vote? If not, would you like to register?</p>
             <div class='input-options'id="q2-options">
-                <input type="radio" name="question2" value="yes" onclick="showOptions('q2', 'q2-options', 'question2')"> Yes<br>
-                <input type="radio" name="question2" value="no" onclick="hideOptions()"> No<br>
+                <input type="radio" name="question2" value="yes" onclick="hideOptions()"> Yes<br>
+                <input type="radio" name="question2" value="no" onclick="showOptions('q2', 'q2-options', 'question2')"> No<br>
             </div>
         </div>
         
         <div id='q3' >
-            <p>Question 3: Would you need an Absentee Form?</p>
+            <p>Question 3: Would you need an Absentee Ballot?</p>
             <div class='input-options'id="q3-options">
-                <input type="radio" name="question3" value="yes" onclick="showOptions('q3', 'q3-options', 'question3')"> Yes<br>
-                <input type="radio" name="question3" value="no" onclick="hideOptions()"> No<br>
+                <input type="radio" name="question3" value="yes" > Yes<br>
+                <input type="radio" name="question3" value="no" > No<br>
             </div>
         </div>
         <div>
@@ -106,11 +124,15 @@
         <div>
             <p>Question 6: Would you need a ride to the voting precinct?</p>
             <div class='input-options'>
-                <input type="radio" name="question6" value="yes"> Yes<br>
-                <input type="radio" name="question6" value="no"> No<br>
+                <input type="radio" name="question6" value="yes" onclick="showPhoneNumberInput()"> Yes<br>
+                <input type="radio" name="question6" value="no" onclick="hidePhoneNumberInput()"> No<br>
+            </div>
+            <div id="phoneInput" style="display: none;">
+                <label for="phone">Phone Number:</label>
+                <input type="text" id="phone" name="phone" placeholder="Enter your phone number">
             </div>
         </div>
-
+        
         <button type="submit">Submit</button>
     </form>
     <script>
@@ -183,6 +205,14 @@
             var qOptionsDiv = document.getElementById(q_id);
             qOptionsDiv.innerHTML = ""; // Clear options
         }
+        function showPhoneNumberInput() {
+            document.getElementById('phoneInput').style.display = 'block';
+        }
+        
+        function hidePhoneNumberInput() {
+            document.getElementById('phoneInput').style.display = 'none';
+        }
+        
     </script>
 </body>
 </html>
