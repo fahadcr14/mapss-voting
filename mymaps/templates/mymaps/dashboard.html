@@ -259,9 +259,9 @@
                 row.appendChild(q5Cell);
                 var createdatCell = document.createElement('td');
                 var dateString = questionnaire.created_at;
-                var dateParts = dateString.split("T");
-                var date = dateParts[1].split("+")[0].split(".")[0] +' '+dateParts[0];
-                createdatCell.textContent = date;
+                var dateParts = dateString.split(" ");
+                var date = dateParts[1].split(".")[0].split("-")[0] +' '+dateParts[0];
+                createdatCell.textContent = dateString;
                 row.appendChild(createdatCell);
 
                 

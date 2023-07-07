@@ -4,7 +4,8 @@ import django
 django.setup()'''
 from django.db import models
 from django.utils import timezone
-
+import pytz
+from datetime import datetime
 '''class Voter(models.Model):
     ward = models.IntegerField()
     pct = models.CharField(max_length=1)
@@ -20,6 +21,14 @@ from django.utils import timezone
     party_affiliation = models.CharField(max_length=100, blank=True)
     date_of_birth = models.DateField()
     voter_status = models.CharField(max_length=1)'''
+def time_zone():
+    utc_time = datetime.now(pytz.utc)
+
+    # Convert the UTC time to a specific time zone
+    target_timezone = pytz.timezone('America/Chicago')
+    local_time = utc_time.astimezone(target_timezone)
+
+    return local_time
 class Questionnaire(models.Model):
     ward=models.CharField(max_length=255, null=True, blank=True)
     pct=models.CharField(max_length=255, null=True, blank=True)
@@ -33,11 +42,11 @@ class Questionnaire(models.Model):
     q5 = models.CharField(max_length=100, null=True, blank=True)
     user = models.CharField(max_length=100, null=True, blank=True)
     voter_name=models.CharField(max_length=255, null=True, blank=True)
-    created_at = models.DateTimeField(default=timezone.localtime)
-    def save(self, *args, **kwargs):
+    created_at = models.CharField(max_length=100,default=time_zone())
+    '''def save(self, *args, **kwargs):
         self.created_at = timezone.localtime()
         super().save(*args, **kwargs)
-
+'''
 
 
 class Voters_list(models.Model):

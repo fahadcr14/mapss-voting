@@ -167,7 +167,8 @@ class CustomJSONEncoder(DjangoJSONEncoder):
 
 def dashboard_view(request):
     # Retrieve data from the Questionnaire model
-    end_time = datetime.now()  # Current time
+    end_time = datetime.now()
+      # Current time
     start_time = end_time - timedelta(minutes=4000)  # Subtract 24 hours from the current time
     print(start_time)
     print(end_time)
