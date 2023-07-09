@@ -443,11 +443,11 @@
                     
                         
         function searchLocation(q,persons,latii,longii,adres) {
-            /*var customIcon = L.icon({
-                iconUrl: "/mapss/static/images/markericons.png",
+            var customIcon = L.icon({
+                iconUrl: "/static/images/markericons.png",
                 iconSize: [177, 197],
                 // specify the anchor point of the popup relative to the icon
-              });*/
+              });
               
             //console.log('API URL query',q)
             //console.log('Latitude',latii);
@@ -458,7 +458,7 @@
             for (var i = 0; i < persons.length; i++) {
                 popupContent += '<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
             }*/
-            var marker = L.marker([lat, lon]).addTo(map);;
+            //var marker = L.marker([lat, lon]).addTo(map);;
             var popupContent = '<div class="popup-scrollable">';
             popupContent += '<h3>Search Result</h3>';
             for (var i = 0; i < persons.length; i++) {
@@ -469,9 +469,9 @@
             popupContent += '</div>';
             // Create a marker and add it to teh map
             
-            /*var marker = L.marker([lat, lon], {
+            var marker = L.marker([lat, lon], {
                 icon: customIcon
-              }).addTo(map);*/
+              }).addTo(map);
 
             // Create a custom popup
             var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\', \'' + username + '\')">Submit Opinion</button>');
