@@ -115,11 +115,13 @@ def submit_questionnaire(request):
         q3 = request.POST.get('question3')
         q4 = request.POST.get('question4')
         q5 = request.POST.get('question5')
+        q6 = request.POST.get('question6')
+
 
         # Retrieve other question values in the same way
 
         questionnaire = Questionnaire(apt=apt, street_number=street_number, street_name=street_name,
-                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,user=user,voter_name=person,ward=ward,pct=pct)
+                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,q6=q6,user=user,voter_name=person,ward=ward,pct=pct)
         questionnaire.save()
 
         return render(request, 'mymaps/success.html')  # Redirect to a success page or render a response

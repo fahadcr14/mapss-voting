@@ -40,6 +40,7 @@ class Questionnaire(models.Model):
     q3 = models.CharField(max_length=100, null=True, blank=True)
     q4 = models.CharField(max_length=100, null=True, blank=True)
     q5 = models.CharField(max_length=100, null=True, blank=True)
+    q6 = models.CharField(max_length=100, null=True, blank=True)
     user = models.CharField(max_length=100, null=True, blank=True)
     voter_name=models.CharField(max_length=255, null=True, blank=True)
     created_at = models.CharField(max_length=100,default=time_zone())

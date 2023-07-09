@@ -2,6 +2,7 @@
 <html>
 <head>
     <title>Search Page</title>
+    {% load static %}
     
     <style>
         body{
@@ -91,6 +92,7 @@
             display:grid;
             position:relative;
         }
+        
         @media screen and (max-width: 980px) {\
             .full-container{
                 top:90px;
@@ -111,6 +113,7 @@
                 height: 950px;
                 width: 110%;
                 top: 25px;
+            
             }
             .full-container{
                 align-items:center;
@@ -155,6 +158,7 @@
                 width:300px;
                 font-size:24px;
             }
+            
             .popup-button {
                 background-color: yellow;
                 color: black;
@@ -295,6 +299,7 @@
             
             // Initialize the map
             map = L.map(mapDiv).setView([51.505, -0.09], zoom);
+            
         L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
             attribution: 'Map data &copy; <a href="https://www.openstreetmap.org/">OpenStreetMap</a> contributors',
             maxZoom: 200,
@@ -427,7 +432,7 @@
 
                     // create an orange rectangle
                     L.rectangle(bounds, {color: "black", weight: 1}).addTo(map);
-                    var maxZoom = 18;
+                    var maxZoom = 78;
                     // zoom the map to the rectangle bounds
                     map.fitBounds(bounds, {
                         maxZoom: maxZoom
@@ -437,8 +442,14 @@
                     
                     
         function searchLocation(q,persons,latii,longii,adres) {
-            console.log('API URL query',q)
-            console.log('Latitude',latii);
+            var customIcon = L.icon({
+                iconUrl: '/static/images/markericons.png',
+
+                iconSize: [177, 197],
+                 // specify the anchor point of the popup relative to the icon
+              });
+            //console.log('API URL query',q)
+            //console.log('Latitude',latii);
             username=document.getElementById('input-field').value
             var lat = parseFloat(latii);
             var lon = parseFloat(longii);
@@ -455,7 +466,9 @@
             }
             popupContent += '</div>';
             // Create a marker and add it to teh map
-            var marker = L.marker([lat, lon]).addTo(map);
+            var marker = L.marker([lat, lon], {
+                icon: customIcon
+              }).addTo(map);
 
             // Create a custom popup
             var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\', \'' + username + '\')">Submit Opinion</button>');

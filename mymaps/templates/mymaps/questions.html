@@ -96,7 +96,19 @@
             <p>Question 2: Is everyone in the house register to vote? If not, would you like to register?</p>
             <div class='input-options'id="q2-options">
                 <input type="radio" name="question2" value="yes" onclick="hideOptions()"> Yes<br>
-                <input type="radio" name="question2" value="no" onclick="showOptions('q2', 'q2-options', 'question2')"> No<br>
+                <input type="radio" name="question2" value="no" onclick="showOptions('q2', 'extend-options', 'question2')"> No<br>
+            </div>
+            <div id="extend-options"class='input-options' style="display:none;">
+                <input type="radio" name="question6" value="1" > 1</input>
+                <input type="radio" name="question6" value="2" > 2</input>
+                <input type="radio" name="question6" value="3" > 3</input>
+                <input type="radio" name="question6" value="4" > 4</input>
+                <input type="radio" name="question6" value="5" > 5</input>
+                <input type="radio" name="question6" value="6" > 6</input>
+                <input type="radio" name="question6" value="7" > 7</input>
+                <input type="radio" name="question6" value="8" > 8</input>
+                <input type="radio" name="question6" value="9" > 9</input>
+
             </div>
         </div>
         
@@ -115,7 +127,7 @@
             </div>
         </div>
         <div>
-            <p>Question 5: Could we install a lawn sign?/p>
+            <p>Question 5: Could we install a lawn sign?</p>
             <div class='input-options'>
                 <input type="radio" name="question5" value="yes"> Yes<br>
                 <input type="radio" name="question5" value="no"> No<br>
@@ -177,29 +189,14 @@
     <script>
         function showOptions(q_no,q_id,q_name) {
             
-            var qDiv = document.getElementById(q_no);
+            
+            var qDiv = document.getElementById(q_id);
             qDiv.style.display = "block";
     
-            var qOptionsDiv = document.getElementById(q_id);
-            qOptionsDiv.innerHTML = ""; // Clear previous options
-    
-            for (var i = 1; i <= 9; i++) {
-                var radioBtn = document.createElement("input");
-                radioBtn.type = "radio";
-                radioBtn.name = q_name;
-                radioBtn.value = i;
-                
-                var label = document.createElement("label");
-                label.appendChild(document.createTextNode(i));
-    
-                qOptionsDiv.appendChild(radioBtn);
-                qOptionsDiv.appendChild(label);
-                qOptionsDiv.appendChild(document.createElement("br"));
-            }
         }
     
-        function hideOptions(q_no,q_id) {
-            var qDiv = document.getElementById(q_no);
+        function hideOptions() {
+            var qDiv = document.getElementById('extend-options');
             qDiv.style.display = "none";
     
             var qOptionsDiv = document.getElementById(q_id);
