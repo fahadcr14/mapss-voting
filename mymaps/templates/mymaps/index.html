@@ -458,7 +458,7 @@
             for (var i = 0; i < persons.length; i++) {
                 popupContent += '<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
             }*/
-            var marker = L.marker([lat, lon]);
+            var marker = L.marker([lat, lon]).addTo(map);;
             var popupContent = '<div class="popup-scrollable">';
             popupContent += '<h3>Search Result</h3>';
             for (var i = 0; i < persons.length; i++) {
