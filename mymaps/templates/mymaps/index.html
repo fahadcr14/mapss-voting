@@ -441,14 +441,14 @@
                     }
                     
                     
-       
+                    
         function searchLocation(q,persons,latii,longii,adres) {
-            var customIcon = L.icon({
-                iconUrl: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}"),
-
+            /*var customIcon = L.icon({
+                iconUrl: "/mapss/static/images/markericons.png",
                 iconSize: [177, 197],
-                 // specify the anchor point of the popup relative to the icon
-              });
+                // specify the anchor point of the popup relative to the icon
+              });*/
+              
             //console.log('API URL query',q)
             //console.log('Latitude',latii);
             username=document.getElementById('input-field').value
@@ -467,9 +467,10 @@
             }
             popupContent += '</div>';
             // Create a marker and add it to teh map
-            var marker = L.marker([lat, lon], {
+            var marker = L.marker([lat, lon]);
+            /*var marker = L.marker([lat, lon], {
                 icon: customIcon
-              }).addTo(map);
+              }).addTo(map);*/
 
             // Create a custom popup
             var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\', \'' + username + '\')">Submit Opinion</button>');
