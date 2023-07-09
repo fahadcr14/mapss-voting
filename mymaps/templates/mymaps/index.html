@@ -8,6 +8,17 @@
         body{
             background-color:black;
         }
+        p{
+            position:relative;
+            font-family:Poppins;
+            text-align:center;
+            color:yellow;
+        }
+        
+          
+          
+          
+          
         h1{
             position:relative;
             font-family:Poppins;
@@ -15,6 +26,38 @@
             color:yellow;
             top:33px;
         }
+        
+          
+        @keyframes loadingAnimation {
+            0% {
+                transform: translateX(-5%);
+              }
+              50% {
+                transform: translateX(0%);
+              }
+              100% {
+                transform: translateX(5%);
+              }
+          }
+          
+          
+        #loading-container{
+            display:none;
+        }  
+          
+        #loading-txt{
+            font-family: Poppins;
+            text-align: center;
+            font-size:24px;
+            color: yellow;
+        }
+          #loading-text {
+            font-family: Poppins;
+            text-align: center;
+            color: yellow;
+            animation: loadingAnimation 1s infinite linear;
+          }
+          
         #map {
             
             position:relative;
@@ -73,7 +116,18 @@
             margin-right: auto;
         }
         
-        
+        #img1{
+            width:80px;
+            height:80px;
+            margin-left:55%
+        }
+        .logo-text{
+            position:relative;
+            color:yellow;
+            font-family:Poppins;
+            font-size:48px;
+            right:290px;
+        }
         .popup-button {
             background-color: yellow;
             color: black;
@@ -93,16 +147,21 @@
             position:relative;
         }
         
-        @media screen and (max-width: 980px) {\
+          
+        @media screen and (max-width: 980px) {
             .full-container{
                 top:90px;
                 display:grid;
                 position:relative;
             }
+            
             h1 {
                 font-size: 60px;
                 top: 20px;
                 margin:15px 55px 21px 130px;
+            }
+            p{
+                font-size: 30px;
             }
             #input-field{
                 width:90%;
@@ -174,6 +233,19 @@
                 overflow-y: auto;
                 
             }
+            #img1{
+                width:200px;
+                height:200px;
+                margin-left:80%
+            }
+            
+            .logo-text{
+                position:relative;
+                color:yellow;
+                font-family:Poppins;
+                font-size:72px;
+                right:-421px;
+            }
         }
         
     </style>
@@ -182,10 +254,15 @@
 </head>
 <body>
     <div class ="full-container"> 
-    <h1>Voting</h1>
-    
-  
-    <form class="forms" method="get">
+        <div class="logo">
+            <img id ="img1"src="/static/images/logopng.jpeg" alt="Logo" >
+            <span class="logo-text" >Voting</span>
+          </div>
+          
+          
+        <form class="forms" method="get">
+        <p>Hi my name is ______.<br>I am with the Committee to <br>Elect Norman Roldan.I would <br>like to discuss Norman's platform <br>and ask you a few questions</p>
+
         <label for="input-field">Input:</label>
         <input type="text" id="input-field" name="input" placeholder="Enter Username" required>
     
@@ -215,10 +292,18 @@
         </select>   
         <button id='button-submit'type="submit">Search</button>
     </form>
-    
-
+    <div id="loading-container">
+        <div id ="loading-txt" >
+            <h2>Loading Please Wait</h2>
+        </div>
+        <div id ="loading-text">
+            <h1> ----</h1>
+        </div> 
+    </div> 
     <div id="map"></div>
 </div>
+
+  
     <script>
         //---------------------------menu navigation ----------------------//
         
@@ -283,6 +368,9 @@
         document.addEventListener('submit', function(event) {
 
             event.preventDefault();
+            var show_loading=document.getElementById('loading-container')
+            show_loading.style.display='block';
+            
             //console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
             var mapDiv = document.getElementById('map');
             mapDiv.innerHTML = '';
@@ -408,7 +496,7 @@
                     searchLocation(location, person,single_latitude,single_longitude,single_address);
                     }
                 
-                
+                show_loading.style.display='none';
             
             })
             .catch(error => {
