@@ -27,12 +27,29 @@
           }
           
           #input-field{
-            display:inline-block;
+            background:transparent;
+            font-family:Poppins;
+            display:inline;
+            top:30px;
+            width:450px;
+            height:40px;
+
+
+        } 
+        #pop-input-field{
+            background:transparent;
+            font-family:Poppins;
+            display:inline;
             top:30px;
             width:90px;
             height:40px;
+            color:white;
+
+
         } 
-          
+        #pop-input-field placeholder{
+            color:white;
+        }
          .button-submit,#button-submit{
             
             padding: 10px 20px;
@@ -41,14 +58,18 @@
             box-shadow:  inset 0px 0px 2px 2px grey; 
             color: yellow;
             margin-top: 20px;
+            margin: 20 20 10 20;
+
             border: none;
             border-radius: 8px;
             cursor: pointer;
         }              
          .forms {
-            display: flex;
-            flex-direction: column;
+            display: block;
+            flex-direction: rows;
+            justify-content:center;
             align-items: center;
+            
         }
         table {
             position:relative;
@@ -159,21 +180,45 @@
         .popup-content {
             display:none;   
         }
-        
+        #img1{
+            width:80px;
+            height:80px;
+            position:relative;
+            top:30px;
+        }
+              
+        .underline {
+            background-color: white;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5%;
+            height: 1px;
+            background-color: yellow;
+          }
           
+            
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <span class="h1-image-text" style="font-size: 32px; color: yellow; text-align: left;">Normans Roldan</span>
-        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 920px;">Dashboard</a>
-        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 940px;">Edit Data</a>
+        <span class="h1-image-text" style=" font-size: 32px; color: yellow; text-align: left;">
+
+            <img id ="img1"src="/static/images/logopng.jpeg" alt="Logo" >
+            Normans Roldan
+        </span>
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 820px;text-decoration:none;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 840px;">Edit Data</a>
     </div>
     
     
-    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Add Data </h1>
-    <div>
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
+        Add Data
+        <span class="underline"></span>
+    </h1>
+        <div style="justify-content:center;align-items:center;">
         <form class=="forms" id='adddata-form'action="/submitdata/" method="post">
             {% csrf_token %}
             <div class="input-container">
@@ -193,21 +238,54 @@
                 <input type="text" id="input-field" name="question6" placeholder="Would you need a ride to the voting precinct? If Yes Enter Phone Num" required>
                 
                 
-                <button id='button-submit'type="submit" onclick="adddata()">Submit</button>    
+                <button id='button-submit'type="submit" onclick="adddata()" style="position:relative;left:20px;">Submit</button>    
             </div>
         </form>
     </div>
 
     <!-- Table to display the data -->
-    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Restore Data </h1>
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
+        Restore Data
+        <span class="underline"></span>
+    </h1>    
     <div  style="display:flex; justify-content: center;">
         <button class='button-submit'id='backup-12'type="submit">12 Hours</button>
         <button class='button-submit'id='backup-24'type="submit">24 Hours</button>
         <button class='button-submit' id='backup-48'type="submit">48 Hours</button>
     </div>
     <!-- Dropdown for ward selection -->
-    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Edit Data </h1>
-    <h1 id="succes-text"style='display:none;color:yellow;'>Successfully Edited Data</h1>                  
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
+        Filter By Ward and Pct
+        <span class="underline"></span>
+    </h1>    
+    <form id="filterform" method="post">
+        <div id="button-container" style="display:flex; justify-content: center;">
+            {% csrf_token %}
+            
+            <!-- Dropdown for ward selection -->
+            <select class="prev-button" id="wardDropdown" name="wardd" id="wardd">
+                <option value="">Select Ward</option>
+                {% for ward in distinct_wards %}
+                    <option value="{{ ward }}" style="color:black" >{{ ward }}</option>
+                {% endfor %}
+            </select>
+        
+            <!-- Dropdown for pct selection -->
+            <select  class="prev-button" id="pctDropdown" name="pctt">
+                <option value="" style="color:black">Select PCT</option>
+            </select>
+        
+            <button  class="prev-button" id="submit" type="submit">Submit</button>
+        </div>
+    </form>
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;top:10px;">
+        Edit Data
+        <span class="underline"></span>
+    </h1>
+    <h1 id="succes-text"style='display:none;color:yellow;'>
+        Successfully Edited Data
+        <span class="underline"></span>
+    </h1>                  
 
     <table>
         <thead>
@@ -496,7 +574,7 @@
             var wardInput = document.createElement('input');
             wardInput.type = 'text';
             wardInput.value = questionnaire.ward;
-            wardInput.id="input-field";
+            wardInput.id='pop-input-field';
             wardCell.appendChild(wardInput);
             row.appendChild(wardCell);
 
@@ -504,7 +582,7 @@
             var pctInput = document.createElement('input');
             pctInput.type = 'text';
             pctInput.value = questionnaire.pct;
-            pctInput.id="input-field";
+            pctInput.id='pop-input-field';
             pctCell.appendChild(pctInput);
             row.appendChild(pctCell);
 
@@ -512,14 +590,14 @@
             var userInput = document.createElement('input');
             userInput.type = 'text';
             userInput.value = questionnaire.user;
-            userInput.id="input-field";
+            userInput.id='pop-input-field';
             userCell.appendChild(userInput);
             row.appendChild(userCell);
 
             var voterNameCell = document.createElement('td');
             var voterNameInput = document.createElement('input');
             voterNameInput.type = 'text';
-            voterNameInput.id="input-field";
+            voterNameInput.id='pop-input-field';
             voterNameInput.value = questionnaire.voter_name;
             voterNameCell.appendChild(voterNameInput);
             row.appendChild(voterNameCell);
@@ -528,7 +606,7 @@
             var fulladdressInput = document.createElement('input');
             fulladdressInput.type = 'text';
             fulladdressInput.value = questionnaire.street_name;
-            fulladdressInput.id="input-field"
+            fulladdressInput.id='pop-input-field'
             fulladdressCell.appendChild(fulladdressInput);
             row.appendChild(fulladdressCell);
 
@@ -536,7 +614,7 @@
             var q1Input = document.createElement('input');
             q1Input.type = 'text';
             q1Input.value = questionnaire.q1;
-            q1Input.id="input-field"
+            q1Input.id='pop-input-field'
             q1Cell.appendChild(q1Input);
             row.appendChild(q1Cell);
 
@@ -544,14 +622,14 @@
             var q2Input = document.createElement('input');
             q2Input.type = 'text';
             q2Input.value = questionnaire.q2;
-            q2Input.id="input-field"
+            q2Input.id='pop-input-field'
             q2Cell.appendChild(q2Input);
             row.appendChild(q2Cell);
 
             var q3Cell = document.createElement('td');
             var q3Input = document.createElement('input');
             q3Input.type = 'text';
-            q3Input.id="input-field"
+            q3Input.id='pop-input-field'
             q3Input.value = questionnaire.q3;
             q3Cell.appendChild(q3Input);
             row.appendChild(q3Cell);
@@ -559,7 +637,7 @@
             var q4Cell = document.createElement('td');
             var q4Input = document.createElement('input');
             q4Input.type = 'text';
-            q4Input.id="input-field"
+            q4Input.id='pop-input-field'
 
             q4Input.value = questionnaire.q4;
             q4Cell.appendChild(q4Input);
@@ -568,14 +646,14 @@
             var q5Cell = document.createElement('td');
             var q5Input = document.createElement('input');
             q5Input.type = 'text';
-            q5Input.id="input-field"
+            q5Input.id='pop-input-field'
             q5Input.value = questionnaire.q5;
             q5Cell.appendChild(q5Input);
             row.appendChild(q5Cell);
 
             var q6Cell = document.createElement('td');
             var q6Input = document.createElement('input');
-            q6Input.id="input-field"
+            q6Input.id='pop-input-field'
             q6Input.type = 'text';
             q6Input.value = questionnaire.q6;
             q6Cell.appendChild(q6Input);
@@ -687,6 +765,89 @@
             },10000);
             
     }
+    /// --------------------------filtering by ward pct
+    function filterbyward_pct() {
+        var form = document.getElementById('filterform');
+      
+        form.addEventListener('submit', function(event) {
+          event.preventDefault();
+      
+          var ward = form.elements['wardd'].value;
+          var pct = form.elements['pctt'].value;
+          console.log(ward)
+          var csrfToken = form.elements['csrfmiddlewaretoken'].value;
+          fetch('/api/filterby', {
+            method: 'POST',
+            headers: {
+                'Content-Type': 'application/json',
+                'X-CSRFToken': csrfToken // Include the CSRF token in the request headers
+            },
+            body: JSON.stringify({ wardd: ward, pctt: pct })
+          })
+            .then(function(response) {
+              if (response.ok) {
+                console.log(response)
+                return response.json();
+              } else {
+                throw new Error('Error: ' + response.status);
+              }
+            })
+            .then(function(data) {
+                console.log(data);
+                renderTable(data);
+              // Process the response data here
+            })
+            .catch(function(error) {
+              console.error(error);
+            });
+        });
+      }
+      
+      filterbyward_pct();
+
+      
+      var ward = document.getElementById('wardDropdown');
+      ward.addEventListener('change', function() {
+          var pctDropdown = document.getElementById('pctDropdown');
+      
+          // Clear previous options
+          pctDropdown.innerHTML = '<option value="">Select PCT</option>';
+          var csrfToken = forms.elements['csrfmiddlewaretoken'].value;
+
+          if (ward.value) {
+              // Send AJAX request to fetch PCT values for the selected Ward
+              fetch('/api/get_pcts/', {
+                  method: 'POST',
+                  mode: 'cors',
+                  headers: {
+                      'Content-Type': 'application/json',
+                      'X-CSRFToken': csrfToken,
+                      'Access-Control-Allow-Origin': '*',
+                  },
+                  body: JSON.stringify({ ward: ward.value })
+              })
+              .then(function(response) {
+                  if (response.ok) {
+                      return response.json();
+                  } else {
+                      throw new Error('Error: ' + response.status);
+                  }
+              })
+              .then(function(data) {
+                  // Populate PCT dropdown with retrieved values
+                  data.forEach(function(pct) {
+                      var option = document.createElement('option');
+                      option.value = pct;
+                      option.text = pct;
+                      option.style.color='black';
+                      pctDropdown.appendChild(option);
+                  });
+              })
+              .catch(function(error) {
+                  console.error(error);
+              });
+          }
+      });
 </script>
 
 

@@ -262,8 +262,13 @@ def datacontrol(request):
     questionnaires = Questionnaire.objects.all()
 
     questionnaires_json = json.dumps(list(questionnaires.values()))
+    distinct_wards = Questionnaire.objects.values_list('ward', flat=True).distinct()
+    distinct_pcts = Questionnaire.objects.values_list('pct', flat=True).distinct()
     context = {
-        'questionnaires_json': questionnaires_json}
+        'questionnaires_json': questionnaires_json,
+        'distinct_wards': distinct_wards,
+        'distinct_pcts': distinct_pcts,
+        }
     return render(request, 'mymaps/datacontrol.html',context)
 def submitdata(request):
     if request.method=="POST":

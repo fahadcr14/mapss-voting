@@ -147,20 +147,41 @@
             border-radius: 8px;
             cursor: pointer;
             box-shadow:  inset 0px 0px 2px 2px grey;    
-          
-          
+        }
+        #img1{
+            width:80px;
+            height:80px;
+            position:relative;
+            top:30px;
+        }
+        .underline {
+            background-color: white;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5%;
+            height: 1px;
+            background-color: yellow;
+          } 
           
     </style>
 </head>
 
 <body>
     <div class="navbar">
-        <span class="h1-image-text" style=" font-size: 32px; color: yellow; text-align: left;">Normans Roldan</span>
-        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 820px;">Dashboard</a>
-        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 840px;">Edit Data</a>
-    </div>
-    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Dashboard</h1>
+        <span class="h1-image-text" style=" font-size: 32px; color: yellow; text-align: left;">
 
+            <img id ="img1"src="/static/images/logopng.jpeg" alt="Logo" >
+            Normans Roldan
+        </span>
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 820px;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 840px;text-decoration:none;">Edit Data</a>
+    </div>
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
+        Dashboard
+        <span class="underline"></span>
+    </h1>   
 
     <!-- Table to display the data -->
     <div id="chart-container">
@@ -174,14 +195,19 @@
             <canvas id="chart3"></canvas>
         </div>
     </div>
-    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Realtime Report</h1>
-    <div id="button-container">
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
+        Realtime Report
+        <span class="underline"></span>
+    </h1>       <div id="button-container">
         <button class="dhour" id='dhour-12'>12 Hours</button>
         <button class="dhour" id='dhour-24'>24 Hours</button>
         <button class="dhour" id='dhour-48'>48 Hours</button>
     </div>
     <!-- Dropdown for ward selection -->
-    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Filter By Ward and Pct </h1>
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
+        Filter By Ward and Pct
+        <span class="underline"></span>
+    </h1>   
     <form id="forms" method="post">
         <div id="button-container">
             {% csrf_token %}
