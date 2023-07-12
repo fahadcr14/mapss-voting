@@ -4,6 +4,11 @@
     {% load static %}
 
     <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url("/path/to/your/fonts/Poppins-Bold.ttf") format('truetype');
+        }
+        
         body {
             font-family: Poppins, regular;
             
@@ -22,9 +27,7 @@
             
             font-size:60px;
             text-align: center;
-            background-image: url('{% static 'images/textbg.png' %}');
-            -webkit-background-clip: text;
-            -webkit-text-fill-color: transparent;
+            
           }
           
           
@@ -113,7 +116,37 @@
             border-radius: 8px;
             cursor: pointer;
         }              
-          
+        #next-button {
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+
+        }
+        #prev-button{
+            display:none;
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey;    
           
           
           
@@ -121,7 +154,12 @@
 </head>
 
 <body>
-    <h1 class="h1-image-text">Dashboard</h1>
+    <div class="navbar">
+        <span class="h1-image-text" style=" font-size: 32px; color: yellow; text-align: left;">Normans Roldan</span>
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 920px;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 940px;">Edit Data</a>
+    </div>
+    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Dashboard</h1>
 
 
     <!-- Table to display the data -->
@@ -136,14 +174,14 @@
             <canvas id="chart3"></canvas>
         </div>
     </div>
-    <h1 class="h1-image-text" style="font-size:32px;">Realtime Report</h1>
+    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Realtime Report</h1>
     <div id="button-container">
         <button class="dhour" id='dhour-12'>12 Hours</button>
         <button class="dhour" id='dhour-24'>24 Hours</button>
         <button class="dhour" id='dhour-48'>48 Hours</button>
     </div>
     <!-- Dropdown for ward selection -->
-    <h1 class="h1-image-text" style="font-size:32px;">Filter By Ward and Pct </h1>
+    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Filter By Ward and Pct </h1>
     <form id="forms" method="post">
         <div id="button-container">
             {% csrf_token %}
@@ -167,7 +205,8 @@
     
     
         
-    
+    <button class="dhour" id="download-button" style="margin-left:92%">Download Report</button>
+
 
     <table>
         <thead>
@@ -195,99 +234,133 @@
     </table>
 
     <!-- "Next" button to load the next set of entries -->
-    <button id="next-button">Next</button>
+    <div id="button-container" style="display:flex; justify-content: center;">
+       
+        <button id="prev-button">Previous</button>
+        <button id="next-button">Next</button>
+      
+    
+  </div>
 
     <!-- Add any JavaScript code here -->
     <script>
         
         var offset = 0;
-        var limit = 30;
-        var questionn= JSON.parse('{{ questionnaires_json|safe }}');
-        function renderTable(questionaire) {
-            var questionnaires=questionaire;
+    var limit = 30;
+    var questionn= JSON.parse('{{ questionnaires_json|safe }}');
+    function renderTable(questionnaires) {
+        var questionnaires=questionnaires;
+        var tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        var end = offset + limit;
+        for (var i = offset; i < end && i < questionnaires.length; i++) {
+            var questionnaire = questionnaires[i];
+            var row = document.createElement('tr');
+            // Add row number
             
-            var tbody = document.getElementById('table-body');
-            tbody.innerHTML = '';
+    
+            // Add checkbox cell
+            
+            var numCell = document.createElement('td');
+            numCell.textContent = i + 1;
+            row.appendChild(numCell);
+            // Add other data cells
+            var wardCell = document.createElement('td');
+            wardCell.textContent = questionnaire.ward;
+            row.appendChild(wardCell);
+    
+            var pctCell = document.createElement('td');
+            pctCell.textContent = questionnaire.pct;
+            row.appendChild(pctCell);
+    
+            var userCell = document.createElement('td');
+            userCell.textContent = questionnaire.user;
+            row.appendChild(userCell);
+    
+            var voterNameCell = document.createElement('td');
+            voterNameCell.textContent = questionnaire.voter_name;
+            voterNameCell.setAttribute('name', 'voter-name'); 
 
-            var end = offset + limit;
-            for (var i = offset; i < end && i < questionnaires.length; i++) {
-                var questionnaire = questionnaires[i];
-                var row = document.createElement('tr');
-                
-                var num = document.createElement('td');
-                num.textContent =i;
-                row.appendChild(num);   
-
-                var wardCell = document.createElement('td');
-                wardCell.textContent = questionnaire.ward;
-                row.appendChild(wardCell);
-
-                var pctCell = document.createElement('td');
-                pctCell.textContent = questionnaire.pct;
-                row.appendChild(pctCell);
-
-                
-
-                var userCell = document.createElement('td');
-                userCell.textContent = questionnaire.user;
-                row.appendChild(userCell);
-
-                var voterNameCell = document.createElement('td');
-                voterNameCell.textContent = questionnaire.voter_name;
-                row.appendChild(voterNameCell);
-                var fulladdressCell = document.createElement('td');
-                fulladdressCell.textContent = questionnaire.street_name;
-                row.appendChild(fulladdressCell);
-
-                var q1Cell = document.createElement('td');
-                q1Cell.textContent = questionnaire.q1;
-                row.appendChild(q1Cell);
-
-                var q2Cell = document.createElement('td');
-                q2Cell.textContent = questionnaire.q2;
-                row.appendChild(q2Cell);
-
-                var q3Cell = document.createElement('td');
-                q3Cell.textContent = questionnaire.q3;
-                row.appendChild(q3Cell);
-
-                var q4Cell = document.createElement('td');
-                q4Cell.textContent = questionnaire.q4;
-                row.appendChild(q4Cell);
-
-                var q5Cell = document.createElement('td');
-                q5Cell.textContent = questionnaire.q5;
-                row.appendChild(q5Cell);
-                var q6Cell = document.createElement('td');
-                q6Cell.textContent = questionnaire.q6;
-                row.appendChild(q6Cell);
-                var createdatCell = document.createElement('td');
-                var dateString = questionnaire.created_at;
-                var dateParts = dateString.split(" ");
-                var date = dateParts[1].split(".")[0].split("-")[0] +' '+dateParts[0];
-                createdatCell.textContent = dateString;
-                row.appendChild(createdatCell);
-
-                
-
-                // Add more question data cells as needed
-
-                tbody.appendChild(row);
-            }
-
-            if (end < questionnaires.length) {
-                var nextButton = document.getElementById('next-button');
-                nextButton.style.display = 'block';
-            } else {
-                var nextButton = document.getElementById('next-button');
-                nextButton.style.display = 'none';
-            }
+            row.appendChild(voterNameCell);
+    
+            var fulladdressCell = document.createElement('td');
+            fulladdressCell.textContent = questionnaire.street_name;
+            row.appendChild(fulladdressCell);
+    
+            var q1Cell = document.createElement('td');
+            q1Cell.textContent = questionnaire.q1;
+            row.appendChild(q1Cell);
+    
+            var q2Cell = document.createElement('td');
+            q2Cell.textContent = questionnaire.q2;
+            row.appendChild(q2Cell);
+    
+            var q3Cell = document.createElement('td');
+            q3Cell.textContent = questionnaire.q3;
+            row.appendChild(q3Cell);
+    
+            var q4Cell = document.createElement('td');
+            q4Cell.textContent = questionnaire.q4;
+            row.appendChild(q4Cell);
+    
+            var q5Cell = document.createElement('td');
+            q5Cell.textContent = questionnaire.q5;
+            row.appendChild(q5Cell);
+    
+            var q6Cell = document.createElement('td');
+            q6Cell.textContent = questionnaire.q6;
+            row.appendChild(q6Cell);
+    
+            var createdatCell = document.createElement('td');
+            createdatCell.textContent = questionnaire.created_at;
+            row.appendChild(createdatCell);
+    
+            tbody.appendChild(row);
         }
+    
+        // ...
+    
+    
+
+        if (end < questionnaires.length) {
+            var nextButton = document.getElementById('next-button');
+            var prevButton = document.getElementById('prev-button');
+
+            nextButton.style.display = 'block';
+            
+        } else {
+            var nextButton = document.getElementById('next-button');
+            
+            nextButton.style.display = 'none';
+        }
+        
+    }
 
         document.getElementById('next-button').addEventListener('click', function() {
             offset += limit;
-            renderTable();
+            if (offset>=limit){
+                console.log(offset)
+                    prevButton.style.display='block';}
+            else{
+                console.log(offset)
+                prevButton.style.display='none';
+            }
+            renderTable(questionn);
+            
         });
+        document.getElementById('prev-button').addEventListener('click', function() {
+            offset -= limit;
+            if (offset>=limit){
+                console.log(offset)
+                    prevButton.style.display='block';}
+            else{
+                console.log(offset)
+                prevButton.style.display='none';
+            }
+            renderTable(questionn);
+        });
+        var prevButton = document.getElementById('prev-button');
+        
         renderTable(questionn)
        
     </script>
@@ -386,7 +459,6 @@
 
 <script>
     document.addEventListener('DOMContentLoaded', function() {
-        console.log('document started');
       
         // Attach click event handlers to the buttons
         document.getElementById('dhour-12').addEventListener('click', function() {
@@ -416,7 +488,6 @@
             .then(function(data) {
               // Handle the response here (e.g., update the UI with the retrieved data)
               renderTable(data);
-              console.log(data);
             })
             .catch(function(error) {
               // Handle any error that occurred during the Fetch request
@@ -509,7 +580,51 @@
               });
           }
       });
-      
+      // making download 
+      // Function to convert JSON to CSV
+function convertJSONToCSV(data) {
+    var csv = '';
+    var keys = Object.keys(data[0]);
+  
+    // Add header row
+    csv += keys.join(',') + '\n';
+  
+    // Add data rows
+    data.forEach(function(item) {
+      var row = keys.map(function(key) {
+        return item[key];
+      });
+      csv += row.join(',') + '\n';
+    });
+  
+    return csv;
+  }
+  
+  // Function to download CSV file
+  function downloadCSV(data, filename) {
+    var csv = convertJSONToCSV(data);
+  
+    var blob = new Blob([csv], { type: 'text/csv;charset=utf-8;' });
+    var url = URL.createObjectURL(blob);
+  
+    var link = document.createElement('a');
+    link.href = url;
+    link.setAttribute('download', filename + '.csv');
+    link.style.display = 'none';
+  
+    document.body.appendChild(link);
+    link.click();
+  
+    document.body.removeChild(link);
+    URL.revokeObjectURL(url);
+  }
+  
+  // Event listener for the download button
+  document.getElementById('download-button').addEventListener('click', function() {
+    var questionnaires = JSON.parse('{{ questionnaires_json|safe }}');
+    downloadCSV(questionnaires, 'questionnaires');
+  });
+  
 </script>
 </body>
 </html>

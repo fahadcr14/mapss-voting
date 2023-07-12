@@ -11,7 +11,7 @@ from django.test import TestCase
 # Create your tests here.
 import csv
 from datetime import datetime
-from .models import Voters_list,Votelatlon
+from .models import Voters_list,Votelatlon,time_zone
 
 def inject_voters_from_csv(request):
     print(f'starting to inject')
@@ -193,7 +193,7 @@ def dashboard_view(request):
     user_counts_json=json.dumps(list(user_counts))
     voter_counts_json=json.dumps(list(voter_counts))
     record_time_json=json.dumps(list(record_time),cls=CustomJSONEncoder)
-    questionnaires_json = json.dumps(list(questionnaire.values()), cls=CustomJSONEncoder)
+    questionnaires_json = json.dumps(list(questionnaires.values()), cls=CustomJSONEncoder)
 
     context = {
         'questionnaires_json': questionnaires_json,
@@ -208,7 +208,7 @@ def dashboard_view(request):
     return render(request, 'mymaps/dashboard.html', context)
 
 from django.utils import timezone
-
+#showing realtime reports
 def dashboardview(request):
     if request.method == "GET":
         # Retrieve the start and end times from the request parameters
@@ -255,6 +255,101 @@ def get_pcts(request):
         return JsonResponse(pcts_list, safe=False)
 
     return JsonResponse({'message': 'Invalid request method'}, status=400)
+
+
+#-------------------------------------Edit Database ------------------------------------------
+def datacontrol(request):
+    questionnaires = Questionnaire.objects.all()
+
+    questionnaires_json = json.dumps(list(questionnaires.values()))
+    context = {
+        'questionnaires_json': questionnaires_json}
+    return render(request, 'mymaps/datacontrol.html',context)
+def submitdata(request):
+    if request.method=="POST":
+        ward=request.POST.get('ward')
+        pct=request.POST.get('pct')
+        vn=request.POST.get('vn')
+        apt=request.POST.get('apt')
+        stn=request.POST.get('stn')
+        sta=request.POST.get('sta')
+        person=request.POST.get('person')
+        q1 = request.POST.get('question1')
+        q2 = request.POST.get('question2')
+        q3 = request.POST.get('question3')
+        q4 = request.POST.get('question4')
+        q5 = request.POST.get('question5')
+        q6 = request.POST.get('question6')
+        print(f'Running submit datat {ward,pct,sta,stn,zip}')
+        questionnaire = Questionnaire(apt=apt, street_number=stn, street_name=sta,
+                                      q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,q6=q6,user=person,voter_name=vn,ward=ward,pct=pct)
+        questionnaire.save()
+        questionaire=Questionnaire.objects.all()
+        questionnaires_json = list(questionaire.values())
+
+        
+        return JsonResponse(questionnaires_json, safe=False)
+
+    return render(request, 'mymaps/datacontrol.html')
+def edit_row_data(request):
+    if request.method=="POST":
+        row_id=request.POST.get('id')
+        ward=request.POST.get('ward')
+        pct=request.POST.get('pct')
+        #apt=request.POST.get('apt')
+        #street_no=request.POST.get('street_no')
+        #street_name=request.POST.get('street_name')
+        full_address=request.POST.get('full_address')
+        user=request.POST.get('user')
+        voter_name=request.POST.get('voter_name')
+        q1=request.POST.get('q1')
+        q2=request.POST.get('q2')
+        q3=request.POST.get('q3')
+        q4=request.POST.get('q4')
+        q5=request.POST.get('q5')
+        q6=request.POST.get('q6')
+        row = Questionnaire.objects.filter(id=row_id).first()
+        if row:
+            print(f'Ward is {ward} Pct{pct} Full address {full_address} User {user} Voter Name{voter_name} q1{q1} q2 {q2} q3{q3} q4{q4} q5{q6}')
+        # Update the fields of the row with the new values
+            row.ward = ward
+            row.pct = pct
+            #row.apt=apt
+            #row.street_number=street_no
+            #ow.street_name=street_name
+            row.street_name=full_address
+            row.user=user
+            row.voter_name=voter_name
+            row.q1=q1
+            row.q2=q2
+            row.q3=q3
+            row.q4=q4
+            row.q5=q5
+            row.q6=q6
+            row.save()
+
+        return render(request, 'mymaps/success.html')
+
+#-------------------------------------------------------Backup data base-------------------------------------------
+def restoredata(request):
+    if request.method == "GET":
+        # Retrieve the start and end times from the request parameters
+        timehour = request.GET.get('hour')
+        print(timehour)
+        end_time = time_zone()  # Current time
+        start_time = end_time - timedelta(hours=int(timehour))
+        print(f'end time {start_time}')
+        # Retrieve the Questionnaire objects based on the time range
+        questionnaire = Questionnaire.objects.filter(Q(created_at__range=(start_time, end_time)))
+        questionnaire.delete()
+        print(f'Timezone is {time_zone()}')
+        questionnaire = Questionnaire.objects.all()
+
+        # Convert the Questionnaire objects to JSON
+        questionnaires_json = list(questionnaire.values())
+
+        # Return the JSON response
+        return JsonResponse(questionnaires_json, safe=False)
 '''    
 def main():
     

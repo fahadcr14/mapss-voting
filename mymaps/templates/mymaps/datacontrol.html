@@ -1,0 +1,692 @@
+<html>
+<head>
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        body {
+            font-family: Poppins;
+            
+            margin: 0;
+            padding: 20px;
+            
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+          }
+          .h1 {
+            box-shadow:   10px 10px 20px 20px white; 
+
+          }
+          .h1-image-text {
+            
+            font-size:60px;
+            text-align: center;
+            
+          }
+          
+          #input-field{
+            display:inline-block;
+            top:30px;
+            width:90px;
+            height:40px;
+        } 
+          
+         .button-submit,#button-submit{
+            
+            padding: 10px 20px;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            font-family:Poppins;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+            color: yellow;
+            margin-top: 20px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }              
+         .forms {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+        table {
+            position:relative;
+            border-radius:45px;
+            top:20px;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+         td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius:256px;
+            color:white;
+        }
+
+        th {
+            background-image: url("{% static 'images/ds.jpg' %}");
+            
+            padding: 10px;
+            border: 1px solid black;
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color:black;
+        }
+
+        #next-button {
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+
+        }
+         #prev-button{
+            display:none;
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+
+        }
+        .prev-button{
+            
+            
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: none;
+            backdrop-filter: blur(8px);
+
+        }
+        
+        .popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            background-repeat: repeat;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            width: 1400px;
+            height: 330px;
+            box-shadow: inset 0px 0px 20px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        
+        .popup-content {
+            display:none;   
+        }
+        
+          
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <span class="h1-image-text" style="font-size: 32px; color: yellow; text-align: left;">Normans Roldan</span>
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 920px;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 940px;">Edit Data</a>
+    </div>
+    
+    
+    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Add Data </h1>
+    <div>
+        <form class=="forms" id='adddata-form'action="/submitdata/" method="post">
+            {% csrf_token %}
+            <div class="input-container">
+                <input type="text" id="input-field" name="person" placeholder="Enter Username" required>
+                <input type="text" id="input-field" name="ward" placeholder="Enter Ward" required>
+                <input type="text" id="input-field" name="pct" placeholder="Enter Pct" required>
+                <input type="text" id="input-field" name="vn" placeholder="Enter Voter Name " required>
+                <input type="text" id="input-field" name="apt" placeholder="Enter Apt Number" >
+                <input type="text" id="input-field" name="stn" placeholder="Enter Street No" required>
+                <input type="text" id="input-field" name="sta" placeholder="Enter Street Address" required>
+                <input type="text" id="input-field" name="sta" placeholder="Enter Zip Code" required>
+                <input type="text" id="input-field" name="question1" placeholder="Will you vote for (Norman Roldan) on September 12 ?" required>
+                <input type="text" id="input-field" name="question2" placeholder="Is everyone in the house register to vote? If not, would you like to register?" required>
+                <input type="text" id="input-field" name="question3" placeholder="Would you need an Absentee Ballot?" required>
+                <input type="text" id="input-field" name="question4" placeholder="Are you going to Vote by mail?" required>
+                <input type="text" id="input-field" name="question5" placeholder="Could we install a lawn sign?" required>
+                <input type="text" id="input-field" name="question6" placeholder="Would you need a ride to the voting precinct? If Yes Enter Phone Num" required>
+                
+                
+                <button id='button-submit'type="submit" onclick="adddata()">Submit</button>    
+            </div>
+        </form>
+    </div>
+
+    <!-- Table to display the data -->
+    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Restore Data </h1>
+    <div  style="display:flex; justify-content: center;">
+        <button class='button-submit'id='backup-12'type="submit">12 Hours</button>
+        <button class='button-submit'id='backup-24'type="submit">24 Hours</button>
+        <button class='button-submit' id='backup-48'type="submit">48 Hours</button>
+    </div>
+    <!-- Dropdown for ward selection -->
+    <h1 class="h1-image-text" style="font-size:32px;color:yellow;">Edit Data </h1>
+    <h1 id="succes-text"style='display:none;color:yellow;'>Successfully Edited Data</h1>                  
+
+    <table>
+        <thead>
+            <tr>
+                <th>Edit</th>
+                <th>No</th>
+                <th>Ward</th>
+                <th>PCT</th>
+                
+                <th>User</th>
+                <th>Voter Name</th>
+                <th>Full Address</th>
+                <th>Question 1</th>
+                <th>Question 2</th>
+                <th>Question 3</th>
+                <th>Question 4</th>
+                <th>Question 5</th>
+                <th>Question 6</th>
+                <th>Record Time</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- The data rows will be dynamically added here -->
+        </tbody>
+    </table>
+    <div id="restore-popup" class="overlay">
+        <div class="popup" >
+            <h1 class="h1-image-text" style="font-size: 32px;color:yellow;">
+                Restore Data <i class="fas fa-times" onclick="hidePopup()" style="color: yellow; cursor: pointer;"></i>
+            </h1>
+            <p style="font-size: 22px;color:white;text-align:center;weight:italic">Are your sure you want to restore data from last <span id="hours-name" ></span> hours?<p>
+                
+                <div id="button-container" style="display:flex; justify-content: center;">
+       
+                    <button class="prev-button"id="no-button">No</button>
+                    <button class="prev-button"id="yes-button">Yes</button>
+                  
+                
+              </div>
+        </div> 
+
+    </div>
+    <div id="popup" class="overlay">
+            
+        <div class="popup">
+            <h1 class="h1-image-text" style="font-size: 32px;color:white;">
+                Edit Data <i class="fas fa-times" onclick="hidePopup()" style="color: yellow; cursor: pointer;"></i>
+            </h1>
+              
+            <h1  class="h1-image-text"id="succes-text"style='display:none;color:yellow'><span id="succes-text"id="succes-text"></span></h1>                  
+              
+            <div class="popup-content" id='popup-content'>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ward</th>
+                            <th>PCT</th>
+                            <th>User</th>
+                            <th>Voter Name</th>
+                            <th>Full Address</th>
+                            <th>Question 1</th>
+                            <th>Question 2</th>
+                            <th>Question 3</th>
+                            <th>Question 4</th>
+                            <th>Question 5</th>
+                            <th>Question 6</th>
+                            <th>Record Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pop-content-body">
+                        <!-- The data rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+            <form id="forms" action="/edit_row_data/" method="post">
+                {%csrf_token%}
+                <input type="hidden" name="id" value="">
+                <input type="hidden" name="ward" value="">
+                <input type="hidden" name="pct" value="">
+                <input type="hidden" name="apt" value="">
+                <input type="hidden" name="street_name" value="">
+                <input type="hidden" name="street_number" value="">
+                <input type="hidden" name="full_address" value="">
+                <input type="hidden" name="user" value="">
+                <input type="hidden" name="voter_name" value="">
+                <input type="hidden" name="q1" value="">
+                <input type="hidden" name="q2" value="">
+                <input type="hidden" name="q3" value="">
+                <input type="hidden" name="q4" value="">
+                <input type="hidden" name="q5" value="">
+                <input type="hidden" name="q6" value="">
+                <div id="button-container" style="text-align: center;">
+                    <button id="button-submit" type="submit" onclick="hidePopup()">Save</button>    
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    
+    <div id="button-container" style="display:flex; justify-content: center;">
+       
+            <button id="prev-button">Previous</button>
+            <button class="prev-button"id="next-button">Next</button>
+          
+        
+      </div>
+      
+    
+    
+        
+    
+
+    
+
+    <!-- "Next" button to load the next set of entries -->
+
+    <!-- Add any JavaScript code here -->
+    
+</body>
+</html>
+<script>
+    function adddata(){
+        document.getElementById('adddata-form').addEventListener('submit', function(event) {
+            event.preventDefault()
+        var questionn= JSON.parse('{{ questionnaires_json|safe }}');
+        renderTable(questionn);
+        success('add')})
+    }
+    var offset = 0;
+    var limit = 30;
+    var questionn= JSON.parse('{{ questionnaires_json|safe }}');
+    function renderTable(questionnaires) {
+        var questionnaires=questionnaires;
+        var tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        var end = offset + limit;
+        for (var i = offset; i < end && i < questionnaires.length; i++) {
+            var questionnaire = questionnaires[i];
+            var row = document.createElement('tr');
+            // Add row number
+            
+    
+            // Add checkbox cell
+            var checkboxCell = document.createElement('td');
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.setAttribute('data-questionnaire-id', questionnaire.id,);
+            checkbox.addEventListener('click', function(event) {
+                if (event.target.checked) {
+                    document.getElementById('popup-content').style.display="block";
+
+                    var questionnaireId = event.target.getAttribute('data-questionnaire-id');
+                    var questionnaire = questionnaires.find(function(item) {
+                        if(item.id==questionnaireId){
+                    console.log(item.street_name)
+                    return showPopup(item) }
+                });
+
+                    
+                } else {
+                    hidePopup();
+                }
+                
+                  
+                  
+                  // Handle checkbox click functionality here
+                  
+                  // Print other properties as needed
+                  
+                // Show popup for the selected row
+                // You can implement your own logic to show the popup
+            });
+            checkboxCell.appendChild(checkbox);
+            row.appendChild(checkboxCell);
+            var numCell = document.createElement('td');
+            numCell.textContent = i + 1;
+            row.appendChild(numCell);
+            // Add other data cells
+            var wardCell = document.createElement('td');
+            wardCell.textContent = questionnaire.ward;
+            row.appendChild(wardCell);
+    
+            var pctCell = document.createElement('td');
+            pctCell.textContent = questionnaire.pct;
+            row.appendChild(pctCell);
+    
+            var userCell = document.createElement('td');
+            userCell.textContent = questionnaire.user;
+            row.appendChild(userCell);
+    
+            var voterNameCell = document.createElement('td');
+            voterNameCell.textContent = questionnaire.voter_name;
+            voterNameCell.setAttribute('name', 'voter-name'); 
+
+            row.appendChild(voterNameCell);
+    
+            var fulladdressCell = document.createElement('td');
+            fulladdressCell.textContent = questionnaire.street_name;
+            row.appendChild(fulladdressCell);
+    
+            var q1Cell = document.createElement('td');
+            q1Cell.textContent = questionnaire.q1;
+            row.appendChild(q1Cell);
+    
+            var q2Cell = document.createElement('td');
+            q2Cell.textContent = questionnaire.q2;
+            row.appendChild(q2Cell);
+    
+            var q3Cell = document.createElement('td');
+            q3Cell.textContent = questionnaire.q3;
+            row.appendChild(q3Cell);
+    
+            var q4Cell = document.createElement('td');
+            q4Cell.textContent = questionnaire.q4;
+            row.appendChild(q4Cell);
+    
+            var q5Cell = document.createElement('td');
+            q5Cell.textContent = questionnaire.q5;
+            row.appendChild(q5Cell);
+    
+            var q6Cell = document.createElement('td');
+            q6Cell.textContent = questionnaire.q6;
+            row.appendChild(q6Cell);
+    
+            var createdatCell = document.createElement('td');
+            createdatCell.textContent = questionnaire.created_at;
+            row.appendChild(createdatCell);
+    
+            tbody.appendChild(row);
+        }
+    
+        // ...
+    
+    
+
+        if (end < questionnaires.length) {
+            var nextButton = document.getElementById('next-button');
+            var prevButton = document.getElementById('prev-button');
+
+            nextButton.style.display = 'block';
+            
+        } else {
+            var nextButton = document.getElementById('next-button');
+            
+            nextButton.style.display = 'none';
+        }
+        
+    }
+
+    document.getElementById('next-button').addEventListener('click', function() {
+        offset += limit;
+        if (offset>=limit){
+            console.log(offset)
+                prevButton.style.display='block';}
+        else{
+            console.log(offset)
+            prevButton.style.display='none';
+        }
+        renderTable(questionn);
+        
+    });
+    document.getElementById('prev-button').addEventListener('click', function() {
+        offset -= limit;
+        if (offset>=limit){
+            console.log(offset)
+                prevButton.style.display='block';}
+        else{
+            console.log(offset)
+            prevButton.style.display='none';
+        }
+        renderTable(questionn);
+    });
+    var prevButton = document.getElementById('prev-button');
+    
+    renderTable(questionn)
+    function showPopup(questionnaire) {
+
+            var tbody = document.getElementById('pop-content-body');
+            tbody.innerHTML = '';
+            console.log(questionnaire);
+            var popup = document.getElementById('popup');
+            popup.style.display = 'block';
+            var row = document.createElement('tr');
+
+            var wardCell = document.createElement('td');
+            var wardInput = document.createElement('input');
+            wardInput.type = 'text';
+            wardInput.value = questionnaire.ward;
+            wardInput.id="input-field";
+            wardCell.appendChild(wardInput);
+            row.appendChild(wardCell);
+
+            var pctCell = document.createElement('td');
+            var pctInput = document.createElement('input');
+            pctInput.type = 'text';
+            pctInput.value = questionnaire.pct;
+            pctInput.id="input-field";
+            pctCell.appendChild(pctInput);
+            row.appendChild(pctCell);
+
+            var userCell = document.createElement('td');
+            var userInput = document.createElement('input');
+            userInput.type = 'text';
+            userInput.value = questionnaire.user;
+            userInput.id="input-field";
+            userCell.appendChild(userInput);
+            row.appendChild(userCell);
+
+            var voterNameCell = document.createElement('td');
+            var voterNameInput = document.createElement('input');
+            voterNameInput.type = 'text';
+            voterNameInput.id="input-field";
+            voterNameInput.value = questionnaire.voter_name;
+            voterNameCell.appendChild(voterNameInput);
+            row.appendChild(voterNameCell);
+
+            var fulladdressCell = document.createElement('td');
+            var fulladdressInput = document.createElement('input');
+            fulladdressInput.type = 'text';
+            fulladdressInput.value = questionnaire.street_name;
+            fulladdressInput.id="input-field"
+            fulladdressCell.appendChild(fulladdressInput);
+            row.appendChild(fulladdressCell);
+
+            var q1Cell = document.createElement('td');
+            var q1Input = document.createElement('input');
+            q1Input.type = 'text';
+            q1Input.value = questionnaire.q1;
+            q1Input.id="input-field"
+            q1Cell.appendChild(q1Input);
+            row.appendChild(q1Cell);
+
+            var q2Cell = document.createElement('td');
+            var q2Input = document.createElement('input');
+            q2Input.type = 'text';
+            q2Input.value = questionnaire.q2;
+            q2Input.id="input-field"
+            q2Cell.appendChild(q2Input);
+            row.appendChild(q2Cell);
+
+            var q3Cell = document.createElement('td');
+            var q3Input = document.createElement('input');
+            q3Input.type = 'text';
+            q3Input.id="input-field"
+            q3Input.value = questionnaire.q3;
+            q3Cell.appendChild(q3Input);
+            row.appendChild(q3Cell);
+
+            var q4Cell = document.createElement('td');
+            var q4Input = document.createElement('input');
+            q4Input.type = 'text';
+            q4Input.id="input-field"
+
+            q4Input.value = questionnaire.q4;
+            q4Cell.appendChild(q4Input);
+            row.appendChild(q4Cell);
+
+            var q5Cell = document.createElement('td');
+            var q5Input = document.createElement('input');
+            q5Input.type = 'text';
+            q5Input.id="input-field"
+            q5Input.value = questionnaire.q5;
+            q5Cell.appendChild(q5Input);
+            row.appendChild(q5Cell);
+
+            var q6Cell = document.createElement('td');
+            var q6Input = document.createElement('input');
+            q6Input.id="input-field"
+            q6Input.type = 'text';
+            q6Input.value = questionnaire.q6;
+            q6Cell.appendChild(q6Input);
+            row.appendChild(q6Cell);
+
+    
+            var createdatCell = document.createElement('td');
+            createdatCell.textContent = questionnaire.created_at;
+            row.appendChild(createdatCell);
+            tbody.appendChild(row);
+            document.getElementById('forms').addEventListener('submit', function(event) {
+                 // Prevent form submission
+                event.preventDefault()
+                success('edit');
+                document.getElementById('popup-content').style.display="none";
+                document.getElementById('button-container').style.display="none";
+
+                document.querySelector('#forms [name="id"]').value = questionnaire.id;
+                document.querySelector('#forms [name="ward"]').value = wardInput.value;
+                document.querySelector('#forms [name="pct"]').value = pctInput.value;
+                //document.querySelector('#forms [name="apt"]').value = aptInput.value;
+                //document.querySelector('#forms [name="street_name"]').value = questionnaire.street_name;
+                //document.querySelector('#forms [name="street_number"]').value = questionnaire.street_number;
+                document.querySelector('#forms [name="user"]').value = userInput.value;
+                document.querySelector('#forms [name="voter_name"]').value = voterNameInput.value;
+                document.querySelector('#forms [name="full_address"]').value = fulladdressInput.value;
+                document.querySelector('#forms [name="q1"]').value = q1Input.value;
+                document.querySelector('#forms [name="q2"]').value = q2Input.value;
+                document.querySelector('#forms [name="q3"]').value = q3Input.value;
+                document.querySelector('#forms [name="q4"]').value = q4Input.value;
+                document.querySelector('#forms [name="q5"]').value = q5Input.value
+                document.querySelector('#forms [name="q6"]').value = q6Input.value;});
+
+
+                
+    }   
+    
+    function hidePopup() {
+        var popup = document.getElementById('popup');
+        popup.style.display = 'none';
+        var popup = document.getElementById('restore-popup');
+        popup.style.display = 'none';
+
+    }
+    // ==========================================Backup -------------------------------------------------
+    document.getElementById('backup-12').addEventListener('click', function() {
+        getQuestionnaires(12);
+      });
+      document.getElementById('backup-24').addEventListener('click', function() {
+        getQuestionnaires(24);
+      });
+      document.getElementById('backup-48').addEventListener('click', function() {
+        console.log('clicked');
+        getQuestionnaires(48);
+      });
+      function getQuestionnaires(hours) {
+        var popup = document.getElementById('restore-popup');
+        popup.style.display = 'block';
+        document.getElementById('hours-name').innerHTML=hours;
+        document.getElementById('hours-name').style.color="red";
+        document.getElementById('no-button').addEventListener('click',function(){
+            hidePopup()});
+        document.getElementById('yes-button').addEventListener('click',function(){
+        // Make the fetch request to your Django view
+        fetch("restoredata?hour=" + hours, {
+          method: "GET",
+        })
+          .then(function(response) {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Error: ' + response.status);
+            }
+          })
+          .then(function(data) {
+            // Handle the response here (e.g., update the UI with the retrieved data)
+            renderTable(data);
+            success('restore')
+          })
+          .catch(function(error) {
+            // Handle any error that occurred during the Fetch request
+            alert('Not Found');
+          });
+        }) 
+      }
+    //dynamic text of successfully
+    function success(txt){
+        var succestxt=document.getElementById('succes-text')
+
+        if (txt=='edit'){
+        succestxt.innerHTML = 'Successfully Edited Data';
+
+        succestxt.style.display = 'block';}
+        else if (txt=="restore"){
+            succestxt.innerHTML="Successfully Restored data"
+            succestxt.style.display='block';
+            hidePopup()
+
+        }
+        else if (txt='add'){
+            succestxt.innerHTML="Successfully Added data"
+            succestxt.style.display='block';
+        }        
+        setTimeout(function() {
+            document.getElementById('succes-text').style.display = 'none';
+            }, 10000);
+            setTimeout(function(){
+                location.reload()
+            },10000);
+            
+    }
+</script>
+
+
