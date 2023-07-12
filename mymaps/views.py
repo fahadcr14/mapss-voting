@@ -1,5 +1,7 @@
 from django.shortcuts import render
 from django.http import JsonResponse
+from django.views.decorators.csrf import csrf_exempt
+from django.views.decorators.http import require_GET, require_POST
 # Create your views here.
 def index(request):
     return render(request, 'mymaps/index.html')
@@ -61,7 +63,12 @@ def get_voter_data(request):
     for q in data:
         if query.upper()==q['street_name'] :
             lst.append(q)
-    return JsonResponse(lst, safe=False)
+    response=JsonResponse(lst, safe=False)
+    response["Access-Control-Allow-Origin"] = "http://16.170.195.14"  # Allow all origins (adjust as needed)
+    response["Access-Control-Allow-Headers"] = "Content-Type"
+    response["Access-Control-Allow-Methods"] = "GET"
+        
+    return response
 import re
 def get_persons(request):
     
@@ -91,7 +98,12 @@ def get_persons(request):
                 names.append(q['first_name']+' '+q['last_name'])
             i+=1
             
-    return JsonResponse(names,  safe=False)   
+    response=JsonResponse(names, safe=False)
+    response["Access-Control-Allow-Origin"] = "http://16.170.195.14"  # Allow all origins (adjust as needed)
+    response["Access-Control-Allow-Headers"] = "Content-Type"
+    response["Access-Control-Allow-Methods"] = "GET"
+        
+    return response 
 
 from .models import Questionnaire
 
@@ -124,9 +136,12 @@ def submit_questionnaire(request):
                                       q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,q6=q6,user=user,voter_name=person,ward=ward,pct=pct)
         questionnaire.save()
 
-        return render(request, 'mymaps/success.html')  # Redirect to a success page or render a response
+        response = render(request, 'mymaps/success.html')
+        response["Access-Control-Allow-Origin"] = "*"  # Allow all origins (adjust as needed)
+        response["Access-Control-Allow-Headers"] = "Content-Type"
+        response["Access-Control-Allow-Methods"] = "GET"
+        return response  # Redirect to a success page or render a response
 
-    return render(request, 'mymaps/questions.html')
 def get_pct_by_ward(request):
     global ward
     ward = request.GET.get('ward', None)
@@ -135,7 +150,12 @@ def get_pct_by_ward(request):
         pct_values = Voters_list.objects.filter(ward=ward).values_list('pct', flat=True).distinct()
         #print('Pct values',pct_values)
         pct_list = list(pct_values)
-        return JsonResponse({'pct_list': pct_list})
+        response_data = {'pct_list': pct_list}
+        response = JsonResponse(response_data)
+        response["Access-Control-Allow-Origin"] = "*"  # Allow all origins (adjust as needed)
+        response["Access-Control-Allow-Headers"] = "Content-Type"
+        response["Access-Control-Allow-Methods"] = "GET"
+        return response
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
 def get_street_by_pct(request):
@@ -146,7 +166,12 @@ def get_street_by_pct(request):
         pct_values = Voters_list.objects.filter(ward=ward,pct=pct).values_list('street_name', flat=True).distinct()
         #print('St values',pct_values)
         pct_list = list(pct_values)
-        return JsonResponse({'pct_list': pct_list})
+        response_data = {'pct_list': pct_list}
+        response = JsonResponse(response_data)
+        response["Access-Control-Allow-Origin"] = "*"  # Allow all origins (adjust as needed)
+        response["Access-Control-Allow-Headers"] = "Content-Type"
+        response["Access-Control-Allow-Methods"] = "GET"
+        return response
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
 #-----------------------------------dashboard=============================
