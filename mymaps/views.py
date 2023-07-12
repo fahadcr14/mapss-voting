@@ -4,7 +4,11 @@ from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 # Create your views here.
 def index(request):
-    return render(request, 'mymaps/index.html')
+        response = render(request, 'mymaps/index.html')
+        response["Access-Control-Allow-Origin"] = "*"  # Allow all origins (adjust as needed)
+        response["Access-Control-Allow-Headers"] = "Content-Type"
+        response["Access-Control-Allow-Methods"] = "GET"
+        return response
 def questions(request):
     return render(request, 'mymaps/questions.html')
 

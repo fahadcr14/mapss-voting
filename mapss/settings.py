@@ -28,9 +28,7 @@ DEBUG = False
 
 ALLOWED_HOSTS = ['*']
 CORS_ORIGIN_ALLOW_ALL = True
-CORS_ORIGIN_WHITELIST = [
-    'http://16.170.195.14',
-]
+
 
 
 
