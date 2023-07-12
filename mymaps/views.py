@@ -3,12 +3,19 @@ from django.http import JsonResponse
 from django.views.decorators.csrf import csrf_exempt
 from django.views.decorators.http import require_GET, require_POST
 # Create your views here.
+from django.http import HttpResponse, HttpResponseNotAllowed
+from django.shortcuts import render
+
 def index(request):
+    if request.method == 'GET':
         response = render(request, 'mymaps/index.html')
         response["Access-Control-Allow-Origin"] = "*"  # Allow all origins (adjust as needed)
         response["Access-Control-Allow-Headers"] = "Content-Type"
         response["Access-Control-Allow-Methods"] = "GET"
         return response
+    else:
+        return HttpResponseNotAllowed(['GET'])
+
 def questions(request):
     return render(request, 'mymaps/questions.html')
 
