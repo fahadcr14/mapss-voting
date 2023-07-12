@@ -218,29 +218,29 @@
         Add Data
         <span class="underline"></span>
     </h1>
-        <div style="justify-content:center;align-items:center;">
-        <form class=="forms" id='adddata-form'action="/submitdata/" method="post">
-            {% csrf_token %}
-            <div class="input-container">
-                <input type="text" id="input-field" name="person" placeholder="Enter Username" required>
-                <input type="text" id="input-field" name="ward" placeholder="Enter Ward" required>
-                <input type="text" id="input-field" name="pct" placeholder="Enter Pct" required>
-                <input type="text" id="input-field" name="vn" placeholder="Enter Voter Name " required>
-                <input type="text" id="input-field" name="apt" placeholder="Enter Apt Number" >
-                <input type="text" id="input-field" name="stn" placeholder="Enter Street No" required>
-                <input type="text" id="input-field" name="sta" placeholder="Enter Street Address" required>
-                <input type="text" id="input-field" name="sta" placeholder="Enter Zip Code" required>
-                <input type="text" id="input-field" name="question1" placeholder="Will you vote for (Norman Roldan) on September 12 ?" required>
-                <input type="text" id="input-field" name="question2" placeholder="Is everyone in the house register to vote? If not, would you like to register?" required>
-                <input type="text" id="input-field" name="question3" placeholder="Would you need an Absentee Ballot?" required>
-                <input type="text" id="input-field" name="question4" placeholder="Are you going to Vote by mail?" required>
-                <input type="text" id="input-field" name="question5" placeholder="Could we install a lawn sign?" required>
-                <input type="text" id="input-field" name="question6" placeholder="Would you need a ride to the voting precinct? If Yes Enter Phone Num" required>
-                
-                
-                <button id='button-submit'type="submit" onclick="adddata()" style="position:relative;left:20px;">Submit</button>    
-            </div>
-        </form>
+    <div style="text-align: center;">
+        <form class="forms" id='adddata-form'action="/submitdata/" method="post" >
+                {% csrf_token %}
+                <div class="input-container">
+                    <input type="text" id="input-field" name="person" placeholder="Enter Username" required>
+                    <input type="text" id="input-field" name="ward" placeholder="Enter Ward" required>
+                    <input type="text" id="input-field" name="pct" placeholder="Enter Pct" required>
+                    <input type="text" id="input-field" name="vn" placeholder="Enter Voter Name " required>
+                    <input type="text" id="input-field" name="apt" placeholder="Enter Apt Number" >
+                    <input type="text" id="input-field" name="stn" placeholder="Enter Street No" required>
+                    <input type="text" id="input-field" name="sta" placeholder="Enter Street Address" required>
+                    <input type="text" id="input-field" name="sta" placeholder="Enter Zip Code" required>
+                    <input type="text" id="input-field" name="question1" placeholder="Will you vote for (Norman Roldan) on September 12 ?" required>
+                    <input type="text" id="input-field" name="question2" placeholder="Is everyone in the house register to vote? If not, would you like to register?" required>
+                    <input type="text" id="input-field" name="question3" placeholder="Would you need an Absentee Ballot?" required>
+                    <input type="text" id="input-field" name="question4" placeholder="Are you going to Vote by mail?" required>
+                    <input type="text" id="input-field" name="question5" placeholder="Could we install a lawn sign?" required>
+                    <input type="text" id="input-field" name="question6" placeholder="Would you need a ride to the voting precinct? If Yes Enter Phone Num" required>
+                    
+                    <br>
+                    <button id='button-submit'type="submit" onclick="adddata()" style="position:relative;left:20px;">Submit</button>    
+                </div>
+            </form>
     </div>
 
     <!-- Table to display the data -->
