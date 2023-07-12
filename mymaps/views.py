@@ -120,11 +120,14 @@ from .models import Questionnaire
 
 def submit_questionnaire(request):
     if request.method == 'POST':
+        
         apart = request.GET.get('query')
-        user=apart.split(',')[-4]
-        person=apart.split(',')[-3]
-        ward=apart.split(',')[-2]
-        pct=apart.split(',')[-1]
+        user=apart.split(',')[-6]
+        person=apart.split(',')[-5]
+        ward=apart.split(',')[-4]
+        pct=apart.split(',')[-3]
+        lati=apart.split(',')[-2]
+        longi=apart.split(',')[-1]
         query_list=re.findall(r'\d+', apart)
         if len(query_list)>2:
             apt=query_list[0]
@@ -146,6 +149,11 @@ def submit_questionnaire(request):
         questionnaire = Questionnaire(apt=apt, street_number=street_number, street_name=street_name,
                                       q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,q6=q6,user=user,voter_name=person,ward=ward,pct=pct)
         questionnaire.save()
+        filtered_rows = Votelatlon.objects.filter(latitude=lati, longitude=longi)
+        for row in filtered_rows:
+            row.visited='yes'
+            row.save()
+
 
         response = render(request, 'mymaps/success.html')
         response["Access-Control-Allow-Origin"] = "*"  # Allow all origins (adjust as needed)

@@ -72,7 +72,6 @@
             margin:auto;
             left:0px;
             right:0px;
-            top:20px
         }
         .forms input{
             border-radius:5px;
@@ -142,7 +141,7 @@
         }
         
         .popup-scrollable {
-            max-height: 200px; /* Adjust the maximum height of the popup content */
+            max-height: 500px; /* Adjust the maximum height of the popup content */
             overflow-y: auto;
         }
         .full-container{
@@ -177,6 +176,7 @@
                 height: 950px;
                 width: 110%;
                 top: 25px;
+                z-index:9999
             
             }
             .full-container{
@@ -219,8 +219,9 @@
                 
             }
             .leaflet-popup-content-wrapper{
-                width:300px;
-                font-size:24px;
+                width:600px;
+                height:600px;
+                font-size:32px;
             }
             
             .popup-button {
@@ -234,7 +235,9 @@
             }
             
             .popup-scrollable {
-                max-height: 200px; /* Adjust the maximum height of the popup content */
+                width:600px;
+                height:300px;
+                 /* Adjust the maximum height of the popup content */
                 overflow-y: auto;
                 
             }
@@ -258,16 +261,22 @@
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css" />
 </head>
 <body>
-    <div class ="full-container"> 
-        <div class="logo">
-            <img id ="img1"src="/static/images/logopng.jpeg" alt="Logo" >
-            <span class="logo-text" >Voting</span>
-          </div>
-          
-          
-        <form class="forms" method="get">
-        <p>Hi my name is ______.<br>I am with the Committee to <br>Elect Norman Roldan.I would <br>like to discuss Norman's platform <br>and ask you a few questions</p>
+    <div class="full-container">
 
+        <div class="logo ">
+          
+          <img id="img1" src="/static/images/logopng.jpeg" alt="Logo">
+          <span class="logo-text">
+            <button onclick="goBack()" class="back-button" style="text-align:left;justify-content:left;background:transparent;color:red;font-size:18px;">&#8592;</button>
+            Voting
+
+        </span>
+        </div>
+          
+          
+    <form id ="forminput"class="forms" method="get">
+        <p>Hi my name is <span id="nameofperson">______</span>.<br>I am with the Committee to <br>Elect Norman Roldan.I would <br>like to discuss Norman's platform <br>and ask you a few questions</p>
+        
         <label for="input-field">Input:</label>
         <input type="text" id="input-field" name="input" placeholder="Enter Username" required>
     
@@ -373,6 +382,9 @@
         document.addEventListener('submit', function(event) {
 
             event.preventDefault();
+            document.getElementById('forminput').style.display="none";
+            document.getElementById('map').style.display="block";
+
             var show_loading=document.getElementById('loading-container')
             show_loading.style.display='block';
             
@@ -380,6 +392,9 @@
             var mapDiv = document.getElementById('map');
             mapDiv.innerHTML = '';
             var inputField = document.getElementById('input-field');
+            document.getElementById('nameofperson').innerHTML=inputField.value
+            
+            //document.getElementById('namesofperson').innerHTML=inputField.value
     
     // Delete the input field
             inputField.style.display = 'none';
@@ -417,6 +432,7 @@
         var rect_count=0;
         var lststing=[]
         var lstperson=[]
+        var lstvisit=[]
         fetch(url)
         .then(response => response.json())
         .then(data => {
@@ -437,6 +453,7 @@
                         lati.push(st['latitude'].toString());
                         longi.push(st['longitude'].toString());
                         fulladdress.push(st['full_address'].toString());
+                        lstvisit.push(st['visited'].toString());
                         
                         var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
                         console.log('Persons api link ',person_api);
@@ -460,6 +477,8 @@
                         lati.push(st['latitude'].toString());
                         longi.push(st['longitude'].toString());
                         fulladdress.push(st['full_address'].toString());
+                        lstvisit.push(st['visited'].toString());
+
                         
                         
                         var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
@@ -497,8 +516,9 @@
                     var single_latitude=lati[i];
                     var single_longitude=longi[i];
                     var single_address=fulladdress[i];
-                    console.log(location,person)
-                    searchLocation(location, person,single_latitude,single_longitude,single_address);
+                    var single_visit=lstvisit[i]
+                    console.log('Visited',single_visit)
+                    searchLocation(location, person,single_latitude,single_longitude,single_address,single_visit);
                     }
                 
                 show_loading.style.display='none';
@@ -535,12 +555,21 @@
                     
                     
                         
-        function searchLocation(q,persons,latii,longii,adres) {
-            var customIcon = L.icon({
-                iconUrl: "/static/images/markericons.png",
-                iconSize: [177, 197],
-                // specify the anchor point of the popup relative to the icon
-              });
+        function searchLocation(q,persons,latii,longii,adres,single_visit) {
+            if (single_visit=='yes'){
+                var customIcon = L.icon({
+                    iconUrl: "/static/images/greenemarker.png",
+                    iconSize: [177, 197],
+                    // specify the anchor point of the popup relative to the icon
+                  });
+            }else{
+                var customIcon = L.icon({
+                    iconUrl: "/static/images/markericons.png",
+                    iconSize: [177, 197],
+                    // specify the anchor point of the popup relative to the icon
+                  });
+            }
+            
               
             //console.log('API URL query',q)
             //console.log('Latitude',latii);
@@ -567,7 +596,7 @@
               }).addTo(map);
 
             // Create a custom popup
-            var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\', \'' + username + '\')">Submit Opinion</button>');
+            var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\', \'' + username + '\',\'' + latii + '\',\'' + longii + '\')">Submit Opinion</button>');
 
             // Bind the popup to the marker
             marker.bindPopup(popup)//.openPopup();
@@ -586,14 +615,18 @@
     <script>
         if(sessionStorage.getItem('redirection')){
             var inputField = parent.document.getElementById('input-field');
-            console.log('Username',sessionStorage.getItem('user'));
             inputField.value=sessionStorage.getItem('user');
+            document.getElementById('nameofperson').innerHTML=inputField.value
             inputField.style.display = 'none';
         }
       </script>
     <script>
-        function redirectToQuestions(q,user) {
+        function redirectToQuestions(q,user,lati,longi) {
+
             //console.log(q)
+            sessionStorage.setItem('latitudes',lati);
+            sessionStorage.setItem('longitude',longi);
+
             ward_no =document.getElementById('ward-dropdown').value
             pct_no =document.getElementById('pct-dropdown').value
             sessionStorage.setItem('pct',pct_no);
@@ -603,6 +636,11 @@
             var selectedPerson = document.querySelector('input[name="person"]:checked').value;
             sessionStorage.setItem('personname',selectedPerson);
             window.location.href = "questions.html";
+        }
+        function goBack() {
+            document.getElementById('forminput').style.display="flex";
+            document.getElementById('map').style.display="none";
+
         }
     </script>
 </body>

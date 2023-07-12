@@ -71,6 +71,7 @@ class Voters_list(models.Model):
     latitude=models.CharField(max_length=100)
     full_address = models.CharField(max_length=255,blank=True)
     
+    
 
 
 class Votelatlon(models.Model):
@@ -93,3 +94,4 @@ class Votelatlon(models.Model):
     longitude=models.CharField(max_length=100)
     latitude=models.CharField(max_length=100)
     full_address = models.CharField(max_length=255,blank=True)
+    visited = models.CharField(max_length=255, blank=True, default='no')

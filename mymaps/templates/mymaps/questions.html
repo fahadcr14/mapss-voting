@@ -186,9 +186,14 @@
         var wardno=sessionStorage.getItem('ward');
         var pctno=sessionStorage.getItem('pct');
         var form = document.getElementById('questions-form');
+        var lati=sessionStorage.getItem('latitudes');
+        var longi=sessionStorage.getItem('longitude')
+        // Remove the values from session storage
+        sessionStorage.removeItem('latitudes');
+        sessionStorage.removeItem('longitude');
 
         // Update the form action URL with the query value
-        form.action = '/submit_questionnaire/?query=' + encodeURIComponent(query) +','+user+','+person_name+','+wardno+','+pctno;
+        form.action = '/submit_questionnaire/?query=' + encodeURIComponent(query) +','+user+','+person_name+','+wardno+','+pctno+','+lati+','+longi;
         
     </script>
     <script>
