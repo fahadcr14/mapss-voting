@@ -178,7 +178,7 @@ def get_pct_by_ward(request):
         return JsonResponse({'error': 'Ward parameter is missing'})
 def get_street_by_pct(request):
     global pct
-    pct = request.GET.get('st', None)
+    pct = request.GET.get('st')
     
     if pct is not None:
         print('Ward in pct function',ward)
@@ -187,9 +187,7 @@ def get_street_by_pct(request):
         pct_list = list(pct_values)
         response_data = {'pct_list': pct_list}
         response = JsonResponse(response_data)
-        response["Access-Control-Allow-Origin"] = "*"  # Allow all origins (adjust as needed)
-        response["Access-Control-Allow-Headers"] = "Content-Type"
-        response["Access-Control-Allow-Methods"] = "GET"
+        
         return response
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
