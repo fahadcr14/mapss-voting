@@ -20,12 +20,11 @@ def questions(request):
     return render(request, 'mymaps/questions.html')
 
 from django.test import TestCase
-
+pct=""
 # Create your tests here.
 import csv
 from datetime import datetime
 from .models import Voters_list,Votelatlon,time_zone
-
 def inject_voters_from_csv(request):
     print(f'starting to inject')
     i=0
@@ -166,7 +165,7 @@ def get_pct_by_ward(request):
     ward = request.GET.get('ward', None)
     
     if ward is not None:
-        pct_values = Voters_list.objects.filter(ward=ward).values_list('pct', flat=True).distinct()
+        pct_values = Votelatlon.objects.filter(ward=ward).values_list('pct', flat=True).distinct()
         #print('Pct values',pct_values)
         pct_list = list(pct_values)
         response_data = {'pct_list': pct_list}
@@ -178,11 +177,12 @@ def get_pct_by_ward(request):
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
 def get_street_by_pct(request):
+    global pct
     pct = request.GET.get('st', None)
     
     if pct is not None:
         print('Ward in pct function',ward)
-        pct_values = Voters_list.objects.filter(ward=ward,pct=pct).values_list('street_name', flat=True).distinct()
+        pct_values = Votelatlon.objects.filter(ward=ward,pct=pct).values_list('street_name', flat=True).distinct()
         #print('St values',pct_values)
         pct_list = list(pct_values)
         response_data = {'pct_list': pct_list}
