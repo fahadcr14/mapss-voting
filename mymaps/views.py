@@ -20,7 +20,6 @@ def questions(request):
     return render(request, 'mymaps/questions.html')
 
 from django.test import TestCase
-pct=""
 # Create your tests here.
 import csv
 from datetime import datetime
@@ -177,18 +176,16 @@ def get_pct_by_ward(request):
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
 def get_street_by_pct(request):
-    global pct
     pct = request.GET.get('st')
     
     if pct is not None:
         print('Ward in pct function',ward)
         pct_values = Votelatlon.objects.filter(ward=ward,pct=pct).values_list('street_name', flat=True).distinct()
         #print('St values',pct_values)
-        pct_list = list(pct_values)
-        response_data = {'pct_list': pct_list}
-        response = JsonResponse(response_data)
+        st_list = list(pct_values)
+        response_data = {'st_list': st_list}
         
-        return response
+        return JsonResponse(response_data)
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
 #-----------------------------------dashboard=============================
