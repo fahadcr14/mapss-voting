@@ -331,10 +331,11 @@
             wardDropdown.addEventListener('change', function() {
               var selectedWard = this.value;
               var wards=selectedWard;
+              pctDropdown.innerHTML = '';
               fetch('/api/get-pct-by-ward/?ward=' + selectedWard)
                 .then(response => response.json())
                 .then(data => {
-                  pctDropdown.innerHTML = '';
+                  
                   var option = document.createElement('option');
                     option.value = '';
                     option.disabled = true;
@@ -358,10 +359,11 @@
           pctDropdown.addEventListener('change', function() {
               var selectedpct = this.value;
               var pcts=selectedpct;
+              stDropdown.innerHTML = '';
               fetch('/api/get-steet-by-pct/?st=' + selectedpct)
                 .then(response => response.json())
                 .then(data => {
-                  stDropdown.innerHTML = '';
+                  
                     
                   data.pct_list.forEach(function(pctValue) {
                     var option = document.createElement('option');
