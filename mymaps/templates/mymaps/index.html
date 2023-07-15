@@ -359,24 +359,34 @@
           pctDropdown.addEventListener('change', function() {
               var selectedpct = this.value;
               var pcts=selectedpct;
-              fetch('/api/get-steet-by-pct/?st=' + selectedpct)
-                .then(response => response.json())
-                .then(data => {
+              var xhr = new XMLHttpRequest();
+                xhr.open('GET', '/api/get-steet-by-pct/?st=' + selectedpct, true);
+
+                xhr.onload = function() {
+                if (xhr.status === 200) {
+                    var data = JSON.parse(xhr.responseText);
                     stDropdown.innerHTML = '';
 
                     console.log('its in pct block');
-                  data.pct_list.forEach(function(pctValue) {
+                    data.pct_list.forEach(function(pctValue) {
                     var option = document.createElement('option');
-                    
+
                     option.value = pctValue;
                     option.text = pctValue;
                     stDropdown.appendChild(option);
-                  });
-                })
-                .catch(error => {
-                  alert('Error occurred while retrieving pct values.');
-                  location.reload()
-                });
+                    });
+                } else {
+                    alert('Error occurred while retrieving pct values.');
+                    location.reload();
+                }
+                };
+
+                xhr.onerror = function() {
+                alert('Request failed. Please try again later.');
+                };
+
+                xhr.send();
+
         });
       });
       //-----------------here the maps starts----------------------
