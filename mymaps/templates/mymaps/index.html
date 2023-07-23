@@ -329,7 +329,10 @@
             var stDropdown = document.getElementById('st-dropdown');
       
             wardDropdown.addEventListener('change', function() {
-              var selectedWard = this.value;
+                var wardDropdown = document.getElementById('ward-dropdown');
+                var pctDropdown = document.getElementById('pct-dropdown');
+                var stDropdown = document.getElementById('st-dropdown');
+              var selectedWard = wardDropdown.value;
               var wards=selectedWard;
               stDropdown.innerHTML = '';
               pctDropdown.innerHTML = '';
@@ -360,7 +363,10 @@
             
           });
           pctDropdown.addEventListener('change', function() {
-              var selectedpct = this.value;
+            var wardDropdown = document.getElementById('ward-dropdown');
+            var pctDropdown = document.getElementById('pct-dropdown');
+            var stDropdown = document.getElementById('st-dropdown');
+              var selectedpct = pctDropdown.value;
               var pcts=selectedpct;
               stDropdown.innerHTML = '';
               fetch('/api/get-steet-by-pct/?st=' + selectedpct)
