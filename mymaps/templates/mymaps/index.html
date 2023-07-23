@@ -323,6 +323,7 @@
         
           // Set the initial map view
         var map=null;
+//        document.addEventListener('DOMContentLoaded', function() {
             var wardDropdown = document.getElementById('ward-dropdown');
             var pctDropdown = document.getElementById('pct-dropdown');
             var stDropdown = document.getElementById('st-dropdown');
@@ -365,10 +366,12 @@
             var wardDropdown = document.getElementById('ward-dropdown');
             var pctDropdown = document.getElementById('pct-dropdown');
             var stDropdown = document.getElementById('st-dropdown');
+            var wardDropdown = document.getElementById('ward-dropdown');
+            var selectedWard=wardDropdown.value
               var selectedpct = pctDropdown.value;
               var pcts=selectedpct;
               stDropdown.innerHTML = '';
-              fetch('/api/get-steet-by-pct/?st=' + selectedpct)
+              fetch('/api/get-steet-by-pct/?st=' +selectedWard +','+ selectedpct)
                 .then(response => response.json())
                 .then(data => {
                   stDropdown.innerHTML = '';
@@ -385,6 +388,7 @@
                   alert('Error occurred while retrieving pct values.');
                 });
         });
+    //  });
       //-----------------here the maps starts----------------------
         
       

@@ -160,7 +160,7 @@ def submit_questionnaire(request):
         return response  # Redirect to a success page or render a response
 
 def get_pct_by_ward(request):
-    global ward
+    #global ward
     ward = request.GET.get('ward', None)
     
     if ward is not None:
@@ -176,7 +176,9 @@ def get_pct_by_ward(request):
     else:
         return JsonResponse({'error': 'Ward parameter is missing'})
 def get_street_by_pct(request):
-    pct = request.GET.get('st')
+    query_ward_pct = request.GET.get('st').split(',')
+    ward=query_ward_pct[0]
+    pct=query_ward_pct[1]
     
     if pct is not None:
         print('Ward in pct function',ward)
