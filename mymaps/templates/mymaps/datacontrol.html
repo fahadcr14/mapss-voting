@@ -225,7 +225,7 @@
         <span class="underline"></span>
     </h1>
     <div style="text-align: center;">
-        <form class="forms" id='adddata-form'action="/submitdata/" method="post" >
+        <form class="forms" id='adddata-form'action="" method="post" >
                 {% csrf_token %}
                 <div class="input-container">
                     <input type="text" id="input-field" name="person" placeholder="Enter Username" required>
@@ -416,9 +416,42 @@
     function adddata(){
         document.getElementById('adddata-form').addEventListener('submit', function(event) {
             event.preventDefault()
-        var questionn= JSON.parse('{{ questionnaires_json|safe }}');
+            console.log('initiated')
+            api='/submitdata/'
+            const formData = new FormData(event.target);
+
+    
+            fetch(api, {
+            method: 'POST',
+            body: formData
+            })
+            .then(response => {
+                // Check if the response status code is 200
+                if (response.status === 200) {
+                // Handle the 200 response here
+                console.log('Response status code: 200');
+                success('add');
+
+                return response.json(); 
+                } else {
+                // Handle other response status codes (e.g., 404, 500, etc.) here
+                console.log('Response status code:', response.status);
+                }
+            })
+            .then(data => {
+                // Handle the response data from the API if needed
+                console.log('Response data:', data);
+                renderTable(data);
+                success('add')})
+
+
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch request
+                console.error('Error:', error);
+            });
+        //var questionn= JSON.parse('{{ questionnaires_json|safe }}');
         renderTable(questionn);
-        success('add')})
     }
     var offset = 0;
     var limit = 30;
@@ -691,8 +724,40 @@
                 document.querySelector('#forms [name="q3"]').value = q3Input.value;
                 document.querySelector('#forms [name="q4"]').value = q4Input.value;
                 document.querySelector('#forms [name="q5"]').value = q5Input.value
-                document.querySelector('#forms [name="q6"]').value = q6Input.value;});
+                document.querySelector('#forms [name="q6"]').value = q6Input.value;
+                api='/edit_row_data/'
+                const formData = new FormData(event.target);
 
+        
+                fetch(api, {
+                method: 'POST',
+                body: formData
+                })
+                .then(response => {
+                    // Check if the response status code is 200
+                    if (response.status === 200) {
+                    // Handle the 200 response here
+                    console.log('Response status code: 200');
+                    success('edit');
+
+                    return response.json(); 
+                    } else {
+                    // Handle other response status codes (e.g., 404, 500, etc.) here
+                    console.log('Response status code:', response.status);
+                    }
+                })
+                .then(data => {
+                    // Handle the response data from the API if needed
+                    console.log('Response data:', data);
+                    renderTable(data)
+                })
+                .catch(error => {
+                    // Handle any errors that occurred during the fetch request
+                    console.error('Error:', error);
+                });
+            
+            });
+                
 
                 
     }   
@@ -767,7 +832,7 @@
             document.getElementById('succes-text').style.display = 'none';
             }, 10000);
             setTimeout(function(){
-                location.reload()
+                //location.reload()
             },10000);
             
     }

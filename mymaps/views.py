@@ -25,7 +25,7 @@ import csv
 from datetime import datetime
 from .models import Voters_list,Votelatlon,time_zone
 def inject_voters_from_csv(request):
-    print(f'starting to inject')
+    #print(f'starting to inject')
     i=0
     with open(r'C:\Users\cr7\3D Objects\conv\New folder\full\lastcsv.csv', 'r') as file:
         reader = csv.DictReader(file)
@@ -54,18 +54,19 @@ def inject_voters_from_csv(request):
 
             )
             voter.save()
-            print(i)
+            #print(i)
             i+=1
-        #print(f'success')
+        ##print(f'success')
+
 def get_voter_data(request):
     strig=request.GET.get('query','').split(',')
     query=strig[0]
     ward=strig[1]
     pcts=strig[2]
-    #print('Voters data query ',strig)
+    ##print('Voters data query ',strig)
     voters=Votelatlon.objects.filter(ward=ward,pct=pcts,street_name=query.upper()).values_list()
     data = list(voters.values())
-    #print('get voters data',data)
+    ##print('get voters data',data)
     lst=list()
     i=0
     
@@ -78,40 +79,76 @@ def get_voter_data(request):
     response["Access-Control-Allow-Methods"] = "GET"
         
     return response
-import re
+import re,random
 def get_persons(request):
-    
+    random_num=random.randint(1,999)
     strig=request.GET.get('query','').split(',')
-    #print('Get person ',strig)
+    #print(f'Get person {random_num} ',strig)
+    
     query=strig[0]
+    kq=strig[0].split(' ')
+    #print(kq)
+    
     ward=strig[1]
     pcts=strig[2]
-    voters=Votelatlon.objects.filter(ward=ward,pct=pcts).values_list()
+    if len(kq)==4:
+        #print('Normal House')
+        st_number=kq[0]
+        st_name=kq[1]+' '+kq[2]
+        zip_number=kq[3]
+        voters=Votelatlon.objects.filter(ward=ward,pct=pcts,street_number=st_number,street_name=st_name,zip_code=zip_number).values_list()
+    if len(kq)==5:
+        #print('Apartment ')
+
+        apt_num=kq[0]
+        st_number=kq[1]
+        st_name=kq[2]+' '+kq[3]
+        zip_number=kq[4]
+        voters=Votelatlon.objects.filter(ward=ward,pct=pcts,apt_number=apt_num,street_number=st_number,street_name=st_name,zip_code=zip_number).values_list()
     data = list(voters.values())
-    names=[]
+    data2 = list(voters.first())
+
+    ##print('Here is data',data)
+    #print('LENGTH OF DATA ',len(data))
+    names=''
     i=0
     digit= re.findall(r'\d+', query)
     strng=re.split(r'\d+', query)
     correct_strng=strng[-1].lstrip()
     query_without_spaces=''.join(query.split())
+    address_verify=''
+    i=0
     for q in data:
-        
-            if q['apt_number']=='':
-                var1=str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
-            else:
-                var1=str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
-            var_no_space=''.join(var1.split())
-            if query_without_spaces==var_no_space:
-                
-                
-                names.append(q['first_name']+' '+q['last_name'])
             i+=1
             
-    response=JsonResponse(names, safe=False)
+            names+=(q['first_name']+' '+q['last_name'])
+            if i<len(data):
+                names+=','
+            
+
+            text=str(q['apt_number'])+str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
+            if text!=address_verify:
+                address_verify+=text
+            '''if q['apt_number']=='':
+                var1=str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
+            else:
+                
+                var1=str(q['apt_number'])+str(q['street_number'])+' '+q['street_name']+' '+q['zip_code']
+            var_no_space=''.join(var1.split())
+            if query_without_spaces==var_no_space:
+                names.append(q['first_name']+' '+q['last_name'])
+                address_verify.append(q['full_address'])
+            i+=1'''
+    names_x_address=names+','+address_verify
+    response_data = {'names': names,
+                     'row_data':data2
+                     }
+    
+    response=JsonResponse(response_data, safe=False)
     response["Access-Control-Allow-Origin"] = "http://16.170.195.14"  # Allow all origins (adjust as needed)
     response["Access-Control-Allow-Headers"] = "Content-Type"
     response["Access-Control-Allow-Methods"] = "GET"
-        
+    #print(f'{random_num} Names {names} address {address_verify}')
     return response 
 
 from .models import Questionnaire
@@ -165,7 +202,7 @@ def get_pct_by_ward(request):
     
     if ward is not None:
         pct_values = Votelatlon.objects.filter(ward=ward).values_list('pct', flat=True).distinct()
-        #print('Pct values',pct_values)
+        ##print('Pct values',pct_values)
         pct_list = list(pct_values)
         response_data = {'pct_list': pct_list}
         response = JsonResponse(response_data)
@@ -181,9 +218,9 @@ def get_street_by_pct(request):
     pct=query_ward_pct[1]
     
     if pct is not None:
-        print('Ward in pct function',ward)
+        #print('Ward in pct function',ward)
         pct_values = Votelatlon.objects.filter(ward=ward,pct=pct).values_list('street_name', flat=True).distinct()
-        #print('St values',pct_values)
+        ##print('St values',pct_values)
         st_list = list(pct_values)
         response_data = {'st_list': st_list}
         
@@ -213,8 +250,8 @@ def dashboard_view(request):
     end_time = datetime.now()
       # Current time
     start_time = end_time - timedelta(minutes=4000)  # Subtract 24 hours from the current time
-    print(start_time)
-    print(end_time)
+    #print(start_time)
+    #print(end_time)
 
     # Filter the Questionnaire objects based on the time range
     questionnaire = Questionnaire.objects.filter(Q(created_at__range=(start_time, end_time)))
@@ -254,7 +291,7 @@ def dashboardview(request):
     if request.method == "GET":
         # Retrieve the start and end times from the request parameters
         timehour = request.GET.get('hour')
-        print(timehour)
+        #print(timehour)
         end_time = datetime.now()  # Current time
         start_time = end_time - timedelta(hours=int(timehour))
 
@@ -272,8 +309,8 @@ def filterbywardpct(request):
             data = json.loads(request.body.decode('utf-8'))
             ward = data.get('wardd')
             pct = data.get('pctt')
-            print(f'Ward: {ward}')
-            print(f'PCT: {pct}')
+            #print(f'Ward: {ward}')
+            #print(f'PCT: {pct}')
             questionair=Questionnaire.objects.filter(ward=ward,pct=pct).values_list()
             # Perform further processing with the ward and pct values
             questionnaires_json = list(questionair.values())
@@ -285,7 +322,7 @@ def get_pcts(request):
     if request.method == 'POST':
         data = json.loads(request.body)
         ward = data.get('ward')
-        print(f'GET PCTS WARD {ward}')
+        #print(f'GET PCTS WARD {ward}')
 
         # Perform filtering based on the selected ward to retrieve the corresponding PCT values
         filtered_pcts = Questionnaire.objects.filter(ward=ward).values_list('pct', flat=True).distinct()
@@ -297,7 +334,28 @@ def get_pcts(request):
 
     return JsonResponse({'message': 'Invalid request method'}, status=400)
 
+#----------------------------TEXTUAL Data----------------------#
+def textualcontrol(request):
+    
+        
+    return render(request, 'mymaps/textualdata.html')
+#apis for textuatal data
+def textualcontroldata(request):
+    votelatlon = Votelatlon.objects.all()
+    votelatlon_json = list(votelatlon.values())
 
+    distinct_wards = Votelatlon.objects.values_list('ward', flat=True).distinct()
+    distinct_pcts = Votelatlon.objects.values_list('pct', flat=True).distinct()
+    distinct_st = Votelatlon.objects.values_list('street_name', flat=True).distinct()
+
+    context = {
+        'votelatlon_json': votelatlon_json,
+        'distinct_wards': list(distinct_wards),
+        'distinct_pcts': list(distinct_pcts),
+    }
+    
+
+    return JsonResponse(context)
 #-------------------------------------Edit Database ------------------------------------------
 def datacontrol(request):
     questionnaires = Questionnaire.objects.all()
@@ -311,14 +369,23 @@ def datacontrol(request):
         'distinct_pcts': distinct_pcts,
         }
     return render(request, 'mymaps/datacontrol.html',context)
+import time
 def submitdata(request):
+    print('submit data called')
+
     if request.method=="POST":
+        print('submit get data called')
+        signal=request.GET.get('query')
+        
         ward=request.POST.get('ward')
         pct=request.POST.get('pct')
         vn=request.POST.get('vn')
         apt=request.POST.get('apt')
         stn=request.POST.get('stn')
+        
         sta=request.POST.get('sta')
+        print('Street Number',stn)
+        
         person=request.POST.get('person')
         q1 = request.POST.get('question1')
         q2 = request.POST.get('question2')
@@ -326,15 +393,24 @@ def submitdata(request):
         q4 = request.POST.get('question4')
         q5 = request.POST.get('question5')
         q6 = request.POST.get('question6')
-        print(f'Running submit datat {ward,pct,sta,stn,zip}')
+        print('Questions',q1,q2,q3,q4,q5,q6)
+        #print(f'Running submit datat {ward,pct,sta,stn,zip}')
         questionnaire = Questionnaire(apt=apt, street_number=stn, street_name=sta,
                                       q1=q1, q2=q2,q3=q3,q4=q4,q5=q5,q6=q6,user=person,voter_name=vn,ward=ward,pct=pct)
         questionnaire.save()
         questionaire=Questionnaire.objects.all()
         questionnaires_json = list(questionaire.values())
 
+        if signal=='textual':
         
-        return JsonResponse(questionnaires_json, safe=False)
+            filtered_rows = Votelatlon.objects.filter(apt_number=apt, street_name=sta,street_number=stn)
+            for row in filtered_rows:
+                row.visited='yes'
+                row.save()
+            response_data = {'message': 'Data submitted successfully'}
+            return JsonResponse(response_data, status=200)        
+        else:
+            return JsonResponse(questionnaires_json, safe=False)
 
     return render(request, 'mymaps/datacontrol.html')
 def edit_row_data(request):
@@ -356,7 +432,7 @@ def edit_row_data(request):
         q6=request.POST.get('q6')
         row = Questionnaire.objects.filter(id=row_id).first()
         if row:
-            print(f'Ward is {ward} Pct{pct} Full address {full_address} User {user} Voter Name{voter_name} q1{q1} q2 {q2} q3{q3} q4{q4} q5{q6}')
+            #print(f'Ward is {ward} Pct{pct} Full address {full_address} User {user} Voter Name{voter_name} q1{q1} q2 {q2} q3{q3} q4{q4} q5{q6}')
         # Update the fields of the row with the new values
             row.ward = ward
             row.pct = pct
@@ -374,21 +450,24 @@ def edit_row_data(request):
             row.q6=q6
             row.save()
 
-        return render(request, 'mymaps/success.html')
+        questionaire=Questionnaire.objects.all()
+        questionnaires_json = list(questionaire.values())
+        return JsonResponse(questionnaires_json, safe=False)
+
 
 #-------------------------------------------------------Backup data base-------------------------------------------
 def restoredata(request):
     if request.method == "GET":
         # Retrieve the start and end times from the request parameters
         timehour = request.GET.get('hour')
-        print(timehour)
+        #print(timehour)
         end_time = time_zone()  # Current time
         start_time = end_time - timedelta(hours=int(timehour))
-        print(f'end time {start_time}')
+        #print(f'end time {start_time}')
         # Retrieve the Questionnaire objects based on the time range
         questionnaire = Questionnaire.objects.filter(Q(created_at__range=(start_time, end_time)))
         questionnaire.delete()
-        print(f'Timezone is {time_zone()}')
+        #print(f'Timezone is {time_zone()}')
         questionnaire = Questionnaire.objects.all()
 
         # Convert the Questionnaire objects to JSON
@@ -399,10 +478,10 @@ def restoredata(request):
 '''    
 def main():
     
-    print("trying to inject")
+    #print("trying to inject")
     inject_voters_from_csv()
-    print(f'sucess added')
-    #print('starting to delete')
+    #print(f'sucess added')
+    ##print('starting to delete')
     
 main()'''
 

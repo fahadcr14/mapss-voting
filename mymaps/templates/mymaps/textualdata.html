@@ -1,0 +1,1129 @@
+<html>
+<head>
+    <title>Dashboard</title>
+    {% load static %}
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/5.15.3/css/all.min.css">
+
+    <style>
+        @font-face {
+            font-family: 'Poppins';
+            src: url("{% static 'fonts/Poppins-Bold.ttf' %}") format('truetype');
+          }
+        body {
+            font-family: Poppins;
+            
+            margin: 0;
+            padding: 20px;
+            
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            background-repeat: no-repeat;
+            background-size: cover;
+          }
+          .h1 {
+            box-shadow:   10px 10px 20px 20px white; 
+
+          }
+          .h1-image-text {
+            
+            font-size:60px;
+            text-align: center;
+            
+          }
+          
+          #input-field{
+            background:transparent;
+            font-family:Poppins;
+            display:inline;
+            top:30px;
+            width:450px;
+            height:40px;
+
+
+        } 
+        #pop-input-field{
+            background:transparent;
+            font-family:Poppins;
+            display:inline;
+            top:30px;
+            width:90px;
+            height:40px;
+            color:white;
+
+
+        } 
+        #pop-input-field placeholder{
+            color:white;
+        }
+         .button-submit,#button-submit{
+            
+            padding: 10px 20px;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            font-family:Poppins;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+            color: yellow;
+            margin-top: 20px;
+            margin: 20 20 10 20;
+
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }              
+         .forms {
+            display: block;
+            flex-direction: rows;
+            justify-content:center;
+            align-items: center;
+            
+        }
+        table {
+            position:relative;
+            border-radius:45px;
+            top:20px;
+            width: 100%;
+            border-collapse: collapse;
+            margin-bottom: 20px;
+        }
+
+         td {
+            padding: 10px;
+            border: 1px solid #ccc;
+            border-radius:256px;
+            color:white;
+        }
+
+        th {
+            background-image: url("{% static 'images/ds.jpg' %}");
+            
+            padding: 10px;
+            border: 1px solid black;
+            background-color: #f2f2f2;
+            font-weight: bold;
+            color:black;
+        }
+
+        #next-button {
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+
+        }
+         #prev-button{
+            display:none;
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+
+        }
+        .prev-button{
+            
+            
+            top:15px;
+            position:relative;
+            margin:0 10 auto;
+            text-align:center;
+            padding: 15px 25px;
+            font-size:16px;
+            font-family:Poppins;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            color: yellow;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+
+        }
+        .overlay {
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 9999;
+            display: none;
+            backdrop-filter: blur(8px);
+
+        }
+        
+        .popup {
+            position: absolute;
+            top: 50%;
+            left: 50%;
+            transform: translate(-50%, -50%);
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            background-repeat: repeat;
+            background-size: cover;
+            background-position: center;
+            border-radius: 10px;
+            width: 1400px;
+            height: 330px;
+            box-shadow: inset 0px 0px 20px 2px rgba(0, 0, 0, 0.2);
+        }
+        
+        
+        .popup-content {
+            display:none;   
+        }
+        #img1{
+            width:80px;
+            height:80px;
+            position:relative;
+            top:30px;
+        }
+              
+        .underline {
+            background-color: white;
+            position: absolute;
+            bottom: 0;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 5%;
+            height: 1px;
+            background-color: yellow;
+          }
+          
+            
+    </style>
+</head>
+
+<body>
+    <div class="navbar">
+        <span class="h1-image-text" style=" font-size: 32px; color: yellow; text-align: left;">
+
+            <a href="dashboard.html">
+                <img id="img1" src="/static/images/logopng.jpeg" alt="Logo">
+              </a>
+                Normans Roldan
+        </span>
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 720px;text-decoration:none;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 740px;">Edit Data</a>
+    </div>
+    
+    
+    <!-- Dropdown for ward selection -->
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
+        Filter By Ward and Pct
+        <span class="underline"></span>
+    </h1>    
+    <form id="filterform" method="post">
+        <div id="button-container" style="display:flex; justify-content: center;">
+            {% csrf_token %}
+            
+            <!-- Dropdown for ward selection -->
+            <select class="prev-button" id="ward-dropdown" name="wardd" >
+                <option disabled selected >Select Ward</option>
+                <option value="1">Ward 1</option>
+                <option value="2">Ward 2</option>
+                <option value="3">Ward 3</option>
+                <option value="4">Ward 4</option>
+                <option value="5">Ward 5</option>
+                <option value="6">Ward 6</option>
+                <option value="7">Ward 7</option>
+                <option value="8">Ward 8</option>
+                <!-- Add more options as needed -->
+            </select>
+        
+            <!-- Dropdown for pct selection -->
+            <select class="prev-button" id="pct-dropdown">
+            </select>
+            <select class="prev-button" id="st-dropdown" name="query">
+                
+            </select>   
+        
+            <button  class="prev-button" id="submit" type="submit">Submit</button>
+        </div>
+    </form>
+    <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;top:10px;">
+        Submit Data
+        <span class="underline"></span>
+    </h1>
+    <h1 id="succes-text"style='display:none;color:yellow;'>
+        Successfully Edited Data
+        <span class="underline"></span>
+    </h1>                  
+
+    <table>
+        <thead>
+            <tr>
+                
+                <th>No</th>
+                <th>Ward</th>
+                <th>PCT</th>
+                
+                <th>Full Address</th>
+                <th>Voter Name</th>
+
+                <th>Visited</th>
+                <th>Visited</th>
+                <th>Submit</th>
+            </tr>
+        </thead>
+        <tbody id="table-body">
+            <!-- The data rows will be dynamically added here -->
+        </tbody>
+    </table>
+    
+    <div id="popup" class="overlay">
+            
+        <div class="popup">
+            <h1 class="h1-image-text" style="font-size: 32px;color:white;">
+                Add Data <i class="fas fa-times" onclick="hidePopup()" style="color: yellow; cursor: pointer;"></i>
+            </h1>
+              
+            <h1  class="h1-image-text"id="succes-text"style='display:none;color:yellow'><span id="succes-text"id="succes-text"></span></h1>                  
+              
+            <div class="popup-content" id='popup-content'>
+                <table>
+                    <thead>
+                        <tr>
+                            <th>Ward</th>
+                            <th>PCT</th>
+                            <th>User</th>
+                            <th>Voter Name</th>
+                            <th>Full Address</th>
+                            <th>Question 1</th>
+                            <th>Question 2</th>
+                            <th>Question 3</th>
+                            <th>Question 4</th>
+                            <th>Question 5</th>
+                            <th>Question 6</th>
+                            <th>Record Time</th>
+                        </tr>
+                    </thead>
+                    <tbody id="pop-content-body">
+                        <!-- The data rows will be dynamically added here -->
+                    </tbody>
+                </table>
+            </div>
+            <form class='forms'id="forms" action="" method="post">
+                {%csrf_token%}
+                <input type="hidden" name="id" value="">
+                <input type="hidden" name="ward" value="">
+                <input type="hidden" name="pct" value="">
+                <input type="hidden" name="apt" value="">
+                <input type="hidden" name="sta" value="">
+                <input type="hidden" name="stn" value="">
+                <input type="hidden" name="full_address" value="">
+                <input type="hidden" name="person" value="">
+                <input type="hidden" name="vn" value="">
+                <input type="hidden" name="question1" value="">
+                <input type="hidden" name="question2" value="">
+                <input type="hidden" name="question3" value="">
+                <input type="hidden" name="question4" value="">
+                <input type="hidden" name="question5" value="">
+                <input type="hidden" name="question6" value="">
+                <div id="button-container" style="text-align: center;">
+                    <button id="button-submit" type="submit" onclick="hidePopup()">Save</button>    
+                </div>
+                
+            </form>
+        </div>
+    </div>
+    
+    <div id="button-container" style="display:flex; justify-content: center;">
+       
+            <button id="prev-button">Previous</button>
+            <button class="prev-button"id="next-button">Next</button>
+          
+        
+      </div>
+      
+    
+    
+        
+    
+
+    
+
+    <!-- "Next" button to load the next set of entries -->
+
+    <!-- Add any JavaScript code here -->
+    
+</body>
+</html>
+<script>
+    // menu dropdown
+    let all_vote_lat_lon;
+    var wardDropdown = document.getElementById('ward-dropdown');
+            var pctDropdown = document.getElementById('pct-dropdown');
+            var stDropdown = document.getElementById('st-dropdown');
+      
+            wardDropdown.addEventListener('change', function() {
+                var wardDropdown = document.getElementById('ward-dropdown');
+                var pctDropdown = document.getElementById('pct-dropdown');
+                var stDropdown = document.getElementById('st-dropdown');
+              var selectedWard = wardDropdown.value;
+              var wards=selectedWard;
+              stDropdown.innerHTML = '';
+              pctDropdown.innerHTML = '';
+
+              
+              fetch('/api/get-pct-by-ward/?ward=' + selectedWard)
+                .then(response => response.json())
+                .then(data => {
+                    pctDropdown.innerHTML = '';
+                  var option = document.createElement('option');
+                    option.value = '';
+                    option.disabled = true;
+                    option.selected = true;
+                    option.textContent = 'Select Pct';
+
+                    pctDropdown.appendChild(option);
+                  data.pct_list.forEach(function(pctValue) {
+                    var option = document.createElement('option');
+                    option.value = pctValue;
+                    option.text = pctValue;
+                    pctDropdown.appendChild(option);
+                  });
+                })
+                .catch(error => {
+                  alert('Error occurred while retrieving pct values.');
+                });
+                
+            
+          });
+          pctDropdown.addEventListener('change', function() {
+            var wardDropdown = document.getElementById('ward-dropdown');
+            var pctDropdown = document.getElementById('pct-dropdown');
+            var stDropdown = document.getElementById('st-dropdown');
+            var wardDropdown = document.getElementById('ward-dropdown');
+            var selectedWard=wardDropdown.value
+              var selectedpct = pctDropdown.value;
+              var pcts=selectedpct;
+              stDropdown.innerHTML = '';
+              fetch('/api/get-steet-by-pct/?st=' +selectedWard +','+ selectedpct)
+                .then(response => response.json())
+                .then(data => {
+                  stDropdown.innerHTML = '';
+                    
+                  data.st_list.forEach(function(pctValue) {
+                    var option = document.createElement('option');
+                    
+                    option.value = pctValue;
+                    option.text = pctValue;
+                    stDropdown.appendChild(option);
+                  });
+                })
+                .catch(error => {
+                  alert('Error occurred while retrieving pct values.');
+                });
+        });
+    //---------------------------------Submission action
+    document.getElementById('filterform').addEventListener('submit', function(event) {
+
+        event.preventDefault();
+        var tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        
+        //console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
+        
+        //document.getElementById('namesofperson').innerHTML=inputField.value
+
+    
+    var urlParams = new URLSearchParams(window.location.search);
+    var str = urlParams.get('query');
+    //var query = str.replace(/\d/g, '').toUpperCase();;
+    
+    var wards=document.getElementById('ward-dropdown').value;
+    var pcts=document.getElementById('pct-dropdown').value;
+    var query=document.getElementById('st-dropdown').value;
+    console.log(query)
+    
+    var lst=[encodeURIComponent(query)]
+    // Use the search query to display the map of the desired area
+    // Implement your logic here to geocode the search query and display it on the map
+    var url = '/api/voters/?query=' + query+','+wards+','+pcts;
+    var lsts=[];
+    var lati=[];
+    var longi=[];
+    var fulladdress=[];
+    var rect_count=0;
+    var lststing=[]
+    var lstperson=[]
+    var lstvisit=[]
+    var ids_of_rows=[]
+   
+
+// Function to check if the sublist is present in the list
+    
+
+    // Check if the sublist is present
+    
+
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        // Process the fetched data
+        console.log('api called')
+        var fetchPromises = [];
+        
+        //var apt=''
+        //console.log(data[0].zip_code);
+        
+        for (var st of data) {
+            if (st['apt_number'] != null && st['apt_number'] != '') {
+                var aprt = st['apt_number'];
+                console.log('APARTMENT IS HERE ',st);
+                var strng = st['apt_number']+' '+st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
+                console.log('Address2  ',strng);
+                if (!lsts.includes(strng)) {
+                    console.log('APARTMENT IN NOT LIST INCLUDES RUN ')
+                    lsts.push(strng);
+                    lati.push(st['latitude'].toString());
+                    longi.push(st['longitude'].toString());
+                    fulladdress.push(st['full_address'].toString());
+                    lstvisit.push(st['visited'].toString());
+                    ids_of_rows.push(st.id)
+
+                    var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
+                    console.log('Persons api IN APARMENT link ',person_api);
+                    var fetchPromise = fetch(person_api)
+                    .then(response => response.json())
+                    .then(data => {
+                        var sublist=data.names.split(',')[0]
+                        var adddress_sub=data.names.split(',')[1]
+
+                        if (!hasSublist(lstperson, sublist)) {
+                        lstperson.push(adddress_sub)
+                        lstperson.push(sublist)
+
+                        searchLocation(sublist,adddress_sub,data.row_data)}
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    
+                    fetchPromises.push(fetchPromise);
+                }else{
+                    console.log('APARMENT FETCH NOT CALLED ')
+                }
+                
+            } else {
+                console.log('THE STREET ',st.id)
+                var strng = st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
+                console.log('Address',strng);
+                if (!lsts.includes(strng)) {
+                    lsts.push(strng);
+                    lati.push(st['latitude'].toString());
+                    longi.push(st['longitude'].toString());
+                    fulladdress.push(st['full_address'].toString());
+                    lstvisit.push(st['visited'].toString());
+                    ids_of_rows.push(st.id)
+
+                    
+                    
+                    var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
+                    console.log('Persons api link ',person_api);
+                    var fetchPromise = fetch(person_api)
+                    .then(response => response.json())
+                    .then(data => {
+                        var sublist=data.names
+                        console.log('Sublist of the persons',data.names)
+                        var adddress_sub=data.names.split(',')[1]
+                        if (!hasSublist(lstperson, sublist)) {
+                        lstperson.push(adddress_sub)
+                        lstperson.push(sublist)
+                        searchLocation(sublist,adddress_sub,data.row_data)}
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    fetchPromises.push(fetchPromise);
+                }
+            }
+        
+            
+        
+        
+        
+        }
+
+        Promise.all(fetchPromises)
+        .then(() => {
+            console.log('All fetch requests completed');
+            console.log(lstperson);
+            var minLength = Math.min(lstperson.length, lsts.length);
+            console.log(lstperson.length,lsts.length)
+            /*
+            for (var i = 0; i < minLength; i++) {
+                var lst_data=lsts[i]
+                var person = lstperson[i+1];
+                var location = lsts[i];
+                var single_latitude=lati[i];
+                var single_longitude=longi[i];
+                var single_address=fulladdress[i];
+                var single_visit=lstvisit[i]
+                var idofrow=ids_of_rows[i]
+                adddress_verify=lstperson[i]
+                console.log('Here is Addires',lst_data)
+                console.log('Here is names',person)
+                console.log('Visited',single_visit)
+                if (adddress_verify==lst_data){
+                searchLocation(location, person,single_latitude,single_longitude,single_address,single_visit,wards,pcts,idofrow,lst_data)
+            }else{
+                for (var k=0;k<lstperson.lenght;k++){
+                        var personn = lstperson[k+1]
+                        var address_ver=lstperson[k]
+                        console.log('checking')
+                        if (address_ver==lst_data){
+                        searchLocation(location, personn,single_latitude,single_longitude,single_address,single_visit,wards,pcts,idofrow,lst_data)
+                        }
+                }
+            }
+                }*/
+            
+        
+        })
+        .catch(error => {
+            
+            console.error('Error:', error);
+        });
+
+        console.log('----------------------');
+        console.log(lsts);
+    })
+    .catch(error => {
+        // Handle any errors
+        
+        console.error('Error:', error);
+    });
+
+     function hasSublist(list, sublist) {
+    return list.some((item) => JSON.stringify(item) === JSON.stringify(sublist));
+    }
+                
+                
+                    
+    function searchLocation(persan,adres,dataobj) {
+        console.log('THE DATA OBJ',dataobj)
+        
+          
+        //console.log('API URL query',q)
+        //console.log('Latitude',latii);
+        console.log('Address search location is here',adres)
+        personsn=persan.split(',')
+        console.log('This is the persons',dataobj[8],personsn)
+        console.log('This is the PERSANS',dataobj[8],persan)
+        //---------------------------------------username--------------------------------------
+        //username=document.getElementById('input-field').value
+        
+        /*var popupContent = '<h3>Search Result</h3>';
+        for (var i = 0; i < persons.length; i++) {
+            popupContent += '<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
+        }*/
+        //var marker = L.marker([lat, lon]).addTo(map);;
+        persan_array=persan.split(' ')
+        console.log('PERSONA ',persan_array)
+
+        var popupContent = persan;
+        //for (var i = 0; i < persan_array.length; i++) {
+            //popupContent += persan[i];
+            
+
+        //}
+
+        // here the render table 2.0 for filtering 
+        
+        var row = document.createElement('tr');
+            // Add row number
+            
+    
+            // Add checkbox cell
+            
+            var numCell = document.createElement('td');
+            numCell.textContent = dataobj[0];
+            row.appendChild(numCell);
+            // Add other data cells
+            var wardCell = document.createElement('td');
+            wardCell.textContent = dataobj[1];
+            row.appendChild(wardCell);
+    
+            var pctCell = document.createElement('td');
+            pctCell.textContent = dataobj[2];
+            row.appendChild(pctCell);
+    
+            var fulladdressCell = document.createElement('td');
+            fulladdressCell.textContent = dataobj[10]+' '+dataobj[8]+' '+dataobj[9];
+            row.appendChild(fulladdressCell);
+    
+            var voterNameCell = document.createElement('td');
+            voterNameCell.textContent = popupContent;
+            voterNameCell.setAttribute('name', 'voter-name'); 
+
+            row.appendChild(voterNameCell);
+    
+            
+            //vsitied
+            var q1Cell = document.createElement('td');
+            q1Cell.textContent = dataobj[20];
+            row.appendChild(q1Cell);
+    
+            var q2Cell = document.createElement('td');
+            q2Cell.textContent = dataobj[16];
+            row.appendChild(q2Cell);
+            var checkboxCell = document.createElement('td');
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.setAttribute('data-questionnaire-id', dataobj[0]);
+            checkbox.addEventListener('click', function(event) {
+                if (event.target.checked) {
+                    document.getElementById('popup-content').style.display="block";
+
+                    var questionnaireId = event.target.getAttribute('data-questionnaire-id');
+                    var questionnaire = all_vote_lat_lon.find(function(item) {
+                        //itmid=item.apt_number+' '+item.street_number+' '+item.street_name+' '+item.zip_code
+                        if(item.id==questionnaireId){
+                    console.log(item.street_name)
+                    console.log('ID MATCHING ',item.id,questionnaireId)
+
+                    return showPopup(item) }
+                });
+
+                    
+                } else {
+                    hidePopup();
+                }
+                
+                  
+                  
+                  // Handle checkbox click functionality here
+                  
+                  // Print other properties as needed
+                  
+                // Show popup for the selected row
+                // You can implement your own logic to show the popup
+            });
+            checkboxCell.appendChild(checkbox);
+            row.appendChild(checkboxCell);
+            tbody.appendChild(row)
+            
+        
+    }
+                
+});
+
+
+
+    
+    //---------------------------------------------------------------------
+    var offset = 0;
+    var limit = 30;
+    function fetchData() {
+        return new Promise((resolve, reject) => {
+            fetch('api/textualdata')
+                .then(response => response.json())
+                .then(data => {
+                    // Process the JSON data here
+                    resolve(data.votelatlon_json); // Resolve the promise with the data
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    reject(error); // Reject the promise with the error
+                });
+        });
+    }
+    
+    // Call the function and use the returned Promise
+    fetchData()
+        .then(votelatlonJsonData => {
+            // You can use the data here
+            var voter_lat_lon_json=votelatlonJsonData
+             all_vote_lat_lon=voter_lat_lon_json
+            console.log('Data received:', voter_lat_lon_json);
+            //page_intiatlizer(voter_lat_lon_json)
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
+    function page_intiatlizer(voter_lat_lon_json){
+    var questionn= voter_lat_lon_json;
+    console.log(questionn)
+    function renderTable(questionnaires) {
+        var questionnaires=questionnaires;
+        var tbody = document.getElementById('table-body');
+        tbody.innerHTML = '';
+        var end = offset + limit;
+        for (var i = offset; i < end && i < questionnaires.length; i++) {
+            var questionnaire = questionnaires[i];
+            var row = document.createElement('tr');
+            // Add row number
+            
+    
+            // Add checkbox cell
+            var checkboxCell = document.createElement('td');
+            var checkbox = document.createElement('input');
+            checkbox.type = 'checkbox';
+            checkbox.setAttribute('data-questionnaire-id', questionnaire.id,);
+            checkbox.addEventListener('click', function(event) {
+                if (event.target.checked) {
+                    document.getElementById('popup-content').style.display="block";
+
+                    var questionnaireId = event.target.getAttribute('data-questionnaire-id');
+                    var questionnaire = questionnaires.find(function(item) {
+                        if(item.id==questionnaireId){
+                    console.log(item.street_name)
+                    return showPopup(item) }
+                });
+
+                    
+                } else {
+                    hidePopup();
+                }
+                
+                  
+                  
+                  // Handle checkbox click functionality here
+                  
+                  // Print other properties as needed
+                  
+                // Show popup for the selected row
+                // You can implement your own logic to show the popup
+            });
+            checkboxCell.appendChild(checkbox);
+            row.appendChild(checkboxCell);
+            var numCell = document.createElement('td');
+            numCell.textContent = i + 1;
+            row.appendChild(numCell);
+            // Add other data cells
+            var wardCell = document.createElement('td');
+            wardCell.textContent = questionnaire.ward;
+            row.appendChild(wardCell);
+    
+            var pctCell = document.createElement('td');
+            pctCell.textContent = questionnaire.pct;
+            row.appendChild(pctCell);
+    
+            var userCell = document.createElement('td');
+            userCell.textContent = questionnaire.full_address;
+            row.appendChild(userCell);
+    
+            var voterNameCell = document.createElement('td');
+            voterNameCell.textContent = questionnaire.first_name;
+            voterNameCell.setAttribute('name', 'voter-name'); 
+
+            row.appendChild(voterNameCell);
+    
+            var fulladdressCell = document.createElement('td');
+            fulladdressCell.textContent = questionnaire.street_name;
+            row.appendChild(fulladdressCell);
+    
+            var q1Cell = document.createElement('td');
+            q1Cell.textContent = questionnaire.visited;
+            row.appendChild(q1Cell);
+    
+            var q2Cell = document.createElement('td');
+            q2Cell.textContent = questionnaire.voter_status;
+            row.appendChild(q2Cell);
+            /*
+            var q3Cell = document.createElement('td');
+            q3Cell.textContent = questionnaire.q3;
+            row.appendChild(q3Cell);
+    
+            var q4Cell = document.createElement('td');
+            q4Cell.textContent = questionnaire.q4;
+            row.appendChild(q4Cell);
+    
+            var q5Cell = document.createElement('td');
+            q5Cell.textContent = questionnaire.q5;
+            row.appendChild(q5Cell);
+    
+            var q6Cell = document.createElement('td');
+            q6Cell.textContent = questionnaire.q6;
+            row.appendChild(q6Cell);
+    
+            var createdatCell = document.createElement('td');
+            createdatCell.textContent = questionnaire.created_at;
+            row.appendChild(createdatCell);*/
+    
+            tbody.appendChild(row);
+        }
+    
+        // ...
+    
+    
+
+        if (end < questionnaires.length) {
+            var nextButton = document.getElementById('next-button');
+            var prevButton = document.getElementById('prev-button');
+
+            nextButton.style.display = 'block';
+            
+        } else {
+            var nextButton = document.getElementById('next-button');
+            
+            nextButton.style.display = 'none';
+        }
+        
+    }
+
+    //renderTable(questionn);
+
+    document.getElementById('next-button').addEventListener('click', function() {
+        offset += limit;
+        if (offset>=limit){
+            console.log(offset)
+                prevButton.style.display='block';}
+        else{
+            console.log(offset)
+            prevButton.style.display='none';
+        }
+        renderTable(questionn);
+        
+    });
+    document.getElementById('prev-button').addEventListener('click', function() {
+        offset -= limit;
+        if (offset>=limit){
+            console.log(offset)
+                prevButton.style.display='block';}
+        else{
+            console.log(offset)
+            prevButton.style.display='none';
+        }
+        renderTable(questionn);
+    });
+    var prevButton = document.getElementById('prev-button');
+    }
+    //renderTable(questionn)
+    function showPopup(questionnaire) {
+            console.log('Pop Up ',questionnaire)
+            var tbody = document.getElementById('pop-content-body');
+            tbody.innerHTML = '';
+            console.log(questionnaire);
+            var popup = document.getElementById('popup');
+            popup.style.display = 'block';
+            var row = document.createElement('tr');
+
+            var wardCell = document.createElement('td');
+            var wardInput = document.createElement('input');
+            wardInput.type = 'text';
+            wardInput.value = questionnaire.ward;
+            wardInput.id='pop-input-field';
+            wardCell.appendChild(wardInput);
+            row.appendChild(wardCell);
+
+            var pctCell = document.createElement('td');
+            var pctInput = document.createElement('input');
+            pctInput.type = 'text';
+            pctInput.value = questionnaire.pct;
+            pctInput.id='pop-input-field';
+            pctCell.appendChild(pctInput);
+            row.appendChild(pctCell);
+
+            var userCell = document.createElement('td');
+            var userInput = document.createElement('input');
+            userInput.type = 'text';
+            userInput.value ='';
+            userInput.placeholder = 'Enter Username ';
+
+            userInput.id='pop-input-field';
+            userCell.appendChild(userInput);
+            row.appendChild(userCell);
+            var voterNameCell = document.createElement('td');
+            var voterNameInput = document.createElement('input');
+            voterNameInput.type = 'text';
+            voterNameInput.id='pop-input-field';
+            voterNameInput.value = 'Enter Voter Name';
+            voterNameCell.appendChild(voterNameInput);
+            row.appendChild(voterNameCell);
+
+            var fulladdressCell = document.createElement('td');
+            var fulladdressInput = document.createElement('input');
+            fulladdressInput.type = 'text';
+            fulladdressInput.value = questionnaire.apt_number +" "+ questionnaire.full_address;
+            fulladdressInput.id='pop-input-field'
+            fulladdressCell.appendChild(fulladdressInput);
+            row.appendChild(fulladdressCell);
+
+            var q1Cell = document.createElement('td');
+            var q1Input = document.createElement('input');
+            q1Input.type = 'text';
+            //q1Input.value = '';
+            q1Input.placeholder = 'Enter Q1';
+
+            q1Input.id='pop-input-field'
+            q1Cell.appendChild(q1Input);
+            row.appendChild(q1Cell);
+
+            var q2Cell = document.createElement('td');
+            var q2Input = document.createElement('input');
+            q2Input.type = 'text';
+            //q2Input.value = ''
+            q2Input.placeholder = 'Enter Q2';
+
+            q2Input.id='pop-input-field'
+            q2Cell.appendChild(q2Input);
+            row.appendChild(q2Cell);
+
+            var q3Cell = document.createElement('td');
+            var q3Input = document.createElement('input');
+            q3Input.type = 'text';
+            q3Input.id='pop-input-field'
+            q3Input.placeholder = 'Enter Q3';
+
+            //q3Input.value = '';
+            q3Cell.appendChild(q3Input);
+            row.appendChild(q3Cell);
+
+            var q4Cell = document.createElement('td');
+            var q4Input = document.createElement('input');
+            q4Input.type = 'text';
+            q4Input.id='pop-input-field'
+            q4Input.placeholder = 'Enter Q4';
+
+            //q4Input.value = '';
+            q4Cell.appendChild(q4Input);
+            row.appendChild(q4Cell);
+
+            var q5Cell = document.createElement('td');
+            var q5Input = document.createElement('input');
+            q5Input.type = 'text';
+            q5Input.id='pop-input-field'
+            q5Input.placeholder = 'Enter Q5';
+
+            //q5Input.value = '';
+            q5Cell.appendChild(q5Input);
+            row.appendChild(q5Cell);
+
+            var q6Cell = document.createElement('td');
+            var q6Input = document.createElement('input');
+            q6Input.id='pop-input-field'
+            q6Input.type = 'text';
+            q6Input.placeholder = 'Enter Q6';
+
+            //q6Input.value = '';
+            q6Cell.appendChild(q6Input);
+            row.appendChild(q6Cell);
+
+    
+            var createdatCell = document.createElement('td');
+            createdatCell.textContent = questionnaire.created_at;
+            row.appendChild(createdatCell);
+            tbody.appendChild(row);
+            form=document.getElementById('forms')
+            forms.addEventListener('submit', function(event) {
+                 // Prevent form submission
+                event.preventDefault()
+                
+                console.log('WORKING')
+                document.getElementById('popup-content').style.display="none";
+                //document.getElementById('button-container').style.display="none";
+
+                document.querySelector('#forms [name="id"]').value = questionnaire.id;
+                document.querySelector('#forms [name="ward"]').value = wardInput.value;
+                document.querySelector('#forms [name="pct"]').value = pctInput.value;
+                document.querySelector('#forms [name="apt"]').value = questionnaire.apt_number;
+                document.querySelector('#forms [name="sta"]').value = questionnaire.street_name;
+                document.querySelector('#forms [name="stn"]').value = questionnaire.street_number;
+                document.querySelector('#forms [name="person"]').value = userInput.value;
+                document.querySelector('#forms [name="vn"]').value = voterNameInput.value;
+                document.querySelector('#forms [name="full_address"]').value = fulladdressInput.value;
+                document.querySelector('#forms [name="question1"]').value = q1Input.value;
+                document.querySelector('#forms [name="question2"]').value = q2Input.value;
+                document.querySelector('#forms [name="question3"]').value = q3Input.value;
+                document.querySelector('#forms [name="question4"]').value = q4Input.value;
+                document.querySelector('#forms [name="question5"]').value = q5Input.value
+                document.querySelector('#forms [name="question6"]').value = q6Input.value;
+                signal='textual'
+                
+                api='/submitdata/?query='+signal
+                const formData = new FormData(event.target);
+
+    
+            fetch(api, {
+            method: 'POST',
+            body: formData
+            })
+            .then(response => {
+                // Check if the response status code is 200
+                if (response.status === 200) {
+                // Handle the 200 response here
+                console.log('Response status code: 200');
+                success('add');
+
+                return response.json(); 
+                } else {
+                // Handle other response status codes (e.g., 404, 500, etc.) here
+                console.log('Response status code:', response.status);
+                }
+            })
+            .then(data => {
+                // Handle the response data from the API if needed
+                console.log('Response data:', data);
+            })
+            .catch(error => {
+                // Handle any errors that occurred during the fetch request
+                console.error('Error:', error);
+            });
+
+
+                // When a form is submited then for another submission we need voter_lat_lon_json
+                
+            });
+
+
+                
+    }   
+    
+    function hidePopup() {
+        var popup = document.getElementById('popup');
+        popup.style.display = 'none';
+        var popup = document.getElementById('restore-popup');
+        popup.style.display = 'none';
+
+    }
+    
+    //dynamic text of successfully
+    function success(txt){
+        var succestxt=document.getElementById('succes-text')
+
+        if (txt=='edit'){
+        succestxt.innerHTML = 'Successfully Edited Data';
+
+        succestxt.style.display = 'block';}
+        else if (txt=="restore"){
+            succestxt.innerHTML="Successfully Restored data"
+            succestxt.style.display='block';
+            hidePopup()
+
+        }
+        else if (txt='add'){
+            succestxt.innerHTML="Successfully Added data"
+            succestxt.style.display='block';
+        }        
+        setTimeout(function() {
+            document.getElementById('succes-text').style.display = 'none';
+            }, 10000);
+            setTimeout(function(){
+                //location.reload()
+            },10000);
+            
+    }
+
+    /// --------------------------filtering by ward pct
+   
+</script>
+
+

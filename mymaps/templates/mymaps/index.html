@@ -438,138 +438,195 @@
         // Use the search query to display the map of the desired area
         // Implement your logic here to geocode the search query and display it on the map
         var url = '/api/voters/?query=' + query+','+wards+','+pcts;
-        var lsts=[];
-        var lati=[];
-        var longi=[];
-        var fulladdress=[];
-        var rect_count=0;
-        var lststing=[]
-        var lstperson=[]
-        var lstvisit=[]
-        fetch(url)
-        .then(response => response.json())
-        .then(data => {
-            // Process the fetched data
-            console.log('api called')
-            var fetchPromises = [];
-            //var apt=''
-            //console.log(data[0].zip_code);
-            
-            for (var st of data) {
-                if (st['apt_number'] != null && st['apt_number'] != '') {
-                    var aprt = st['apt_number'];
-                    console.log(aprt);
-                    var strng = st['street_name'].toString();
-                    console.log('Address2  ',strng);
-                    if (!lsts.includes(strng)) {
-                        lsts.push(strng);
-                        lati.push(st['latitude'].toString());
-                        longi.push(st['longitude'].toString());
-                        fulladdress.push(st['full_address'].toString());
-                        lstvisit.push(st['visited'].toString());
-                        
-                        var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
-                        console.log('Persons api link ',person_api);
-                        var fetchPromise = fetch(person_api)
-                        .then(response => response.json())
-                        .then(data => {
-                            if(!lstperson.includes(data)){
-                            lstperson.push(data)};
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                        
-                        fetchPromises.push(fetchPromise);
-                    }
-                } else {
-                    var strng = st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
-                    console.log('Address',strng);
-                    if (!lsts.includes(strng)) {
-                        lsts.push(strng);
-                        lati.push(st['latitude'].toString());
-                        longi.push(st['longitude'].toString());
-                        fulladdress.push(st['full_address'].toString());
-                        lstvisit.push(st['visited'].toString());
+    var lsts=[];
+    var lati=[];
+    var longi=[];
+    var fulladdress=[];
+    var rect_count=0;
+    var lststing=[]
+    var lstperson=[]
+    var lstvisit=[]
+    var ids_of_rows=[]
+   
 
-                        
-                        
-                        var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
-                        console.log('Persons api link ',person_api);
-                        var fetchPromise = fetch(person_api)
-                        .then(response => response.json())
-                        .then(data => {
-                            lstperson.push(data)
-                        })
-                        .catch(error => {
-                            console.error('Error:', error);
-                        });
-                        
-                        fetchPromises.push(fetchPromise);
-                    }
-                }
-            
-                
-            
-            
-            
-            }
+// Function to check if the sublist is present in the list
+    
 
-            Promise.all(fetchPromises)
-            .then(() => {
-                console.log('All fetch requests completed');
-                console.log(lstperson);
-                var minLength = Math.min(lstperson.length, lsts.length);
-                console.log(lstperson.length,lsts.length)
-                
-                for (var i = 0; i < minLength; i++) {
+    // Check if the sublist is present
+    
+
+    fetch(url)
+    .then(response => response.json())
+    .then(data => {
+        // Process the fetched data
+        console.log('api called')
+        var fetchPromises = [];
+        
+        //var apt=''
+        //console.log(data[0].zip_code);
+        
+        for (var st of data) {
+            if (st['apt_number'] != null && st['apt_number'] != '') {
+                var aprt = st['apt_number'];
+                console.log('APARTMENT IS HERE ',st);
+                var strng = st['apt_number']+' '+st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
+                console.log('Address2  ',strng);
+                if (!lsts.includes(strng)) {
+                    console.log('APARTMENT IN NOT LIST INCLUDES RUN ')
+                    lsts.push(strng);
+                    lati.push(st['latitude'].toString());
+                    longi.push(st['longitude'].toString());
+                    fulladdress.push(st['full_address'].toString());
+                    lstvisit.push(st['visited'].toString());
+                    ids_of_rows.push(st.id)
+
+                    var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
+                    console.log('Persons api IN APARMENT link ',person_api);
+                    var fetchPromise = fetch(person_api)
+                    .then(response => response.json())
+                    .then(data => {
+                        var sublist=data.names.split(',')[0]
+                        var adddress_sub=data.names.split(',')[1]
+
+                        if (!hasSublist(lstperson, sublist)) {
+                        lstperson.push(adddress_sub)
+                        lstperson.push(sublist)
+
+                        searchLocation(sublist,adddress_sub,data.row_data)}
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
                     
-                    var person = lstperson[i];
-                    var location = lsts[i];
-                    var single_latitude=lati[i];
-                    var single_longitude=longi[i];
-                    var single_address=fulladdress[i];
-                    var single_visit=lstvisit[i]
-                    console.log('Visited',single_visit)
-                    searchLocation(location, person,single_latitude,single_longitude,single_address,single_visit);
-                    }
+                    fetchPromises.push(fetchPromise);
+                }else{
+                    console.log('APARMENT FETCH NOT CALLED ')
+                }
                 
-                show_loading.style.display='none';
-            
-            })
-            .catch(error => {
-                
-                console.error('Error:', error);
-            });
+            } else {
+                console.log('THE STREET ',st.id)
+                var strng = st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
+                console.log('Address',strng);
+                if (!lsts.includes(strng)) {
+                    lsts.push(strng);
+                    lati.push(st['latitude'].toString());
+                    longi.push(st['longitude'].toString());
+                    fulladdress.push(st['full_address'].toString());
+                    lstvisit.push(st['visited'].toString());
+                    ids_of_rows.push(st.id)
 
-            console.log('----------------------');
-            console.log(lsts);
+                    
+                    
+                    var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
+                    console.log('Persons api link ',person_api);
+                    var fetchPromise = fetch(person_api)
+                    .then(response => response.json())
+                    .then(data => {
+                        var sublist=data.names
+                        var adddress_sub=data.names.split(',')[1]
+
+                        if (!hasSublist(lstperson, sublist)) {
+                        lstperson.push(adddress_sub)
+                        lstperson.push(sublist)
+
+                        searchLocation(sublist,adddress_sub,data.row_data)}
+
+                    })
+                    .catch(error => {
+                        console.error('Error:', error);
+                    });
+                    fetchPromises.push(fetchPromise);
+                }
+            }
+        
+            
+        
+        
+        
+        }
+
+        Promise.all(fetchPromises)
+        .then(() => {
+            console.log('All fetch requests completed');
+            console.log('Lating',lating)
+            console.log('Longing',longing)
+
+            console.log(lstperson);
+            var minLength = Math.min(lstperson.length, lsts.length);
+            console.log(lstperson.length,lsts.length)
+            /*
+            for (var i = 0; i < minLength; i++) {
+                var lst_data=lsts[i]
+                var person = lstperson[i+1];
+                var location = lsts[i];
+                var single_latitude=lati[i];
+                var single_longitude=longi[i];
+                var single_address=fulladdress[i];
+                var single_visit=lstvisit[i]
+                var idofrow=ids_of_rows[i]
+                adddress_verify=lstperson[i]
+                console.log('Here is Addires',lst_data)
+                console.log('Here is names',person)
+                console.log('Visited',single_visit)
+                if (adddress_verify==lst_data){
+                searchLocation(location, person,single_latitude,single_longitude,single_address,single_visit,wards,pcts,idofrow,lst_data)
+            }else{
+                for (var k=0;k<lstperson.lenght;k++){
+                        var personn = lstperson[k+1]
+                        var address_ver=lstperson[k]
+                        console.log('checking')
+                        if (address_ver==lst_data){
+                        searchLocation(location, personn,single_latitude,single_longitude,single_address,single_visit,wards,pcts,idofrow,lst_data)
+                        }
+                }
+            }
+                }*/
+            
+        
         })
         .catch(error => {
-            // Handle any errors
             
             console.error('Error:', error);
         });
 
-        function map_area(latt,lonn){
-         
-                    
-                    var bounds = [[latt + 0.01, lonn + 0.01], [latt - 0.01, lonn - 0.01]];
+        console.log('----------------------');
+        console.log(lsts);
+    })
+    .catch(error => {
+        // Handle any errors
+        
+        console.error('Error:', error);
+    });
 
-                    // create an orange rectangle
-                    L.rectangle(bounds, {color: "black", weight: 1}).addTo(map);
-                    var maxZoom = 78;
-                    // zoom the map to the rectangle bounds
-                    map.fitBounds(bounds, {
-                        maxZoom: maxZoom
-                      });
-                    
-                    }
-                    
-                    
-                        
-        function searchLocation(q,persons,latii,longii,adres,single_visit) {
-            if (single_visit=='yes'){
+     function hasSublist(list, sublist) {
+    return list.some((item) => JSON.stringify(item) === JSON.stringify(sublist));
+    }
+                
+    function getRandomInt(min, max) {
+        return Math.floor(Math.random() * (max - min + 1)) + min;
+      }
+    function map_area(latt,lonn){
+         
+        var show_loading=document.getElementById('loading-container')
+            show_loading.style.display='none';     
+        var bounds = [[latt + 0.01, lonn + 0.01], [latt - 0.01, lonn - 0.01]];
+
+        // create an orange rectangle
+        L.rectangle(bounds, {color: "black", weight: 1}).addTo(map);
+        var maxZoom = 78;
+        // zoom the map to the rectangle bounds
+        map.fitBounds(bounds, {
+            maxZoom: maxZoom
+          });
+        
+        
+        }
+    let lating=[]
+    let longing=['The long']                
+    function searchLocation(persan,adres,dataobj) {
+        console.log('THE DATA OBJ',dataobj)
+            if (dataobj[20]=='yes'){
                 var customIcon = L.icon({
                     iconUrl: "/static/images/greenemarker.png",
                     iconSize: [177, 197],
@@ -586,9 +643,94 @@
               
             //console.log('API URL query',q)
             //console.log('Latitude',latii);
+            console.log('Longing is the',longing)
+            persons=persan.split(',')
+            console.log('This is the persons',dataobj[8],persons)
+            console.log('This is the PERSANS',dataobj[8],persan)
+
             username=document.getElementById('input-field').value
-            var lat = parseFloat(latii);
-            var lon = parseFloat(longii);
+            latitude=dataobj[18]
+            longitude=dataobj[17]
+            if (!lating.includes(latitude) && !lating.includes(longitude)){
+                
+                lating.push(latitude)
+                longing.push(longitude)
+
+            }else{
+                var splitted_latittude=latitude.split('')
+                var splitted_longitude=longitude.split('')
+
+                var latitude=''
+                //var longitude=''
+                for (var i = 0; i < splitted_latittude.length; i++) {
+                    if (i+1==splitted_latittude.length){
+                        var randomInt = getRandomInt(1, 20);
+                        //latitude+=randomInt.toString();
+                        var checkstr=latitude+randomInt.toString()
+                        if (lating.includes(checkstr)){
+                            while(true){
+                                var randomInt = getRandomInt(99, 999);
+                                var checkstr=latitude+randomInt.toString()
+                                if (!lating.includes(checkstr)){
+                                    latitude+=randomInt.toString()
+                                    lating.push(latitude)
+
+                                    break
+                                }
+                            }
+                        }
+                        else{
+                            var randomInt = getRandomInt(99, 999);
+                            latitude+=randomInt.toString();
+                            lating.push(latitude)
+
+                            break
+                        }
+
+                    }
+                    else{
+                        latitude+=splitted_latittude[i]
+
+                        
+                    }
+
+            }
+           /* for (var i = 0; i < splitted_longitude.length; i++) {
+                if (i+1==splitted_longitude.length){
+                    var randomInt = getRandomInt(99, 999);
+                    //latitude+=randomInt.toString();
+                    var checkstr=longitude+randomInt.toString()
+                    if (longing.includes(checkstr)){
+                        while(true){
+                            var randomInt = getRandomInt(99, 999);
+                            var checkstr=longitude+randomInt.toString()
+                            if (!longing.includes(checkstr)){
+                                longitude+=randomInt.toString()
+                                longing.push(longitude)
+
+                                break
+                            }
+                        }
+                    }
+                    else{
+                        var randomInt = getRandomInt(99, 999);
+                        longitude+=randomInt.toString();
+                        longing.push(longitude)
+
+                        break
+                    }
+
+                }
+                else{
+                    longitude+=splitted_latittude[i];
+
+                    
+                }
+
+        }*/
+        }
+        var lat = parseFloat(latitude);
+        var lon = parseFloat(longitude);
             /*var popupContent = '<h3>Search Result</h3>';
             for (var i = 0; i < persons.length; i++) {
                 popupContent += '<p>Person ' + (i + 1) + ': ' + persons[i] + '</p>';
@@ -609,7 +751,8 @@
               }).addTo(map);
 
             // Create a custom popup
-            var popup = L.popup().setContent('Address: ' + adres + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + q + '\', \'' + username + '\',\'' + latii + '\',\'' + longii + '\')">Submit Opinion</button>');
+            full_addressofhome=dataobj[10]+' '+dataobj[8]+' '+dataobj[9]
+            var popup = L.popup().setContent('Address: ' + full_addressofhome + popupContent + '<button class="popup-button" onclick="redirectToQuestions(\'' + full_addressofhome + '\', \'' + username + '\',\'' + lat + '\',\'' + lon + '\')">Submit Opinion</button>');
 
             // Bind the popup to the marker
             marker.bindPopup(popup)//.openPopup();

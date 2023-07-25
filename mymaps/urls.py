@@ -7,6 +7,7 @@ urlpatterns = [
     path('dashboard.html',views.dashboard_view, name='dashboard'),
     path('dashboardview',views.dashboardview, name='dashboardview'),
     path('datacontrol.html',views.datacontrol, name='datacontrol'),
+    path('textualdata.html',views.textualcontrol, name='textualcontrol'),
 
     path('submit_questionnaire/', views.submit_questionnaire, name='submit_questionnaire'),
     path('api/voters/',views.get_voter_data, name='voters_api'),
@@ -19,6 +20,8 @@ urlpatterns = [
     path('edit_row_data/', views.edit_row_data, name='edit_row_data'),
     #-------------restore----------------
     path('restoredata',views.restoredata, name='restoredata'),
+    #textutal 
+    path('api/textualdata',views.textualcontroldata, name='api/textualdata'),
 
     #path('inject', views.inject_voters_from_csv, name='inject'),
 
