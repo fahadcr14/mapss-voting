@@ -339,11 +339,15 @@ def get_pcts(request):
 
 #----------------------------TEXTUAL Data----------------------#
 @login_required
-
 def textualcontrol(request):
-    
-        
-    return render(request, 'mymaps/textualdata.html')
+    votelatlon = Votelatlon.objects.all()
+
+    votelatlon_json = list(votelatlon.values())
+    context = {
+        'votelatlon_json': votelatlon_json
+    }
+
+    return render(request, 'mymaps/textualdata.html', context)
 #apis for textuatal data
 def textualcontroldata(request):
     votelatlon = Votelatlon.objects.all()

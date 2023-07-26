@@ -368,7 +368,9 @@
 </html>
 <script>
     // menu dropdown
-    let all_vote_lat_lon;
+    let all_vote_lat_lon = {{ votelatlon_json|safe }};
+    console.log(all_vote_lat_lon)
+    /*
     function fetchData() {
         return new Promise((resolve, reject) => {
             fetch('api/textualdata')
@@ -396,7 +398,7 @@
         })
         .catch(error => {
             console.error('Error:', error);
-        });
+        });*/
     var wardDropdown = document.getElementById('ward-dropdown');
             var pctDropdown = document.getElementById('pct-dropdown');
             var stDropdown = document.getElementById('st-dropdown');
