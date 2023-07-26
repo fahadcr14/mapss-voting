@@ -369,6 +369,22 @@
 <script>
     // menu dropdown
     let all_vote_lat_lon;
+    function fetchData() {
+        return new Promise((resolve, reject) => {
+            fetch('api/textualdata')
+                .then(response => response.json())
+                .then(data => {
+                    // Process the JSON data here
+                    resolve(data.votelatlon_json); // Resolve the promise with the data
+                })
+                .catch(error => {
+                    console.error('Error:', error);
+                    reject(error); // Reject the promise with the error
+                });
+        });
+    }
+    
+    // Call the function and use the returned Promise
     fetchData()
         .then(votelatlonJsonData => {
             // You can use the data here
@@ -755,22 +771,6 @@
     //---------------------------------------------------------------------
     var offset = 0;
     var limit = 30;
-    function fetchData() {
-        return new Promise((resolve, reject) => {
-            fetch('api/textualdata')
-                .then(response => response.json())
-                .then(data => {
-                    // Process the JSON data here
-                    resolve(data.votelatlon_json); // Resolve the promise with the data
-                })
-                .catch(error => {
-                    console.error('Error:', error);
-                    reject(error); // Reject the promise with the error
-                });
-        });
-    }
-    
-    // Call the function and use the returned Promise
     
     function page_intiatlizer(voter_lat_lon_json){
     var questionn= voter_lat_lon_json;
