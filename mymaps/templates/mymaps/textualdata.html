@@ -215,10 +215,13 @@
               </a>
                 Normans Roldan
         </span>
-        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 640px;text-decoration:none;">Dashboard</a>
-        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 660px;">Edit Data</a>
-        <a href="textualdata.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 680px;">Edit Data</a>
-
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 35%;text-decoration:none;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 38%;">Edit Data</a>
+        <a href="textualdata.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 40%;">Textual Data</a>
+        <form action='/logout/' method='post' style="font-size: 16px; color: yellow; position: relative; left: 82%;">
+            {% csrf_token %}
+            <button class='button-submit' id='logout'type="submit" >Logout</button>
+        </form>
     </div>
     
     
@@ -694,13 +697,21 @@
                     document.getElementById('popup-content').style.display="block";
 
                     var questionnaireId = event.target.getAttribute('data-questionnaire-id');
+                    var persona=[]
                     var questionnaire = all_vote_lat_lon.find(function(item) {
-                        //itmid=item.apt_number+' '+item.street_number+' '+item.street_name+' '+item.zip_code
+                        itmid=item.apt_number+item.street_number+item.street_name
+                        if (itmid==dataobj[10]+dataobj[8]+dataobj[9]){
+                            console.log('This is multiple   ',item)
+                            var person_str=item.first_name+' '+item.last_name
+                            persona.push(person_str);
+                            console.log('multiple hehe');
+
+                        }
                         if(item.id==questionnaireId){
                     console.log(item.street_name)
                     console.log('ID MATCHING ',item.id,questionnaireId)
-
-                    return showPopup(item) }
+                            
+                    return showPopup(item,popupContent) }
                 });
 
                     
@@ -909,7 +920,8 @@
     var prevButton = document.getElementById('prev-button');
     }
     //renderTable(questionn)
-    function showPopup(questionnaire) {
+    function showPopup(questionnaire,persona) {
+            console.log('multiple for loop',persona)
             console.log('Pop Up ',questionnaire)
             var tbody = document.getElementById('pop-content-body');
             tbody.innerHTML = '';
@@ -944,12 +956,41 @@
             userCell.appendChild(userInput);
             row.appendChild(userCell);
             var voterNameCell = document.createElement('td');
-            var voterNameInput = document.createElement('input');
-            voterNameInput.type = 'text';
-            voterNameInput.id='pop-input-field';
-            voterNameInput.value = 'Enter Voter Name';
-            voterNameCell.appendChild(voterNameInput);
-            row.appendChild(voterNameCell);
+            var popupContent = '<div>';
+            var splitted_persona=persona.split(',');
+                for (var i = 0; i < splitted_persona.length; i++) {
+                    
+                    console.log('for loop ',splitted_persona.length)
+                  // Create a radio button element for each option
+                  var radioButton = document.createElement('input');
+                  radioButton.type = 'radio';
+                  radioButton.name = 'person';
+                  radioButton.value = splitted_persona[i];
+                
+                  // Create a new label element for each radio button with the option text
+                  var label = document.createElement('label');
+                  label.textContent = 'Person ' + (i + 1) + ': ' + splitted_persona[i];
+                
+                  // Append the radio button and label to the popup content
+                  popupContent += '<div>';
+                  popupContent += radioButton.outerHTML;
+                  popupContent += label.outerHTML;
+                  popupContent += '</div>';
+                }
+                
+                popupContent += '</div>';
+                
+                // Create a container div for the popup content
+                var popupContainer = document.createElement('div');
+                popupContainer.innerHTML = popupContent;
+                
+                // Append the container div to the voterNameCell
+                voterNameCell.appendChild(popupContainer);
+                
+                // Append the voterNameCell to the row
+                row.appendChild(voterNameCell);
+                
+
 
             var fulladdressCell = document.createElement('td');
             var fulladdressInput = document.createElement('input');
@@ -1040,7 +1081,7 @@
                 document.querySelector('#forms [name="sta"]').value = questionnaire.street_name;
                 document.querySelector('#forms [name="stn"]').value = questionnaire.street_number;
                 document.querySelector('#forms [name="person"]').value = userInput.value;
-                document.querySelector('#forms [name="vn"]').value = voterNameInput.value;
+                document.querySelector('#forms [name="vn"]').value = radioButton.value;
                 document.querySelector('#forms [name="full_address"]').value = fulladdressInput.value;
                 document.querySelector('#forms [name="question1"]').value = q1Input.value;
                 document.querySelector('#forms [name="question2"]').value = q2Input.value;

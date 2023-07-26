@@ -5,6 +5,9 @@ from django.views.decorators.http import require_GET, require_POST
 # Create your views here.
 from django.http import HttpResponse, HttpResponseNotAllowed
 from django.shortcuts import render
+from django.contrib.auth.decorators import login_required
+from django.contrib import messages
+
 
 def index(request):
     if request.method == 'GET':
@@ -335,6 +338,8 @@ def get_pcts(request):
     return JsonResponse({'message': 'Invalid request method'}, status=400)
 
 #----------------------------TEXTUAL Data----------------------#
+@login_required
+
 def textualcontrol(request):
     
         
@@ -357,18 +362,25 @@ def textualcontroldata(request):
 
     return JsonResponse(context)
 #-------------------------------------Edit Database ------------------------------------------
-def datacontrol(request):
-    questionnaires = Questionnaire.objects.all()
 
-    questionnaires_json = json.dumps(list(questionnaires.values()))
-    distinct_wards = Questionnaire.objects.values_list('ward', flat=True).distinct()
-    distinct_pcts = Questionnaire.objects.values_list('pct', flat=True).distinct()
-    context = {
-        'questionnaires_json': questionnaires_json,
-        'distinct_wards': distinct_wards,
-        'distinct_pcts': distinct_pcts,
-        }
-    return render(request, 'mymaps/datacontrol.html',context)
+@login_required
+def datacontrol(request):
+    if request.user.is_superuser:
+        questionnaires = Questionnaire.objects.all()
+
+        questionnaires_json = json.dumps(list(questionnaires.values()))
+        distinct_wards = Questionnaire.objects.values_list('ward', flat=True).distinct()
+        distinct_pcts = Questionnaire.objects.values_list('pct', flat=True).distinct()
+        context = {
+            'questionnaires_json': questionnaires_json,
+            'distinct_wards': distinct_wards,
+            'distinct_pcts': distinct_pcts,
+            }
+        return render(request, 'mymaps/datacontrol.html',context)
+    else:
+        messages.error(request, 'ONly Admins Can Edit Data')
+        return render(request, 'mymaps/dashboard.html')
+
 import time
 def submitdata(request):
     print('submit data called')
@@ -475,6 +487,90 @@ def restoredata(request):
 
         # Return the JSON response
         return JsonResponse(questionnaires_json, safe=False)
+    #---------------------------------Reseting the data
+def resetdata(request):
+    if request.method=='GET':
+        questionnaire=Questionnaire.objects.all()
+        questionnaire.delete()
+        questionnaire = Questionnaire.objects.all()
+
+        # Convert the Questionnaire objects to JSON
+        questionnaires_json = list(questionnaire.values())
+
+        # Return the JSON response
+        return JsonResponse(questionnaires_json, safe=False)
+    
+#-------------------------------------Authentication----------------------------------------
+from django.shortcuts import  redirect
+from django.contrib.auth.forms import UserCreationForm
+from django.contrib.auth import authenticate, login,logout
+from django.contrib.auth.models import User
+
+
+def auth(request):
+    return render(request,'mymaps/auth.html')
+def login_view(request):
+    if request.method == 'POST':
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        user = authenticate(request, username=email,email=email, password=password)
+        print('Login successful')
+        if user is not None:
+            # User credentials are valid, log in the user
+            login(request, user)
+            print('Login successful')
+
+            return HttpResponse(status=303, content='', headers={'Location': '/datacontrol.html'})
+        else:
+            # User credentials are invalid, show an error message or handle the authentication failure
+            return HttpResponse(status=404, content='', headers={'Location': '/auth.html'})
+
+    return render(request, 'mymaps/auth.html')
+from django.urls import reverse
+
+def register_view(request):
+    if request.method == 'POST':
+        print('register is working')
+        email = request.POST.get('email')
+        password = request.POST.get('password')
+        confirm_password = request.POST.get('confirm_password')
+
+        if password == confirm_password:
+            # Add your code to create a new user account with the provided email and password
+            # For example, you can use Django's built-in User model to create the user:
+            user = User.objects.create_user(username=email, email=email, password=password)
+
+            # After creating the user, log them in
+            login(request, user)
+            print('register successful')
+
+            return HttpResponse(status=303, content='', headers={'Location': '/datacontrol.html'})
+        else:
+            # Passwords do not match, handle the error
+            return render(request, 'auth.html', {'error': 'Passwords do not match.'})
+        
+
+    return HttpResponse(status=404, content='', headers={'Location': '/auth.html'})
+
+def logout_view(request):
+    if request.method=='POST':
+        logout(request)
+        return render(request, 'mymaps/auth.html')
+    #return render(request, 'register.html', {'form': form})
+def login_vieww(request):
+    # Check if the user is already authenticated
+    if request.user.is_authenticated:
+        # If the user is already logged in, redirect them to the next page
+        next_page = request.GET.get('next')
+        if next_page:
+            return redirect(next_page)
+        else:
+            return redirect('mymaps/auth.html')  # Change 'dashboard' to the desired default page URL name
+
+    # If the user is not logged in, handle the login logic here...
+    # Your login logic here...
+
+    return render(request, 'mymaps/auth.html')
 '''    
 def main():
     

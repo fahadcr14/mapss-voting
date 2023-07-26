@@ -8,6 +8,13 @@ urlpatterns = [
     path('dashboardview',views.dashboardview, name='dashboardview'),
     path('datacontrol.html',views.datacontrol, name='datacontrol'),
     path('textualdata.html',views.textualcontrol, name='textualcontrol'),
+    path('auth.html', views.auth, name='auth'),
+    path('login/', views.login_view, name='login'),
+    path('register/', views.register_view, name='register'),
+    path('logout/', views.logout_view, name='logout'),
+    path('login_view/', views.login_vieww, name='login_views'),
+
+    
 
     path('submit_questionnaire/', views.submit_questionnaire, name='submit_questionnaire'),
     path('api/voters/',views.get_voter_data, name='voters_api'),
@@ -20,6 +27,8 @@ urlpatterns = [
     path('edit_row_data/', views.edit_row_data, name='edit_row_data'),
     #-------------restore----------------
     path('restoredata',views.restoredata, name='restoredata'),
+    path('resetdata',views.resetdata, name='resetedata'),
+
     #textutal 
     path('api/textualdata',views.textualcontroldata, name='api/textualdata'),
 

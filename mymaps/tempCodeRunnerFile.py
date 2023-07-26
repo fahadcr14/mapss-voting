@@ -1,1 +1,1 @@
-restore
+login_required

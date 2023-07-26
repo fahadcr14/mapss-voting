@@ -165,7 +165,20 @@
             height: 1px;
             background-color: yellow;
           } 
-          
+          .button-submit{
+            
+            padding: 10px 20px;
+            background-image: url("{% static 'images/photo-1614850523459-c2f4c699c52e.jpg' %}");
+            font-family:Poppins;
+            box-shadow:  inset 0px 0px 2px 2px grey; 
+            color: yellow;
+            margin-top: 20px;
+            margin: 20 20 10 20;
+
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+        }              
     </style>
 </head>
 
@@ -178,15 +191,25 @@
             </a>
             Normans Roldan
         </span>
-        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 640px;text-decoration:none;">Dashboard</a>
-        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 660px;">Edit Data</a>
-        <a href="textualdata.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 680px;">Edit Data</a>
-
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 35%;text-decoration:none;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 38%;">Edit Data</a>
+        <a href="textualdata.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 40%;">Textual Data</a>
+        <form action='/logout/' method='post' style="font-size: 16px; color: yellow; position: relative; left: 82%;">
+            {% csrf_token %}
+            <button class='button-submit' id='logout'type="submit" >Logout</button>
+        </form>
     </div>
     <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
         Dashboard
         <span class="underline"></span>
     </h1>   
+    {% if messages %}
+        <ul class="messages">
+            {% for message in messages %}
+                <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+            {% endfor %}
+        </ul>
+    {% endif %}
 
     <!-- Table to display the data -->
     <div id="chart-container">
@@ -315,7 +338,7 @@
             row.appendChild(voterNameCell);
     
             var fulladdressCell = document.createElement('td');
-            fulladdressCell.textContent = questionnaire.street_name;
+            fulladdressCell.textContent = questionnaire.apt+ ' ' +questionnaire.street_number+' '+questionnaire.street_name;
             row.appendChild(fulladdressCell);
     
             var q1Cell = document.createElement('td');

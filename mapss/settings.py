@@ -32,7 +32,7 @@ CORS_ALLOW_ALL_ORIGINS=True
 
 
 # Application definition
-
+LOGIN_URL = '/login_view/'
 INSTALLED_APPS = [
     'django.contrib.admin',
     'django.contrib.auth',
@@ -42,6 +42,7 @@ INSTALLED_APPS = [
     'django.contrib.staticfiles',
     'mymaps',
     'corsheaders',
+    
 ]
 
 MIDDLEWARE = [

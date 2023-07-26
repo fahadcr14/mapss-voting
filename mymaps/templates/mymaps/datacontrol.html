@@ -215,10 +215,13 @@
               </a>
                 Normans Roldan
         </span>
-        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 640px;text-decoration:none;">Dashboard</a>
-        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 660px;">Edit Data</a>
-        <a href="textualdata.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 680px;">Edit Data</a>
-
+        <a href="dashboard.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 35%;text-decoration:none;">Dashboard</a>
+        <a href="datacontrol.html" class="h1-image-text" style="font-size: 16px; color: white; position: relative; left: 38%;">Edit Data</a>
+        <a href="textualdata.html" class="h1-image-text" style="font-size: 16px; color: yellow; position: relative; left: 40%;">Textual Data</a>
+        <form action='/logout/' method='post' style="font-size: 16px; color: yellow; position: relative; left: 82%;">
+            {% csrf_token %}
+            <button class='button-submit' id='logout'type="submit" >Logout</button>
+        </form>
     </div>
     
     
@@ -260,6 +263,8 @@
         <button class='button-submit'id='backup-12'type="submit">12 Hours</button>
         <button class='button-submit'id='backup-24'type="submit">24 Hours</button>
         <button class='button-submit' id='backup-48'type="submit">48 Hours</button>
+        <button class='button-submit' id='reset'type="submit">Reset All</button>
+
     </div>
     <!-- Dropdown for ward selection -->
     <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
@@ -782,6 +787,34 @@
         console.log('clicked');
         getQuestionnaires(48);
       });
+      document.getElementById('reset').addEventListener('click', function() {
+        var popup = document.getElementById('restore-popup');
+        popup.style.display = 'block';
+        document.getElementById('no-button').addEventListener('click',function(){
+            hidePopup()});
+        document.getElementById('yes-button').addEventListener('click',function(){
+        // Make the fetch request to your Django view
+        fetch("resetdata" ,{
+          method: "GET",
+        })
+          .then(function(response) {
+            if (response.ok) {
+              return response.json();
+            } else {
+              throw new Error('Error: ' + response.status);
+            }
+          })
+          .then(function(data) {
+            renderTable(data);
+            success('reset');
+          })
+          .catch(function(error) {
+            // Handle any error that occurred during the Fetch request
+            alert('Not Found');
+          });
+
+      });
+    });
       function getQuestionnaires(hours) {
         var popup = document.getElementById('restore-popup');
         popup.style.display = 'block';
@@ -815,7 +848,6 @@
     //dynamic text of successfully
     function success(txt){
         var succestxt=document.getElementById('succes-text')
-
         if (txt=='edit'){
         succestxt.innerHTML = 'Successfully Edited Data';
 
@@ -826,10 +858,17 @@
             hidePopup()
 
         }
-        else if (txt='add'){
+        else if (txt=='add'){
             succestxt.innerHTML="Successfully Added data"
+            
             succestxt.style.display='block';
-        }        
+            hidePopup()
+        } 
+        else if (txt=='reset'){
+            succestxt.innerHTML="Successfully Reset data"
+            succestxt.style.display='block';
+            hidePopup()
+        }       
         setTimeout(function() {
             document.getElementById('succes-text').style.display = 'none';
             }, 10000);
