@@ -296,7 +296,7 @@
             <h1 class="h1-image-text" style="font-size: 32px;color:white;">
                 Add Data <i class="fas fa-times" onclick="hidePopup()" style="color: yellow; cursor: pointer;"></i>
             </h1>
-              
+
             <h1  class="h1-image-text"id="succes-text"style='display:none;color:yellow'><span id="succes-text"id="succes-text"></span></h1>                  
               
             <div class="popup-content" id='popup-content'>
@@ -1141,12 +1141,7 @@
                 
     }   
     
-    function hidePopup() {
-        var popup = document.getElementById('popup');
-        popup.style.display = 'none';
-        
-
-    }
+    
     
     //dynamic text of successfully
     function success(txt){
@@ -1177,6 +1172,14 @@
             
     }
 });
+function hidePopup() {
+    console.log('hidepop up called')
+    var popup = document.getElementById('popup');
+
+    popup.style.display = 'none';
+    
+    
+}
     /// --------------------------filtering by ward pct
    
 </script>

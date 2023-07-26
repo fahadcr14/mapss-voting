@@ -529,7 +529,7 @@
             row.appendChild(voterNameCell);
     
             var fulladdressCell = document.createElement('td');
-            fulladdressCell.textContent = questionnaire.street_name;
+            fulladdressCell.textContent = questionnaire.apt+' '+questionnaire.street_number+' ' +questionnaire.street_name;
             row.appendChild(fulladdressCell);
     
             var q1Cell = document.createElement('td');
@@ -651,7 +651,7 @@
             var fulladdressCell = document.createElement('td');
             var fulladdressInput = document.createElement('input');
             fulladdressInput.type = 'text';
-            fulladdressInput.value = questionnaire.street_name;
+            fulladdressInput.value = questionnaire.apt+''+questionnaire.street_number+'' +questionnaire.street_name;
             fulladdressInput.id='pop-input-field'
             fulladdressCell.appendChild(fulladdressInput);
             row.appendChild(fulladdressCell);
