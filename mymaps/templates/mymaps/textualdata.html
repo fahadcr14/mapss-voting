@@ -228,6 +228,8 @@
     <!-- Dropdown for ward selection -->
     <h1 class="h1-image-text" style="font-size: 32px; color: yellow; position: relative;">
         Filter By Ward and Pct
+        <div id="loader">Loading...</div>
+
         <span class="underline"></span>
     </h1>    
     <form id="filterform" method="post">
@@ -369,7 +371,13 @@
 <script>
     // menu dropdown
     let all_vote_lat_lon = {{ votelatlon_json|safe }};
+    const loader = document.getElementById('loader');
+    const content = document.getElementById('content');
+
+  loader.style.display = 'none';
+  //content.style.display = 'block';
     console.log(all_vote_lat_lon)
+    document.addEventListener('DOMContentLoaded', function () {
     /*
     function fetchData() {
         return new Promise((resolve, reject) => {
@@ -1166,7 +1174,7 @@
             },10000);
             
     }
-
+});
     /// --------------------------filtering by ward pct
    
 </script>
