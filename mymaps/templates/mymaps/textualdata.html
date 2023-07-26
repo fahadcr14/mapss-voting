@@ -369,6 +369,18 @@
 <script>
     // menu dropdown
     let all_vote_lat_lon;
+    fetchData()
+        .then(votelatlonJsonData => {
+            // You can use the data here
+            var voter_lat_lon_json=votelatlonJsonData
+             all_vote_lat_lon=voter_lat_lon_json
+            console.log('Data received:', voter_lat_lon_json);
+            //page_intiatlizer(voter_lat_lon_json)
+
+        })
+        .catch(error => {
+            console.error('Error:', error);
+        });
     var wardDropdown = document.getElementById('ward-dropdown');
             var pctDropdown = document.getElementById('pct-dropdown');
             var stDropdown = document.getElementById('st-dropdown');
@@ -759,18 +771,7 @@
     }
     
     // Call the function and use the returned Promise
-    fetchData()
-        .then(votelatlonJsonData => {
-            // You can use the data here
-            var voter_lat_lon_json=votelatlonJsonData
-             all_vote_lat_lon=voter_lat_lon_json
-            console.log('Data received:', voter_lat_lon_json);
-            //page_intiatlizer(voter_lat_lon_json)
-
-        })
-        .catch(error => {
-            console.error('Error:', error);
-        });
+    
     function page_intiatlizer(voter_lat_lon_json){
     var questionn= voter_lat_lon_json;
     console.log(questionn)
