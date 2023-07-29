@@ -708,7 +708,7 @@
             row.appendChild(pctCell);
     
             var fulladdressCell = document.createElement('td');
-            fulladdressCell.textContent = dataobj[10]+' '+dataobj[8]+' '+dataobj[9];
+            fulladdressCell.textContent = dataobj[8]+' '+dataobj[9]+' ' dataobj[10];
             row.appendChild(fulladdressCell);
     
             var voterNameCell = document.createElement('td');
@@ -1006,7 +1006,7 @@
             var fulladdressCell = document.createElement('td');
             var fulladdressInput = document.createElement('input');
             fulladdressInput.type = 'text';
-            fulladdressInput.value = questionnaire.apt_number +" "+ questionnaire.full_address;
+            fulladdressInput.value =questionnaire.full_address +' '+questionnaire.apt_number;
             fulladdressInput.id='pop-input-field'
             fulladdressCell.appendChild(fulladdressInput);
             row.appendChild(fulladdressCell);
