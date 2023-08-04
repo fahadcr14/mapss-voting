@@ -376,7 +376,7 @@
 
   loader.style.display = 'none';
   //content.style.display = 'block';
-    console.log(all_vote_lat_lon)
+    //console.log(all_vote_lat_lon)
     document.addEventListener('DOMContentLoaded', function () {
     /*
     function fetchData() {
@@ -388,7 +388,7 @@
                     resolve(data.votelatlon_json); // Resolve the promise with the data
                 })
                 .catch(error => {
-                    console.error('Error:', error);
+                    //console.error('Error:', error);
                     reject(error); // Reject the promise with the error
                 });
         });
@@ -400,12 +400,12 @@
             // You can use the data here
             var voter_lat_lon_json=votelatlonJsonData
              all_vote_lat_lon=voter_lat_lon_json
-            console.log('Data received:', voter_lat_lon_json);
+            //console.log('Data received:', voter_lat_lon_json);
             //page_intiatlizer(voter_lat_lon_json)
 
         })
         .catch(error => {
-            console.error('Error:', error);
+            //console.error('Error:', error);
         });*/
     var wardDropdown = document.getElementById('ward-dropdown');
             var pctDropdown = document.getElementById('pct-dropdown');
@@ -478,7 +478,7 @@
         var tbody = document.getElementById('table-body');
         tbody.innerHTML = '';
         
-        //console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
+        ////console.log('WARDS IS HERE',document.getElementById('ward-dropdown'));
         
         //document.getElementById('namesofperson').innerHTML=inputField.value
 
@@ -490,7 +490,7 @@
     var wards=document.getElementById('ward-dropdown').value;
     var pcts=document.getElementById('pct-dropdown').value;
     var query=document.getElementById('st-dropdown').value;
-    console.log(query)
+    //console.log(query)
     
     var lst=[encodeURIComponent(query)]
     // Use the search query to display the map of the desired area
@@ -513,146 +513,76 @@
     // Check if the sublist is present
     
 
-    fetch(url)
-    .then(response => response.json())
-    .then(data => {
-        // Process the fetched data
-        console.log('api called')
-        var fetchPromises = [];
-        
-        //var apt=''
-        //console.log(data[0].zip_code);
-        
-        for (var st of data) {
-            if (st['apt_number'] != null && st['apt_number'] != '') {
-                var aprt = st['apt_number'];
-                console.log('APARTMENT IS HERE ',st);
-                var strng = st['apt_number']+' '+st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
-                console.log('Address2  ',strng);
-                if (!lsts.includes(strng)) {
-                    console.log('APARTMENT IN NOT LIST INCLUDES RUN ')
-                    lsts.push(strng);
-                    lati.push(st['latitude'].toString());
-                    longi.push(st['longitude'].toString());
-                    fulladdress.push(st['full_address'].toString());
-                    lstvisit.push(st['visited'].toString());
-                    ids_of_rows.push(st.id)
-
-                    var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
-                    console.log('Persons api IN APARMENT link ',person_api);
-                    var fetchPromise = fetch(person_api)
-                    .then(response => response.json())
-                    .then(data => {
-                        var sublist=data.names.split(',')[0]
-                        var adddress_sub=data.names.split(',')[1]
-
+    async function fetchData() {
+        try {
+            const response = await fetch(url);
+            const data = await response.json();
+    
+            for (const st of data) {
+                if (st['apt_number'] != null && st['apt_number'] != '') {
+                    const aprt = st['apt_number'];
+                    const strng = st['apt_number'] + ' ' + st['street_number'].toString() + ' ' + st['street_name'].toString() + ' ' + st['zip_code'];
+    
+                    if (!lsts.includes(strng)) {
+                        lsts.push(strng);
+                        lati.push(st['latitude'].toString());
+                        longi.push(st['longitude'].toString());
+                        fulladdress.push(st['full_address'].toString());
+                        lstvisit.push(st['visited'].toString());
+                        ids_of_rows.push(st.id);
+    
+                        const person_api = '/api/names/?query=' + strng + ',' + wards + ',' + pcts;
+                        const personResponse = await fetch(person_api);
+                        const personData = await personResponse.json();
+    
+                        const sublist = personData.names.split(',')[0];
+                        const adddress_sub = personData.names.split(',')[1];
+    
                         if (!hasSublist(lstperson, sublist)) {
-                        lstperson.push(adddress_sub)
-                        lstperson.push(sublist)
-
-                        searchLocation(sublist,adddress_sub,data.row_data)}
-
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                    
-                    fetchPromises.push(fetchPromise);
-                }else{
-                    console.log('APARMENT FETCH NOT CALLED ')
-                }
-                
-            } else {
-                console.log('THE STREET ',st.id)
-                var strng = st['street_number'].toString() + ' ' + st['street_name'].toString()+ ' ' + st['zip_code'];
-                console.log('Address',strng);
-                if (!lsts.includes(strng)) {
-                    lsts.push(strng);
-                    lati.push(st['latitude'].toString());
-                    longi.push(st['longitude'].toString());
-                    fulladdress.push(st['full_address'].toString());
-                    lstvisit.push(st['visited'].toString());
-                    ids_of_rows.push(st.id)
-
-                    
-                    
-                    var person_api = '/api/names/?query=' + strng+','+wards+','+pcts;
-                    console.log('Persons api link ',person_api);
-                    var fetchPromise = fetch(person_api)
-                    .then(response => response.json())
-                    .then(data => {
-                        var sublist=data.names
-                        console.log('Sublist of the persons',data.names)
-                        var adddress_sub=data.names.split(',')[1]
-                        if (!hasSublist(lstperson, sublist)) {
-                        lstperson.push(adddress_sub)
-                        lstperson.push(sublist)
-                        searchLocation(sublist,adddress_sub,data.row_data)}
-
-                    })
-                    .catch(error => {
-                        console.error('Error:', error);
-                    });
-                    fetchPromises.push(fetchPromise);
-                }
-            }
-        
-            
-        
-        
-        
-        }
-
-        Promise.all(fetchPromises)
-        .then(() => {
-            console.log('All fetch requests completed');
-            console.log(lstperson);
-            var minLength = Math.min(lstperson.length, lsts.length);
-            console.log(lstperson.length,lsts.length)
-            /*
-            for (var i = 0; i < minLength; i++) {
-                var lst_data=lsts[i]
-                var person = lstperson[i+1];
-                var location = lsts[i];
-                var single_latitude=lati[i];
-                var single_longitude=longi[i];
-                var single_address=fulladdress[i];
-                var single_visit=lstvisit[i]
-                var idofrow=ids_of_rows[i]
-                adddress_verify=lstperson[i]
-                console.log('Here is Addires',lst_data)
-                console.log('Here is names',person)
-                console.log('Visited',single_visit)
-                if (adddress_verify==lst_data){
-                searchLocation(location, person,single_latitude,single_longitude,single_address,single_visit,wards,pcts,idofrow,lst_data)
-            }else{
-                for (var k=0;k<lstperson.lenght;k++){
-                        var personn = lstperson[k+1]
-                        var address_ver=lstperson[k]
-                        console.log('checking')
-                        if (address_ver==lst_data){
-                        searchLocation(location, personn,single_latitude,single_longitude,single_address,single_visit,wards,pcts,idofrow,lst_data)
+                            lstperson.push(adddress_sub);
+                            lstperson.push(sublist);
+                            await searchLocation(personData.names, adddress_sub, personData.row_data);
                         }
+                    }
+    
+                } else {
+                    const strng = st['street_number'].toString() + ' ' + st['street_name'].toString() + ' ' + st['zip_code'];
+    
+                    if (!lsts.includes(strng)) {
+                        lsts.push(strng);
+                        lati.push(st['latitude'].toString());
+                        longi.push(st['longitude'].toString());
+                        fulladdress.push(st['full_address'].toString());
+                        lstvisit.push(st['visited'].toString());
+                        ids_of_rows.push(st.id);
+    
+                        const person_api = '/api/names/?query=' + strng + ',' + wards + ',' + pcts;
+                        const personResponse = await fetch(person_api);
+                        const personData = await personResponse.json();
+    
+                        const sublist = personData.names;
+                        const adddress_sub = personData.names.split(',')[1];
+    
+                        if (!hasSublist(lstperson, sublist)) {
+                            lstperson.push(adddress_sub);
+                            lstperson.push(sublist);
+                            await searchLocation(sublist, adddress_sub, personData.row_data);
+                        }
+                    }
                 }
             }
-                }*/
-            
-        
-        })
-        .catch(error => {
-            
-            console.error('Error:', error);
-        });
-
-        console.log('----------------------');
-        console.log(lsts);
-    })
-    .catch(error => {
-        // Handle any errors
-        
-        console.error('Error:', error);
-    });
-
+    
+            // The rest of your code that was after the Promise.all
+    
+        } catch (error) {
+            // Handle any errors
+            //console.error('Error:', error);
+        }
+    }
+    
+    // Call the function
+    fetchData();
+    
      function hasSublist(list, sublist) {
     return list.some((item) => JSON.stringify(item) === JSON.stringify(sublist));
     }
@@ -660,15 +590,16 @@
                 
                     
     function searchLocation(persan,adres,dataobj) {
-        console.log('THE DATA OBJ',dataobj)
-        
+        //console.log('THE DATA OBJ',dataobj)
+        console.log('Address',dataobj[8]+dataobj[9]+dataobj[10])
+        console.log('Names of the persons',persan)
           
-        //console.log('API URL query',q)
-        //console.log('Latitude',latii);
-        console.log('Address search location is here',adres)
+        ////console.log('API URL query',q)
+        ////console.log('Latitude',latii);
+        //console.log('Address search location is here',adres)
         personsn=persan.split(',')
-        console.log('This is the persons',dataobj[8],personsn)
-        console.log('This is the PERSANS',dataobj[8],persan)
+        //console.log('This is the persons',dataobj[8],personsn)
+        //console.log('This is the PERSANS',dataobj[8],persan)
         //---------------------------------------username--------------------------------------
         //username=document.getElementById('input-field').value
         
@@ -678,7 +609,7 @@
         }*/
         //var marker = L.marker([lat, lon]).addTo(map);;
         persan_array=persan.split(' ')
-        console.log('PERSONA ',persan_array)
+        //console.log('PERSONA ',persan_array)
 
         var popupContent = persan;
         //for (var i = 0; i < persan_array.length; i++) {
@@ -739,15 +670,15 @@
                     var questionnaire = all_vote_lat_lon.find(function(item) {
                         itmid=item.apt_number+item.street_number+item.street_name
                         if (itmid==dataobj[10]+dataobj[8]+dataobj[9]){
-                            console.log('This is multiple   ',item)
+                            //console.log('This is multiple   ',item)
                             var person_str=item.first_name+' '+item.last_name
                             persona.push(person_str);
-                            console.log('multiple hehe');
+                            //console.log('multiple hehe');
 
                         }
                         if(item.id==questionnaireId){
-                    console.log(item.street_name)
-                    console.log('ID MATCHING ',item.id,questionnaireId)
+                    //console.log(item.street_name)
+                    //console.log('ID MATCHING ',item.id,questionnaireId)
                             
                     return showPopup(item,popupContent) }
                 });
@@ -784,7 +715,7 @@
     
     function page_intiatlizer(voter_lat_lon_json){
     var questionn= voter_lat_lon_json;
-    console.log(questionn)
+    //console.log(questionn)
     function renderTable(questionnaires) {
         var questionnaires=questionnaires;
         var tbody = document.getElementById('table-body');
@@ -808,7 +739,7 @@
                     var questionnaireId = event.target.getAttribute('data-questionnaire-id');
                     var questionnaire = questionnaires.find(function(item) {
                         if(item.id==questionnaireId){
-                    console.log(item.street_name)
+                    //console.log(item.street_name)
                     return showPopup(item) }
                 });
 
@@ -908,10 +839,10 @@
     document.getElementById('next-button').addEventListener('click', function() {
         offset += limit;
         if (offset>=limit){
-            console.log(offset)
+            //console.log(offset)
                 prevButton.style.display='block';}
         else{
-            console.log(offset)
+            //console.log(offset)
             prevButton.style.display='none';
         }
         renderTable(questionn);
@@ -920,10 +851,10 @@
     document.getElementById('prev-button').addEventListener('click', function() {
         offset -= limit;
         if (offset>=limit){
-            console.log(offset)
+            //console.log(offset)
                 prevButton.style.display='block';}
         else{
-            console.log(offset)
+            //console.log(offset)
             prevButton.style.display='none';
         }
         renderTable(questionn);
@@ -932,11 +863,11 @@
     }
     //renderTable(questionn)
     function showPopup(questionnaire,persona) {
-            console.log('multiple for loop',persona)
-            console.log('Pop Up ',questionnaire)
+            //console.log('multiple for loop',persona)
+            //console.log('Pop Up ',questionnaire)
             var tbody = document.getElementById('pop-content-body');
             tbody.innerHTML = '';
-            console.log(questionnaire);
+            //console.log(questionnaire);
             var popup = document.getElementById('popup');
             popup.style.display = 'block';
             var row = document.createElement('tr');
@@ -971,7 +902,7 @@
             var splitted_persona=persona.split(',');
                 for (var i = 0; i < splitted_persona.length; i++) {
                     
-                    console.log('for loop ',splitted_persona.length)
+                    //console.log('for loop ',splitted_persona.length)
                   // Create a radio button element for each option
                   var radioButton = document.createElement('input');
                   radioButton.type = 'radio';
@@ -1081,7 +1012,7 @@
                  // Prevent form submission
                 event.preventDefault()
                 
-                console.log('WORKING')
+                //console.log('WORKING')
                 document.getElementById('popup-content').style.display="none";
                 //document.getElementById('button-container').style.display="none";
 
@@ -1114,22 +1045,22 @@
                 // Check if the response status code is 200
                 if (response.status === 200) {
                 // Handle the 200 response here
-                console.log('Response status code: 200');
+                //console.log('Response status code: 200');
                 success('add');
 
                 return response.json(); 
                 } else {
                 // Handle other response status codes (e.g., 404, 500, etc.) here
-                console.log('Response status code:', response.status);
+                //console.log('Response status code:', response.status);
                 }
             })
             .then(data => {
                 // Handle the response data from the API if needed
-                console.log('Response data:', data);
+                //console.log('Response data:', data);
             })
             .catch(error => {
                 // Handle any errors that occurred during the fetch request
-                console.error('Error:', error);
+                //console.error('Error:', error);
             });
 
 
@@ -1173,7 +1104,7 @@
     }
 });
 function hidePopup() {
-    console.log('hidepop up called')
+    //console.log('hidepop up called')
     var popup = document.getElementById('popup');
 
     popup.style.display = 'none';

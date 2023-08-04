@@ -90,6 +90,7 @@ def get_persons(request):
     
     query=strig[0]
     kq=strig[0].split(' ')
+    print('Address kq',kq)
     #print(kq)
     
     ward=strig[1]
@@ -99,7 +100,7 @@ def get_persons(request):
         st_number=kq[0]
         st_name=kq[1]+' '+kq[2]
         zip_number=kq[3]
-        voters=Votelatlon.objects.filter(ward=ward,pct=pcts,street_number=st_number,street_name=st_name,zip_code=zip_number).values_list()
+        voters=Votelatlon.objects.filter(ward=ward,pct=pcts,apt_number='',street_number=st_number,street_name=st_name,zip_code=zip_number).values_list()
     if len(kq)==5:
         #print('Apartment ')
 
@@ -151,7 +152,7 @@ def get_persons(request):
     response["Access-Control-Allow-Origin"] = "http://16.170.195.14"  # Allow all origins (adjust as needed)
     response["Access-Control-Allow-Headers"] = "Content-Type"
     response["Access-Control-Allow-Methods"] = "GET"
-    #print(f'{random_num} Names {names} address {address_verify}')
+    print(f'{random_num} Names {names} address {address_verify}')
     return response 
 
 from .models import Questionnaire
@@ -382,7 +383,7 @@ def datacontrol(request):
             }
         return render(request, 'mymaps/datacontrol.html',context)
     else:
-        messages.error(request, 'ONly Admins Can Edit Data')
+        messages.error(request, 'Only Admins Can Edit Data')
         return render(request, 'mymaps/dashboard.html')
 
 import time
