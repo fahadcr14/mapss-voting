@@ -804,7 +804,8 @@
             sessionStorage.setItem('user',user);
             var selectedPerson = document.querySelector('input[name="person"]:checked').value;
             sessionStorage.setItem('personname',selectedPerson);
-            window.location.href = "questions.html";
+            //window.location.href = "questions.html";
+            window.open('questions.html', "Popup", "width=800,height=600");
         }
         function goBack() {
             document.getElementById('forminput').style.display="flex";
